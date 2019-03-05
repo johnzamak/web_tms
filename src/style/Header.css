@@ -1,0 +1,104 @@
+.logo_header{
+    display: inline-block !important;
+    background-image: url('../images/dplus_logo.png') !important; 
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: 75px !important;
+    width: 225px !important;
+    height: 75px !important;
+    border: 0px !important;
+}
+.list_menu{
+    z-index: 1;
+    position: absolute;
+    display: inline-block !important;
+    background-image: url('../images/list.png') !important; 
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    border: 0px !important;
+    margin-left: -5px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+a.list_menu:hover{
+    z-index: 2;
+    position: absolute;
+    display: inline-block !important;
+    background-image: url('../images/list2.png') !important; 
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-size: 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    border: 0px !important;
+    margin-left: -5px;
+    margin-top: 20px;
+}
+.header_app{
+    background: #000000 !important;
+    width: 240px;
+    height: 80px;
+}
+.user_app{
+    float: right !important;
+    margin-top: 1em
+}
+.boxHeader{
+    background: #ffffff;
+    border: 1px solid #C9C1D5;
+    box-shadow:1px 0 3px rgba(0,0,0,.15);
+    box-sizing: border-box;
+}
+.boxMenu{
+    z-index: 2;
+    position: absolute;
+    background: #ffffff;
+    border: 1px solid #C9C1D5;
+    box-shadow:1px 0 3px rgba(0,0,0,.15);
+    box-sizing: border-box;
+    left: 0px;
+    width: 0px;
+    height: 1080px;
+    max-height: 100%;
+    -webkit-transition: width 1s;
+    transition: width 1s;
+}
+.listMenuNone{
+    display: none;
+}
+.listMenu{
+    display: none;
+    z-index: 2;
+    position: absolute;
+    background: #ffffff;
+    border: 1px solid #C9C1D5;
+    box-shadow:1px 0 3px rgba(0,0,0,.15);
+    box-sizing: border-box;
+    width: 240px;
+    height: 1080px;
+    max-height: 100%;
+    -webkit-transition: width 1s;
+    transition: width 1s;
+}
+.reportMenu{
+    display: none;
+}
+.boxMenuSlide{
+    z-index: 2;
+    position: absolute;
+    background: #ffffff;
+    border: 1px solid #C9C1D5;
+    box-shadow:1px 0 3px rgba(0,0,0,.15);
+    box-sizing: border-box;
+    width: 240px;
+    height: 1080px;
+    max-height: 100%;
+    -webkit-transition: width 1s;
+    transition: width 1s;
+}
+.bgHeader{
+    background: #008DCA !important;
+}

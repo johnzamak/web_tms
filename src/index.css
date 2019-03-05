@@ -1,0 +1,124 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  
+}
+.bgDplus{
+  background: #0783C1;
+}
+.bgFocus{
+  background: black;
+}
+.bgBewell{
+  background: #00A49B;
+}
+.bgTeal{
+  background: #20c997;
+}
+.bgSubTitle{
+  background: #3BB9FF;
+}
+.xdsoft_autocomplete_hint{
+  display: none !important;
+}
+.xdsoft_autocomplete{
+  position: absolute !important;
+  z-index: 1;
+}
+.inputNum{
+  text-align: right !important;
+  font-size: 14px !important;
+}
+.bgBackGround{
+  background-color: #EAEDED;
+  width: 100%;
+  max-height: 100%;
+  height: 100%;
+}
+.bgContainer-White{
+  background-color: #ffffff;
+  padding: 10px 10px 10px 10px;
+}
+.hrCustom{
+  background: #0783C1 !important;
+  height: 2px;
+}
+.boxContent{
+  margin: 10px 10px 10px 10px !important;
+  background: #ffffff;
+  border: 1px solid #C9C1D5;
+  box-shadow:1px 0 3px rgba(0,0,0,.15);
+  box-sizing: border-box;
+}
+.boxInContent{
+  width: 100%;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 15px;
+}
+.btnLong{
+  width: 150px;
+}
+.iconlg{
+  font-size: 22px;
+  cursor: pointer;
+}
+.cursor-pointer{
+  cursor: pointer;
+}
+.tblMembers th{
+  white-space: nowrap;
+}
+input[type=checkbox] {
+  /* All browsers except webkit*/
+  transform: scale(1.5);
+  /* Webkit browsers*/
+  -webkit-transform: scale(1.5);
+}
+input[type=radio] {
+  /* All browsers except webkit*/
+  transform: scale(1.5);
+  /* Webkit browsers*/
+  -webkit-transform: scale(1.5);
+}
+.form-long{
+  width: 500px !important;
+}
+.product-btn{
+  width: 200px;
+  height: 75px;
+  display: inline-block;
+  padding: 10px 10px 10px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: center;
+  text-decoration: none;
+  outline: none;
+  /* color: #fff; */
+  background-color: #f8f9fa;
+  border: outset ;
+  border-radius: 0px; /*15px*/
+  box-shadow: 0 2px #999;
+}
+.product-btn:hover{
+  background-color: #D5D8DC
+}
+.product-btn:active{
+  background-color: #D5D8DC;
+  box-shadow: 0 2px #666;
+  transform: translateY(2px);
+}
+.input-product-qty{
+  width: 30px;
+  text-align: right;
+}
+.star01{
+  font-size: 48px;
+  color: #ABB2B9;
+}
+.star02{
+  font-size: 48px;
+  color: #F39C12;
+}
