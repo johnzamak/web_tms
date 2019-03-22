@@ -197,7 +197,7 @@ class Clearbill extends Component {
     }
     onClick_clearbill = (id) => {
         this.props.dispatch(is_loader(true))
-        var url = proxy.develop + "clearbill/update-clearbill-kerry-dhl/"
+        var url = proxy.main + "clearbill/update-clearbill-kerry-dhl/"
         var data_send = this.state.tbl_keep.filter(key => key.tms_document == id)
         fetch(url, {
             method: "POST",

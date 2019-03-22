@@ -105,13 +105,13 @@ class Form_accounting extends Component {
         var check_hub= (self.props.data_hub)?self.props.data_hub.location:""
         switch(check_hub){
             case "surach":
-            url = proxy.develop + "report/report-formaccount/WS1&" + input_date
+            url = proxy.main + "report/report-formaccount/WS1&" + input_date
             break;
             default:
             url = proxy.develop + "report/report-formaccount/BKK&" + input_date
             break;
         }
-        // let url = proxy.develop + "report/report-formaccount/" + input_date
+        // let url = proxy.main + "report/report-formaccount/" + input_date
         fetch(url)
             .then(response => response.json())
             .then((responseJson) => {

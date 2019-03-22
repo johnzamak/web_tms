@@ -53,28 +53,28 @@ class Tracking_status extends Component {
         }, 3000);
     }
     check_status_track(status, mess_rec, mess_send, mess_clear) {
-        let set_status
+        let set_status = { bgColor: "", text: "", cName: "99" }
         switch (status) {
-            case 0: set_status = { bgColor: "#F4D03F", text: "รอคอนเฟิร์ม", cName: "0" }; break;
-            case 1: set_status = { bgColor: "#F5B041", text: "รอรับงาน", cName: "1" }; break;
-            case 2: set_status = { bgColor: "#EB984E", text: "รอจ่ายงาน", cName: "2" }; break;
+            case 0: set_status = { bgColor: "#dc3545", text: "รอคอนเฟิร์ม", cName: "0" }; break;
+            case 1: set_status = { bgColor: "#ffc107", text: "รอรับงาน", cName: "1" }; break;
+            case 2: set_status = { bgColor: "#fd7e14", text: "รอจ่ายงาน", cName: "2" }; break;
             case 3:
                 if (mess_rec == null && mess_send == null && mess_clear == null) {
-                    set_status = { bgColor: "#E74C3C", text: "รอแมสรับงาน", cName: "3" }
+                    set_status = { bgColor: "#6f42c1", text: "รอแมสรับงาน", cName: "3" }
                 } else if (mess_rec != null && mess_send == null && mess_clear == null) {
-                    set_status = { bgColor: "#5DADE2", text: "รอแมสส่งสินค้า", cName: "4" }
+                    set_status = { bgColor: "#20c997", text: "รอแมสส่งสินค้า", cName: "4" }
                 } else if (mess_rec != null && mess_send != null && mess_clear == null) {
-                    set_status = { bgColor: "#48C9B0", text: "รอแมสเคลียร์เงิน", cName: "5" }
+                    set_status = { bgColor: "#20c997", text: "รอแมสเคลียร์เงิน", cName: "5" }
                 } else if (mess_rec != null && mess_send != null && mess_clear != null) {
-                    set_status = { bgColor: "#00FF00", text: "จบงานแล้ว", cName: "6" }
+                    set_status = { bgColor: "#28a745", text: "จบงานแล้ว", cName: "6" }
                 } else if (mess_rec == null && mess_send == null && mess_clear != null) {
-                    set_status = { bgColor: "#C0C0C0", text: "งานส่งใหม่", cName: "8" }
+                    set_status = { bgColor: "#ABB2B9", text: "งานส่งใหม่", cName: "8" }
                 } else if (mess_rec != null && mess_send == null && mess_clear != null) {
-                    set_status = { bgColor: "#808080", text: "งานกำลังส่งใหม่", cName: "7" }
+                    set_status = { bgColor: "#ABB2B9", text: "งานกำลังส่งใหม่", cName: "7" }
                 }
                 break;
         }
-        return set_status;
+        return set_status
     }
     set_data_table(self, result) {
         let arr_data = [], get_status, arr_keep_tbl = []

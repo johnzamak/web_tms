@@ -3,6 +3,7 @@ import * as bs4 from "reactstrap"
 import * as MdIcon from 'react-icons/lib/md'
 import { connect } from 'react-redux'
 import { is_loader } from '../../actions'
+import { browserHistory } from 'react-router';
 
 const $ = require("jquery")
 const { proxy, public_function } = require("../../service")
@@ -12,20 +13,34 @@ class Add_Rate extends Component {
         super(props)
         this.state = {
             customer_code: this.props.customer,
-            customer_name:"",
-            customer_email:"",
             point: 1,
             tbl_show: [],
             tbl_keep: [],
-            arr_data_send: []
+            arr_data_send: [],
+            comment:""
         }
     }
     componentWillMount() {
-        this._call_api_get_assessment(this)
+        this._call_api_check_rate(this)
+    }
+    _call_api_check_rate(self){
+        self.props.dispatch(is_loader(true))
+        var url = proxy.develop + "rate/check-rate-already/"+self.state.customer_code
+        fetch(url)
+            .then(response => response.json())
+            .then((responseJson) => {
+                console.log("_call_api_check_rate", responseJson)
+                if (responseJson.status != 200) {
+                    self._call_api_get_assessment(self)
+                } else {
+                    self.props.dispatch(is_loader(false))
+                    browserHistory.push('/rate/already_Rate/'+self.state.customer_code)
+                }
+            })
     }
     _call_api_get_assessment(self) {
         self.props.dispatch(is_loader(true))
-        var url = proxy.develop + "rate/get-head-rate/"
+        var url = proxy.main + "rate/get-head-rate/"
         fetch(url)
             .then(response => response.json())
             .then((responseJson) => {
@@ -70,12 +85,9 @@ class Add_Rate extends Component {
         var arr_checkbox = this.state.arr_data_send
         if ($("#" + assessment_id).is(":checked")) {
             var data_send = {
-                customer_code: "",
-                customer_name: "",
-                customer_email: "",
+                customer:this.state.customer_code,
                 rate_id: assessment_id,
                 rate_group: group_id,
-                rate_date: "",
                 point: 1
             }
             arr_checkbox.push(data_send)
@@ -137,35 +149,39 @@ class Add_Rate extends Component {
     _call_api_save(self){
         var data_send = {
             rate:{
+                customer:self.state.customer_code,
                 point:self.state.point,
-                rate_date:self.state.rate_date,
-                customer_code: self.state.customer_code,
-                customer_name: self.state.customer_name,
-                customer_email: self.state.customer_email,
                 comment:self.state.comment
             },
             tran:self.state.arr_data_send
         }
-        console.log("data_send",data_send)
+        // console.log("data_send",data_send)
         var url = proxy.develop + "rate/create-rate/"
-        // fetch(url, {
-        //     method: "POST",
-        //     headers: {
-        //         Accept: "application/json",
-        //         "Content-Type": "application/json;charset=utf-8"
-        //     },
-        //     body: JSON.stringify(data_send)
-        // })
-        //     .then(response => response.json())
-        //     .then((responseJson) => {
-        //         console.log("_call_api_save",responseJson)
-        //         if (responseJson.status === 200) {
-        //             alert("ขอบคุณสำหรับการประเมิน \n ทางเราจะพัฒนาการบริการให้ดียิ่งขึ้น")
-        //             // self.get_data_from_api(self)
-        //         } else {
-        //             alert("ผิดพลาด การบันทึกข้อมูลอาจจะมีปัญหากรุณาตรวจสอบข้อมูลก่อนบันทึกอิีกครั้ง")
-        //         }
-        //     })
+        fetch(url, {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json;charset=utf-8"
+            },
+            body: JSON.stringify(data_send)
+        })
+            .then(response => response.json())
+            .then((responseJson) => {
+                console.log("_call_api_save",responseJson)
+                if (responseJson.status === 200) {
+                    // alert("ขอบคุณสำหรับการประเมิน \n ทางเราจะพัฒนาการบริการให้ดียิ่งขึ้น")
+                    window.open('', '_self', '');
+                    window.close();
+                    // self.get_data_from_api(self)
+                } else {
+                    alert("ผิดพลาด การบันทึกข้อมูลอาจจะมีปัญหากรุณาตรวจสอบข้อมูลก่อนบันทึกอิีกครั้ง")
+                }
+            })
+    }
+    _onChange_Form = (id, value) => {
+        this.setState({ [id]: value }, () => {
+            // console.log("checkData", this.state);
+        })
     }
     render() {
         return (
@@ -229,7 +245,7 @@ class Add_Rate extends Component {
                                 <span style={{ fontSize: "14px", fontWeight: "bold" }} >ข้อเสนอแนะอื่น ๆ เพื่อการปรับปรุงให้ดียิ่งขึ้น</span>
                             </bs4.Col>
                             <bs4.Col sm="12" md={{ size: 8, offset: 2 }}>
-                                <bs4.Input type="textarea" />
+                                <bs4.Input type="textarea" id="comment" onChange={(e) => this._onChange_Form(e.target.id, e.target.value)}/>
                             </bs4.Col>
                             <bs4.Col style={{ marginTop: "40px" }} sm="12" md={{ size: 3, offset: 5 }}>
                                 <bs4.Button color="success" type="button" onClick={this._onClickSend} >ส่งข้อมูลแบบสอบถาม</bs4.Button>

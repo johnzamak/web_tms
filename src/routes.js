@@ -6,7 +6,7 @@ import Report from "./pages/Report"
 import Clearbill from "./pages/Clearbill"
 import Edit from "./pages/Edit"
 import Rate from "./pages/Rating"
-
+import Calendar from "./pages/Calendar"
 import Form_accounting from "./components/Report/Form_accounting"
 
 const routes = [{
@@ -21,7 +21,7 @@ const routes = [{
         { path: '/form_acc', component: Form_accounting },
         { path: '/edit/:checkEdit', component: Edit },
         { path: '/rate/:checkRate/:cusCode', component: Rate },
-        // { path: '/form_acc', component: Form_accounting },
+        { path: '/calendar', component: Calendar },
     ]
 }]
 

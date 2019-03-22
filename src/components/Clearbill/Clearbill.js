@@ -96,7 +96,7 @@ class Clearbill extends Component {
             // if(val.paymentType val.tranType val.CheckboxTranfer)
             arr_data.push(
                 <tr>
-                    <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >
+                    <td style={{ width:"30px", textAlign: "center" }} >
                         {
                             (val.ClearingStatus === "9") ? <MdIcon.MdCheckCircle style={{ color: "#28a745", fontSize: "36px" }} /> :
                                 <bs4.Input type="checkbox" id={val.id} className="checkall" onClick={self.check_for_clear} />
@@ -124,7 +124,7 @@ class Clearbill extends Component {
                                 <bs4.Button type="button" color="warning" onClick={() => this.onClick_CN(val.INVOICEID)} > <MdIcon.MdReplay className="iconlg" /> </bs4.Button>
                         }
                     </td>
-                    <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >
+                    <td style={{ whiteSpace: "nowrap", textAlign: "center",width:"25%" }} >
                     <bs4.InputGroup><MdIcon.MdSave className="iconlg" onClick={()=>this._save_Comment(self,val.id)} />
                     <bs4.Input type="text" name={'comment'+val.id} onChange={(e)=>self.setState({[e.target.name]:e.target.value})} value={val.Comment} />
                     </bs4.InputGroup>
@@ -334,9 +334,9 @@ class Clearbill extends Component {
                     <div style={{ textAlign: "center", fontSize: "18px" }} >ชื่อพนักงานจัดส่ง : {this.state.show_mess_name} || วันที่ : {this.state.show_date_bill} </div>
                     <div style={{ clear: "both" }} ></div>
                     <bs4.Row>
-                        <bs4.Table striped hover style={{ margin: "10px 10px 10px 10px" }} >
-                            <thead style={{ backgroundColor: "#17a2b8", whiteSpace: "nowrap" }} >
-                                <td style={{ textAlign: "center" }} > <bs4.Input type="checkbox" id="checkboxall" onClick={this.onClick_checkall} /> เลือกทั้งหมด</td>
+                        <bs4.Table striped hover style={{ margin: "10px 10px 10px 10px",width:"100%" }} >
+                            <thead style={{ backgroundColor: "#17a2b8" }} >
+                                <td style={{ textAlign: "center",width:"5%" }} > <bs4.Input type="checkbox" id="checkboxall" onClick={this.onClick_checkall} /> ALL</td>
                                 <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >ลำดับ</td>
                                 <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >สถานะ</td>
                                 <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >หมายเหตุ</td>

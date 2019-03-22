@@ -61,7 +61,7 @@ class Clearbill_Surach_Kerry_DHL extends Component {
     get_data_from_api(self) {
         self.props.dispatch(is_loader(true))
         var messCode = self.state.type_mess, inDate = moment(self.state.input_date).format("YYYY-MM-DD")
-        var url = proxy.develop + "clearbill/get-clearbill-surach-kerry-dhl/" + messCode + "&" + inDate
+        var url = proxy.main + "clearbill/get-clearbill-surach-kerry-dhl/" + messCode + "&" + inDate
         fetch(url)
             .then(response => response.json())
             .then((responseJson) => {
@@ -197,7 +197,7 @@ class Clearbill_Surach_Kerry_DHL extends Component {
     }
     onClick_clearbill = (id) => {
         this.props.dispatch(is_loader(true))
-        var url = proxy.develop + "clearbill/update-clearbill-kerry-dhl/"
+        var url = proxy.main + "clearbill/update-clearbill-kerry-dhl/"
         var data_send = this.state.tbl_keep.filter(key => key.tms_document == id)
         fetch(url, {
             method: "POST",
