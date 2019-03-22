@@ -5,6 +5,8 @@ import Clearcashbycleardate from "../components/Report/Clearcashbycleardate"
 import Form_accounting from "../components/Report/Form_accounting"
 import { connect } from 'react-redux'
 import Tracking_status_surach from '../components/Report/Tracking_status_surach';
+import Report_Timeable from '../components/Report/report_Timable';
+import Editreport_Timeable from '../components/Report/Editreport_Timable';
 
 
 const moment = require("moment")
@@ -30,6 +32,8 @@ class Report extends Component {
                 {(checkReport == "clearcashbycleardate") ? <Clearcashbycleardate /> : ""}
                 {(checkReport == "formaccounting") ? <Form_accounting /> : ""}
                 {(checkReport == "accounting-surach") ? <Form_accounting data_hub={{location:"surach"}} /> : ""}
+                {(checkReport == "report_Timeable") ? <Report_Timeable /> : ""}
+                {(checkReport == "Editreport_Timeable") ? <Editreport_Timeable /> : ""}
             </div>
         );
     }

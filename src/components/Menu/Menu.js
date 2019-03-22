@@ -9,6 +9,20 @@ class Menu extends Component {
                 <bs4.Navbar color="light" light expand="md">
                     <bs4.NavbarToggler />
                     <bs4.Nav className="ml-auto" navbar>
+                        <bs4.UncontrolledDropdown nav inNavbar>
+                            <bs4.DropdownToggle style={{ fontWeight: "800" }} nav caret>
+                            รอบรถบริษัท
+                            </bs4.DropdownToggle>
+                            <bs4.DropdownMenu right>
+                                <bs4.DropdownItem href="/timeable/calendar" >
+                                    ปฎิทินรอบรถบริษัท
+                                </bs4.DropdownItem>
+                                <bs4.DropdownItem href="/timeable/addTimeable" >
+                                    กรอกข้อมูลรอบรถบริษัท
+                                </bs4.DropdownItem>
+                            </bs4.DropdownMenu>
+                        </bs4.UncontrolledDropdown>
+                    
                         <bs4.NavItem>
                             <bs4.NavLink href="/speceialtask" style={{ fontWeight: "800" }} >สร้างงานพิเศษ</bs4.NavLink>
                         </bs4.NavItem>
@@ -46,6 +60,9 @@ class Menu extends Component {
                                 </bs4.DropdownItem>
                                 <bs4.DropdownItem href="/report/formaccounting" >
                                     รายงานส่งบัญชี
+                                </bs4.DropdownItem>
+                                <bs4.DropdownItem href="/report/report_Timeable" >
+                                    รายงานแสดงข้อมูลรอบรถ
                                 </bs4.DropdownItem>
                             </bs4.DropdownMenu>
                         </bs4.UncontrolledDropdown>
