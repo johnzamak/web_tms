@@ -16,7 +16,7 @@ class MonitorRight extends Component {
     }
 
     componentDidMount = () => {
-        this.getData('','','')
+        this.getData('', '', '')
     }
 
     componentWillReceiveProps(nextProps) {
@@ -24,18 +24,18 @@ class MonitorRight extends Component {
         console.log("result", result)
 
         if (result === 'true') {
-            localStorage.setItem('statusR','false')
-            console.log('nextProps',nextProps)
+            localStorage.setItem('statusR', 'false')
+            console.log('nextProps', nextProps)
 
             var start = nextProps.data.start
             var end = nextProps.data.end
             var group = nextProps.data.group
 
-            this.getData(start,end,group)
+            this.getData(start, end, group)
         }
     }
 
-    getData = (start,end,group) => {
+    getData = (start, end, group) => {
 
         if (start === '') {
             start = moment().format('YYYY-MM-DD')
@@ -61,65 +61,69 @@ class MonitorRight extends Component {
         fetch(url)
             .then(response => response.json())
             .then((responseJson) => {
-                console.log("responseJsonRight", responseJson.result)
-                responseJson.result.forEach(function (val, i) {
-                    sum_SO1 += val.total_order_qty
-                    sum_Qty1 += val.total_order_amt
-                    sum_SO2 += val.open_invoice_qty
-                    sum_Qty2 += val.open_invoice_amt
-                    sum_SO3 += val.pre_invoice_qty
-                    sum_Qty3 += val.pre_invoice_amt
-                    sum_SO4 += val.sent_transport_qty
-                    sum_Qty4 += val.sent_transport_amt
+                if (responseJson.status === 200) {
+                    console.log("responseJsonRight", responseJson.result)
+                    responseJson.result.forEach(function (val, i) {
+                        sum_SO1 += val.total_order_qty
+                        sum_Qty1 += val.total_order_amt
+                        sum_SO2 += val.open_invoice_qty
+                        sum_Qty2 += val.open_invoice_amt
+                        sum_SO3 += val.pre_invoice_qty
+                        sum_Qty3 += val.pre_invoice_amt
+                        sum_SO4 += val.sent_transport_qty
+                        sum_Qty4 += val.sent_transport_amt
 
-                    if(group === 'ALL'){
-                        arrReport.push(
-                            <tr>
-                                <td>{val.group_customer}</td>
-                                <td align="right">{public_function.numberFormat(val.total_order_qty,0)}</td>
-                                <td align="right">{public_function.numberFormat(val.total_order_amt,0)}</td>
-                                <td align="right">{public_function.numberFormat(val.open_invoice_qty,0)}</td>
-                                <td align="right">{public_function.numberFormat(val.open_invoice_amt,0)}</td>
-                                <td align="right">{public_function.numberFormat(val.pre_invoice_qty,0)}</td>
-                                <td align="right">{public_function.numberFormat(val.pre_invoice_amt,0)}</td>
-                                <td align="right">{public_function.numberFormat(val.sent_transport_qty,0)}</td>
-                                <td align="right">{public_function.numberFormat(val.sent_transport_amt,0)}</td>
-                            </tr>
-                        )
-                    }else{
-                        if(group === val.group_customer){
+                        if (group === 'ALL') {
                             arrReport.push(
                                 <tr>
                                     <td>{val.group_customer}</td>
-                                    <td align="right">{public_function.numberFormat(val.total_order_qty,0)}</td>
-                                    <td align="right">{public_function.numberFormat(val.total_order_amt,0)}</td>
-                                    <td align="right">{public_function.numberFormat(val.open_invoice_qty,0)}</td>
-                                    <td align="right">{public_function.numberFormat(val.open_invoice_amt,0)}</td>
-                                    <td align="right">{public_function.numberFormat(val.pre_invoice_qty,0)}</td>
-                                    <td align="right">{public_function.numberFormat(val.pre_invoice_amt,0)}</td>
-                                    <td align="right">{public_function.numberFormat(val.sent_transport_qty,0)}</td>
-                                    <td align="right">{public_function.numberFormat(val.sent_transport_amt,0)}</td>
+                                    <td align="right">{public_function.numberFormat(val.total_order_qty, 0)}</td>
+                                    <td align="right">{public_function.numberFormat(val.total_order_amt, 0)}</td>
+                                    <td align="right">{public_function.numberFormat(val.open_invoice_qty, 0)}</td>
+                                    <td align="right">{public_function.numberFormat(val.open_invoice_amt, 0)}</td>
+                                    <td align="right">{public_function.numberFormat(val.pre_invoice_qty, 0)}</td>
+                                    <td align="right">{public_function.numberFormat(val.pre_invoice_amt, 0)}</td>
+                                    <td align="right">{public_function.numberFormat(val.sent_transport_qty, 0)}</td>
+                                    <td align="right">{public_function.numberFormat(val.sent_transport_amt, 0)}</td>
                                 </tr>
                             )
+                        } else {
+                            if (group === val.group_customer) {
+                                arrReport.push(
+                                    <tr>
+                                        <td>{val.group_customer}</td>
+                                        <td align="right">{public_function.numberFormat(val.total_order_qty, 0)}</td>
+                                        <td align="right">{public_function.numberFormat(val.total_order_amt, 0)}</td>
+                                        <td align="right">{public_function.numberFormat(val.open_invoice_qty, 0)}</td>
+                                        <td align="right">{public_function.numberFormat(val.open_invoice_amt, 0)}</td>
+                                        <td align="right">{public_function.numberFormat(val.pre_invoice_qty, 0)}</td>
+                                        <td align="right">{public_function.numberFormat(val.pre_invoice_amt, 0)}</td>
+                                        <td align="right">{public_function.numberFormat(val.sent_transport_qty, 0)}</td>
+                                        <td align="right">{public_function.numberFormat(val.sent_transport_amt, 0)}</td>
+                                    </tr>
+                                )
+                            }
                         }
-                    }
-                }, this)
-                arrTotal.push(
-                    <tr style={{ backgroundColor: "#330099" }}>
-                        <th>Total</th>
-                        <td align="right">{public_function.numberFormat(sum_SO1,0)}</td>
-                        <td align="right">{public_function.numberFormat(sum_Qty1,0)}</td>
-                        <td align="right">{public_function.numberFormat(sum_SO2,0)}</td>
-                        <td align="right">{public_function.numberFormat(sum_Qty2,0)}</td>
-                        <td align="right">{public_function.numberFormat(sum_SO3,0)}</td>
-                        <td align="right">{public_function.numberFormat(sum_Qty3,0)}</td>
-                        <td align="right">{public_function.numberFormat(sum_SO4,0)}</td>
-                        <td align="right">{public_function.numberFormat(sum_Qty4,0)}</td>
-                    </tr>
-                )
-                this.setState({ dataTable: arrReport, dataTotal: arrTotal}, () => {
-                    //localStorage.clear()
-                })
+                    }, this)
+                    arrTotal.push(
+                        <tr style={{ backgroundColor: "#330099" }}>
+                            <th>Total</th>
+                            <td align="right">{public_function.numberFormat(sum_SO1, 0)}</td>
+                            <td align="right">{public_function.numberFormat(sum_Qty1, 0)}</td>
+                            <td align="right">{public_function.numberFormat(sum_SO2, 0)}</td>
+                            <td align="right">{public_function.numberFormat(sum_Qty2, 0)}</td>
+                            <td align="right">{public_function.numberFormat(sum_SO3, 0)}</td>
+                            <td align="right">{public_function.numberFormat(sum_Qty3, 0)}</td>
+                            <td align="right">{public_function.numberFormat(sum_SO4, 0)}</td>
+                            <td align="right">{public_function.numberFormat(sum_Qty4, 0)}</td>
+                        </tr>
+                    )
+                    this.setState({ dataTable: arrReport, dataTotal: arrTotal }, () => {
+                        //localStorage.clear()
+                    })
+                } else {
+                    alert("มีข้อผิดพลาดเกิดขึ้น กรุณาลองใหม่")
+                }
             })
     }
 

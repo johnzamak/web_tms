@@ -18,8 +18,8 @@ var arrColor_Tracking = {
     "9": "SkyBlue",//Trip
     "10": "YellowGreen",//Sent  1
     "11": "PaleGreen",//Sent  2
-  };
-  var arrTracking = {
+};
+var arrTracking = {
     "0": "Waiting",
     "1": "Picking list",//PICKINGROUTEID
     "2": "Start pick",//StampPickStart
@@ -32,32 +32,32 @@ var arrColor_Tracking = {
     "9": "Delivery",//Trip
     "10": "Back order",//Sent  1
     "11": "Finish",//Sent  2
-  };
-  function fnCalTracking(PICKINGROUTEID, StampPickStart, StampPickStop, StampCheckStart, StampCheckStop, INVOICEID, Receive, Assign, Trip, Sent, Qty_B) {
+};
+function fnCalTracking(PICKINGROUTEID, StampPickStart, StampPickStop, StampCheckStart, StampCheckStop, INVOICEID, Receive, Assign, Trip, Sent, Qty_B) {
     var ret = 0;
     var data = "";
     var arrDataChk =
-      [
-        "Default", PICKINGROUTEID, StampPickStart, StampPickStop, StampCheckStart, StampCheckStop, INVOICEID, Receive, Assign, Trip, Sent/*10*/
-      ];
+        [
+            "Default", PICKINGROUTEID, StampPickStart, StampPickStop, StampCheckStart, StampCheckStop, INVOICEID, Receive, Assign, Trip, Sent/*10*/
+        ];
     var len = arrDataChk.length - 1;
     // console.log(arrDataChk , len)
     if (!(Sent === "" || Sent === null)) {
-      ret = (Qty_B > 0) ? "10" : "11";
-      data = Sent;
+        ret = (Qty_B > 0) ? "10" : "11";
+        data = Sent;
     } else {
-      for (var i = len; i >= 0; i--) {
-        // console.log(i,arrDataChk[i])
-        if (!(arrDataChk[i] === "" || arrDataChk[i] === null)) {
-          ret = i;
-          data = arrDataChk[i];
-          // if(i === 6 || i === 7 || i === 8) console.log('AAA',INVOICEID,Receive, Assign, Trip,)
-          break;
+        for (var i = len; i >= 0; i--) {
+            // console.log(i,arrDataChk[i])
+            if (!(arrDataChk[i] === "" || arrDataChk[i] === null)) {
+                ret = i;
+                data = arrDataChk[i];
+                // if(i === 6 || i === 7 || i === 8) console.log('AAA',INVOICEID,Receive, Assign, Trip,)
+                break;
+            }
         }
-      }
     }
     return { 'code': ret, 'value': data };
-  }
+}
 
 class MonitorBelow extends Component {
     constructor(props) {
@@ -71,7 +71,7 @@ class MonitorBelow extends Component {
     }
 
     componentDidMount = () => {
-        this.getData('','','')
+        this.getData('', '', '')
     }
 
     componentWillReceiveProps(nextProps) {
@@ -79,18 +79,18 @@ class MonitorBelow extends Component {
         console.log("result", result)
 
         if (result === 'true') {
-            localStorage.setItem('statusB','false')
-            console.log('nextProps',nextProps)
+            localStorage.setItem('statusB', 'false')
+            console.log('nextProps', nextProps)
 
             var start = nextProps.data.start
             var end = nextProps.data.end
             var group = nextProps.data.group
 
-            this.getData(start,end,group)
+            this.getData(start, end, group)
         }
     }
 
-    getData = (start,end,group) => {
+    getData = (start, end, group) => {
 
         if (start === '') {
             start = moment().format('YYYY-MM-DD')
@@ -102,44 +102,48 @@ class MonitorBelow extends Component {
         var Tracking = "", TrackingObj = {};
         var statusSoColor = ""
 
-            var url = proxy.main + 'monitor/get_data_monitorBelow/' + start + '&' + end + '&' + group
-            console.log('----Below', url)
+        var url = proxy.main + 'monitor/get_data_monitorBelow/' + start + '&' + end + '&' + group
+        console.log('----Below', url)
 
-            fetch(url)
-                .then(Response => Response.json())
-                .then((responseJson) => {
-                    console.log("responseJsonBelow", responseJson.result)
-                        responseJson.result.forEach(function (val, i) {
-                            TrackingObj = fnCalTracking(val.PICKINGROUTEID, val.StampPickStart, val.StampPickStop, val.StampCheckStart, val.StampCheckStop,
-                                val.INVOICEID, val.Receive, val.Assign, val.Trip, val.Sent, val.Qty_B)
-                              Tracking = arrTracking[TrackingObj.code]
-                              statusSoColor = (val.DPL_SO_STATUS == 3) ? "lime" : (val.DPL_SO_STATUS == 2) ? "tomato" : "orange";
-                            
-                            if(Tracking !== 'Finish Pick'){
-                                if(Tracking !== 'Invoice'){
-                                    arrReport.push(
-                                        <tr>
-                                            <td align="center"  style={{ 'background-color': statusSoColor }}>{arrStatusSOEN[val.DPL_SO_STATUS]}</td>
-                                            <td align="center" style={{ 'background-color': arrColor_Tracking[TrackingObj.code], }} title={TrackingObj.value}>{Tracking}</td>
-                                            <td align="center" nowrap="nowrap" title={val.Remark}>{val.No_}</td>
-                                            <td align="left" title={val.CUSTACCOUNT}>{val.Name}</td>
-                                            <td align="center" >{val.OrderGroupName}</td>
-                                            <td align="right">{val.Qty_SO}</td>
-                                            <td align="right">{val.Qty_B}</td>
-                                            <td align="center">{val.DLV_Date}</td>
-                                            <td align="right">{val.Qty_Inv}</td>
-                                        </tr>
-                                    )
-                                }
+        fetch(url)
+            .then(Response => Response.json())
+            .then((responseJson) => {
+                console.log("responseJsonBelow", responseJson.result)
+                if (responseJson.status === 200) {
+                    responseJson.result.forEach(function (val, i) {
+                        TrackingObj = fnCalTracking(val.PICKINGROUTEID, val.StampPickStart, val.StampPickStop, val.StampCheckStart, val.StampCheckStop,
+                            val.INVOICEID, val.Receive, val.Assign, val.Trip, val.Sent, val.Qty_B)
+                        Tracking = arrTracking[TrackingObj.code]
+                        statusSoColor = (val.DPL_SO_STATUS == 3) ? "lime" : (val.DPL_SO_STATUS == 2) ? "tomato" : "orange";
+
+                        if (Tracking !== 'Finish Pick') {
+                            if (Tracking !== 'Invoice') {
+                                arrReport.push(
+                                    <tr>
+                                        <td align="center" style={{ 'background-color': statusSoColor }}>{arrStatusSOEN[val.DPL_SO_STATUS]}</td>
+                                        <td align="center" style={{ 'background-color': arrColor_Tracking[TrackingObj.code], }} title={TrackingObj.value}>{Tracking}</td>
+                                        <td align="center" nowrap="nowrap" title={val.Remark}>{val.No_}</td>
+                                        <td align="left" title={val.CUSTACCOUNT}>{val.Name}</td>
+                                        <td align="center" >{val.OrderGroupName}</td>
+                                        <td align="right">{val.Qty_SO}</td>
+                                        <td align="right">{val.Qty_B}</td>
+                                        <td align="center">{val.DLV_Date}</td>
+                                        <td align="right">{val.Qty_Inv}</td>
+                                    </tr>
+                                )
                             }
-                        },this)
+                        }
+                    }, this)
 
-                    this.setState({dataTable: arrReport},()=>{
+                    this.setState({ dataTable: arrReport }, () => {
                         //console.log('dataTable',this.state.dataTable)
                         //console.log('dataTotal',this.state.dataTotal)
                     })
-                })
-      }
+                } else {
+                    alert("มีข้อผิดพลาดเกิดขึ้น กรุณาลองใหม่")
+                }
+            })
+    }
 
     render() {
         return (

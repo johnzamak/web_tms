@@ -71,7 +71,7 @@ class MonitorBelow extends Component {
     }
 
     componentDidMount = () => {
-        this.getData('','','')
+        this.getData('', '', '')
     }
 
     componentWillReceiveProps(nextProps) {
@@ -79,18 +79,18 @@ class MonitorBelow extends Component {
         console.log("result", result)
 
         if (result === 'true') {
-            localStorage.setItem('statusB','false')
-            console.log('nextProps',nextProps)
+            localStorage.setItem('statusB', 'false')
+            console.log('nextProps', nextProps)
 
             var start = nextProps.data.start
             var end = nextProps.data.end
             var group = nextProps.data.group
 
-            this.getData(start,end,group)
+            this.getData(start, end, group)
         }
     }
 
-    getData = (start,end,group) => {
+    getData = (start, end, group) => {
 
         if (start === '') {
             start = moment().format('YYYY-MM-DD')
@@ -109,35 +109,39 @@ class MonitorBelow extends Component {
             .then(Response => Response.json())
             .then((responseJson) => {
                 console.log("responseJsonBelow", responseJson.result)
-                responseJson.result.forEach(function (val, i) {
-                    TrackingObj = fnCalTracking(val.PICKINGROUTEID, val.StampPickStart, val.StampPickStop, val.StampCheckStart, val.StampCheckStop,
-                        val.INVOICEID, val.Receive, val.Assign, val.Trip, val.Sent, val.Qty_B)
-                    Tracking = arrTracking[TrackingObj.code]
-                    statusSoColor = (val.DPL_SO_STATUS == 3) ? "lime" : (val.DPL_SO_STATUS == 2) ? "tomato" : "orange";
+                if (responseJson.status === 200) {
+                    responseJson.result.forEach(function (val, i) {
+                        TrackingObj = fnCalTracking(val.PICKINGROUTEID, val.StampPickStart, val.StampPickStop, val.StampCheckStart, val.StampCheckStop,
+                            val.INVOICEID, val.Receive, val.Assign, val.Trip, val.Sent, val.Qty_B)
+                        Tracking = arrTracking[TrackingObj.code]
+                        statusSoColor = (val.DPL_SO_STATUS == 3) ? "lime" : (val.DPL_SO_STATUS == 2) ? "tomato" : "orange";
 
-                    if (Tracking !== 'Finish Pick') {
-                        if (Tracking !== 'Invoice') {
-                            arrReport.push(
-                                <tr>
-                                    <td align="center" style={{ 'background-color': statusSoColor }}>{arrStatusSOEN[val.DPL_SO_STATUS]}</td>
-                                    <td align="center" style={{ 'background-color': arrColor_Tracking[TrackingObj.code], }} title={TrackingObj.value}>{Tracking}</td>
-                                    <td align="center" nowrap="nowrap" title={val.Remark}>{val.No_}</td>
-                                    <td align="left" title={val.CUSTACCOUNT}>{val.Name}</td>
-                                    <td align="center" >{val.OrderGroupName}</td>
-                                    <td align="right">{val.Qty_SO}</td>
-                                    <td align="right">{val.Qty_B}</td>
-                                    <td align="center">{val.DLV_Date}</td>
-                                    <td align="right">{val.Qty_Inv}</td>
-                                    <td align="right">{val.Box_Amount}</td>
-                                </tr>
-                            )
+                        if (Tracking !== 'Finish Pick') {
+                            if (Tracking !== 'Invoice') {
+                                arrReport.push(
+                                    <tr>
+                                        <td align="center" style={{ 'background-color': statusSoColor }}>{arrStatusSOEN[val.DPL_SO_STATUS]}</td>
+                                        <td align="center" style={{ 'background-color': arrColor_Tracking[TrackingObj.code], }} title={TrackingObj.value}>{Tracking}</td>
+                                        <td align="center" nowrap="nowrap" title={val.Remark}>{val.No_}</td>
+                                        <td align="left" title={val.CUSTACCOUNT}>{val.Name}</td>
+                                        <td align="center" >{val.OrderGroupName}</td>
+                                        <td align="right">{val.Qty_SO}</td>
+                                        <td align="right">{val.Qty_B}</td>
+                                        <td align="center">{val.DLV_Date}</td>
+                                        <td align="right">{val.Qty_Inv}</td>
+                                        <td align="right">{val.Box_Amount}</td>
+                                    </tr>
+                                )
+                            }
                         }
-                    }
-                }, this)
+                    }, this)
 
-                this.setState({ dataTable: arrReport, status: false }, () => {
-                    //localStorage.clear()
-                })
+                    this.setState({ dataTable: arrReport, status: false }, () => {
+                        //localStorage.clear()
+                    })
+                }else{
+                    alert("มีข้อผิดพลาดเกิดขึ้น กรุณาลองใหม่")
+                }
             })
     }
 

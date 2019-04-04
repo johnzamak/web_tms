@@ -14,9 +14,9 @@ class MonitorLeft extends Component {
             group: 'ALL'
         }
     }
-    
+
     componentDidMount = () => {
-        this.getData('','','')
+        this.getData('', '', '')
     }
 
     componentWillReceiveProps(nextProps) {
@@ -24,18 +24,18 @@ class MonitorLeft extends Component {
         console.log("result", result)
 
         if (result === 'true') {
-            localStorage.setItem('statusL','false')
-            console.log('nextProps',nextProps)
+            localStorage.setItem('statusL', 'false')
+            console.log('nextProps', nextProps)
 
             var start = nextProps.data.start
             var end = nextProps.data.end
             var group = nextProps.data.group
 
-            this.getData(start,end,group)
+            this.getData(start, end, group)
         }
     }
 
-    getData = (start,end,group) => {
+    getData = (start, end, group) => {
 
         if (start === '') {
             start = moment().format('YYYY-MM-DD')
@@ -60,56 +60,60 @@ class MonitorLeft extends Component {
             .then(response => response.json())
             .then((responseJson) => {
                 console.log("responseJsonLeft", responseJson.result)
-                responseJson.result.forEach(function (val, i) {
-                    sum_SO1 += val.waiting_check_order_qty
-                    sum_Qty1 += val.waiting_check_order_amt
-                    sum_SO2 += val.finish_check_order_qty
-                    sum_Qty2 += val.finish_check_order_amt
-                    sum_SO3 += val.fincheck_noinv_order_qty
-                    sum_Qty3 += val.fincheck_noinv_order_amt
+                if (responseJson.status === 200) {
+                    responseJson.result.forEach(function (val, i) {
+                        sum_SO1 += val.waiting_check_order_qty
+                        sum_Qty1 += val.waiting_check_order_amt
+                        sum_SO2 += val.finish_check_order_qty
+                        sum_Qty2 += val.finish_check_order_amt
+                        sum_SO3 += val.fincheck_noinv_order_qty
+                        sum_Qty3 += val.fincheck_noinv_order_amt
 
-                    if(group === 'ALL'){
-                        arrReport.push(
-                            <tr>
-                                <td>{val.group_customer}</td>
-                                <td align="right">{public_function.numberFormat(val.waiting_check_order_qty,0)}</td>
-                                <td align="right">{public_function.numberFormat(val.waiting_check_order_amt,0)}</td>
-                                <td align="right">{public_function.numberFormat(val.finish_check_order_qty,0)}</td>
-                                <td align="right">{public_function.numberFormat(val.finish_check_order_amt,0)}</td>
-                                <td align="right">{public_function.numberFormat(val.fincheck_noinv_order_qty,0)}</td>
-                                <td align="right">{public_function.numberFormat(val.fincheck_noinv_order_amt,0)}</td>
-                            </tr>
-                        )
-                    }else{
-                        if(group === val.group_customer){
+                        if (group === 'ALL') {
                             arrReport.push(
                                 <tr>
                                     <td>{val.group_customer}</td>
-                                    <td align="right">{public_function.numberFormat(val.waiting_check_order_qty,0)}</td>
-                                    <td align="right">{public_function.numberFormat(val.waiting_check_order_amt,0)}</td>
-                                    <td align="right">{public_function.numberFormat(val.finish_check_order_qty,0)}</td>
-                                    <td align="right">{public_function.numberFormat(val.finish_check_order_amt,0)}</td>
-                                    <td align="right">{public_function.numberFormat(val.fincheck_noinv_order_qty,0)}</td>
-                                    <td align="right">{public_function.numberFormat(val.fincheck_noinv_order_amt,0)}</td>
+                                    <td align="right">{public_function.numberFormat(val.waiting_check_order_qty, 0)}</td>
+                                    <td align="right">{public_function.numberFormat(val.waiting_check_order_amt, 0)}</td>
+                                    <td align="right">{public_function.numberFormat(val.finish_check_order_qty, 0)}</td>
+                                    <td align="right">{public_function.numberFormat(val.finish_check_order_amt, 0)}</td>
+                                    <td align="right">{public_function.numberFormat(val.fincheck_noinv_order_qty, 0)}</td>
+                                    <td align="right">{public_function.numberFormat(val.fincheck_noinv_order_amt, 0)}</td>
                                 </tr>
                             )
+                        } else {
+                            if (group === val.group_customer) {
+                                arrReport.push(
+                                    <tr>
+                                        <td>{val.group_customer}</td>
+                                        <td align="right">{public_function.numberFormat(val.waiting_check_order_qty, 0)}</td>
+                                        <td align="right">{public_function.numberFormat(val.waiting_check_order_amt, 0)}</td>
+                                        <td align="right">{public_function.numberFormat(val.finish_check_order_qty, 0)}</td>
+                                        <td align="right">{public_function.numberFormat(val.finish_check_order_amt, 0)}</td>
+                                        <td align="right">{public_function.numberFormat(val.fincheck_noinv_order_qty, 0)}</td>
+                                        <td align="right">{public_function.numberFormat(val.fincheck_noinv_order_amt, 0)}</td>
+                                    </tr>
+                                )
+                            }
                         }
-                    }
-                }, this)
-                arrTotal.push(
-                    <tr style={{ backgroundColor: "#330099" }}>
-                        <th>Total</th>
-                        <td align="right">{public_function.numberFormat(sum_SO1,0)}</td>
-                        <td align="right">{public_function.numberFormat(sum_Qty1,0)}</td>
-                        <td align="right">{public_function.numberFormat(sum_SO2,0)}</td>
-                        <td align="right">{public_function.numberFormat(sum_Qty2,0)}</td>
-                        <td align="right">{public_function.numberFormat(sum_SO3,0)}</td>
-                        <td align="right">{public_function.numberFormat(sum_Qty3,0)}</td>
-                    </tr>
-                )
-                this.setState({ dataTable: arrReport, dataTotal: arrTotal}, () => {
-                    //localStorage.clear()
-                })
+                    }, this)
+                    arrTotal.push(
+                        <tr style={{ backgroundColor: "#330099" }}>
+                            <th>Total</th>
+                            <td align="right">{public_function.numberFormat(sum_SO1, 0)}</td>
+                            <td align="right">{public_function.numberFormat(sum_Qty1, 0)}</td>
+                            <td align="right">{public_function.numberFormat(sum_SO2, 0)}</td>
+                            <td align="right">{public_function.numberFormat(sum_Qty2, 0)}</td>
+                            <td align="right">{public_function.numberFormat(sum_SO3, 0)}</td>
+                            <td align="right">{public_function.numberFormat(sum_Qty3, 0)}</td>
+                        </tr>
+                    )
+                    this.setState({ dataTable: arrReport, dataTotal: arrTotal }, () => {
+                        //localStorage.clear()
+                    })
+                } else {
+                    alert("มีข้อผิดพลาดเกิดขึ้น กรุณาลองใหม่")
+                }
             })
     }
 
