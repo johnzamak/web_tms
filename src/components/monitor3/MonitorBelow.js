@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import * as bs4 from "reactstrap"
+import { BarLoader } from 'react-spinners';
+import "../Loader/Loader.css"
 import moment from 'moment'
 const { proxy, public_function } = require("../../service")
 
@@ -66,7 +68,9 @@ class MonitorBelow extends Component {
             dataTable: '',
             start: '',
             end: '',
-            group: 'ALL'
+            group: 'ALL',
+            isLoading: true,
+            textLoading: 'Loading....'
         }
     }
 
@@ -79,6 +83,7 @@ class MonitorBelow extends Component {
         console.log("result", result)
 
         if (result === 'true') {
+            this.setState({ isLoading: true, textLoading: 'Loading....' })
             localStorage.setItem('statusB', 'false')
             console.log('nextProps', nextProps)
 
@@ -136,10 +141,10 @@ class MonitorBelow extends Component {
                         }
                     }, this)
 
-                    this.setState({ dataTable: arrReport, status: false }, () => {
+                    this.setState({ dataTable: arrReport, isLoading: false, textLoading: '' }, () => {
                         //localStorage.clear()
                     })
-                }else{
+                } else {
                     alert("มีข้อผิดพลาดเกิดขึ้น กรุณาลองใหม่")
                 }
             })
@@ -149,6 +154,12 @@ class MonitorBelow extends Component {
         return (
             <div>
                 <bs4.Container className="bgContainer-White" fluid>
+                    <div className="text-loader" >{this.state.textLoading}</div>
+                    <BarLoader
+                        width={175}
+                        color={'#007bff'}
+                        loading={this.state.isLoading}
+                    />
                     <bs4.Table striped bordered hover >
                         <thead style={{ textAlign: 'center' }}>
                             <tr>
