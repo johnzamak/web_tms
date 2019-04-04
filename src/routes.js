@@ -11,6 +11,7 @@ import Timeable from "./pages/Timeable"
 import Monitor from './pages/Monitor'
 import Cost_round from './pages/Cost_round'
 
+import RoundCost from "./pages/RoundCost"
 import Form_accounting from "./components/Report/Form_accounting"
 
 const routes = [{
@@ -29,6 +30,7 @@ const routes = [{
         { path: '/timeable/:checkTimeable', component: Timeable },
         { path: '/monitor/:checkMonitor', component: Monitor },
         { path: '/cost-round/:checkCost', component: Cost_round },
+        { path: '/round-cost/:checkRoundCost', component: RoundCost },
         // { path: '/form_acc', component: Form_accounting },
     ]
 }]

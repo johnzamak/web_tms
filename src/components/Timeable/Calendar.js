@@ -47,7 +47,6 @@ class Calendar extends Component {
         console.log('3month', month)
         var arr = []
         var url = proxy.main + 'calendar/get-all-calendar/2019-' + month + '-01&2019-' + month + '-' + lastDate
-        //var url = proxy.test + 'calendar/get-all-calendar/2019-6-01&2019-6-'+lastDate
         console.log(url)
         fetch(url)
             .then(response => response.json())
@@ -158,14 +157,17 @@ class Calendar extends Component {
             <div>
                 <bs4.Container className="bgContainer-White" fluid>
                     <bs4.Row inline style={{ padding: '20px' }} >
-                        <div style={{ fontSize: "22px", fontWeight: "800" }} >ปฎิทินแสดงรอบรถบริษัท</div>
-                        <bs4.Button outline color="primary" style={{ marginLeft: "20px" }} href={"/timeable/addTimeable"}>+เพิ่มรอบรถ</bs4.Button>
-
-                        <bs4.Col sm={{ offset: 7 }}>
-                            <bs4.Row inline>
+                        <bs4.Col sm="6" >
+                            <bs4.Row>
+                                <div style={{ fontSize: "22px", fontWeight: "800" }} >ปฎิทินแสดงรอบรถบริษัท</div>
+                                <bs4.Button outline color="primary" style={{ marginLeft: "20px" }} href={"/timeable/addTimeable"}>+เพิ่มรอบรถ</bs4.Button>
+                            </bs4.Row>
+                        </bs4.Col>
+                        <bs4.Col sm={{ size: 6 }}>
+                            <bs4.Row inline style={{float:"right"}} >
                                 <MdIcon.MdBrightness1 className="iconlg" color="rgb(0, 217, 255)" />
                                 <p style={{ marginLeft: "10px" }}>Meessenger Cashvan</p>
-                                <MdIcon.MdBrightness1 className="iconlg" color="rgb(255, 251, 0)" style={{ marginLeft: "20px" }}/>
+                                <MdIcon.MdBrightness1 className="iconlg" color="rgb(255, 251, 0)" style={{ marginLeft: "20px" }} />
                                 <p style={{ marginLeft: "10px" }}>Meessenger Dealer</p>
                             </bs4.Row>
                         </bs4.Col>
