@@ -98,6 +98,23 @@ class Menu extends Component {
                             </bs4.DropdownMenu>
                         </bs4.UncontrolledDropdown>
 
+                        <bs4.UncontrolledDropdown nav inNavbar>
+                            <bs4.DropdownToggle style={{ fontWeight: "800" }} nav caret>
+                                สรุปค่ารอบ Messengers
+                            </bs4.DropdownToggle>
+                            <bs4.DropdownMenu right>
+                                <bs4.DropdownItem href="/cost-round/cashvan" >
+                                    สรุปค่ารอบรายเดือน Cashvan
+                                </bs4.DropdownItem>
+                                <bs4.DropdownItem href="/cost-round/dealer" >
+                                    สรุปค่ารอบรายเดือน Dealer
+                                </bs4.DropdownItem>
+                                <bs4.DropdownItem href="/cost-round/yearly" >
+                                    สรุปค่ารอบรายปี
+                                </bs4.DropdownItem>
+                            </bs4.DropdownMenu>
+                        </bs4.UncontrolledDropdown>
+
                     </bs4.Nav>
                 </bs4.Navbar>
             </div>

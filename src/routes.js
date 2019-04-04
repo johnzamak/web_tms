@@ -8,6 +8,8 @@ import Edit from "./pages/Edit"
 import Rate from "./pages/Rating"
 import Calendar from "./pages/Calendar"
 import Timeable from "./pages/Timeable"
+import Monitor from './pages/Monitor'
+import Cost_round from './pages/Cost_round'
 
 import Form_accounting from "./components/Report/Form_accounting"
 
@@ -25,6 +27,8 @@ const routes = [{
         { path: '/rate/:checkRate/:cusCode', component: Rate },
         { path: '/calendar', component: Calendar },
         { path: '/timeable/:checkTimeable', component: Timeable },
+        { path: '/monitor/:checkMonitor', component: Monitor },
+        { path: '/cost-round/:checkCost', component: Cost_round },
         // { path: '/form_acc', component: Form_accounting },
     ]
 }]

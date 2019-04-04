@@ -173,7 +173,7 @@ class Editreport_Timeable extends Component {
             }
             data_send.push(objCause)
             if (_cause) {
-                let url = proxy.test + "calendar/create-cause/"
+                let url = proxy.main + "calendar/create-cause/"
                 console.log("save_task", data_send)
                 fetch(url, {
                     method: "POST",
@@ -209,7 +209,7 @@ class Editreport_Timeable extends Component {
         if (window.confirm('กรุณายืนยันการแก้ไขข้อมูล')) {
 
             data_send = this.state.arrData
-            let url = proxy.test + "calendar/update-report-calendar/"
+            let url = proxy.main + "calendar/update-report-calendar/"
             console.log("save_task", data_send)
             fetch(url, {
                 method: "PUT",

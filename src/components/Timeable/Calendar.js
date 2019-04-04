@@ -46,7 +46,7 @@ class Calendar extends Component {
         console.log('2lastDate', lastDate)
         console.log('3month', month)
         var arr = []
-        var url = proxy.test + 'calendar/get-all-calendar/2019-' + month + '-01&2019-' + month + '-' + lastDate
+        var url = proxy.main + 'calendar/get-all-calendar/2019-' + month + '-01&2019-' + month + '-' + lastDate
         //var url = proxy.test + 'calendar/get-all-calendar/2019-6-01&2019-6-'+lastDate
         console.log(url)
         fetch(url)
