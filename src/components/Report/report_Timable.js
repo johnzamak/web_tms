@@ -121,7 +121,7 @@ class Report_Timeable extends Component {
 
         var arrReport = []
         var url = proxy.main + 'calendar/get-report-calendar/' + start + '&' + end
-        //var url = proxy.test + 'calendar/get-report-calendar/' + start + '&' + end
+        //var url = proxy.main + 'calendar/get-report-calendar/' + start + '&' + end
         console.log('----', url)
         fetch(url)
             .then(response => response.json())

@@ -36,7 +36,7 @@ class Messsenger extends Component {
     }
     _call_api_get_messsenger(self, type_mess) {
         var arr = [] 
-        var url = proxy.test + "app-api/get-messenger/" + type_mess
+        var url = proxy.main + "app-api/get-messenger/" + type_mess
         //var url = "http://dplus-system.com:3499/app-api/get-messenger/"+type_mess
         console.log(url)
         fetch(url)

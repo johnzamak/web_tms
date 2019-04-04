@@ -5,7 +5,7 @@ const proxys={
     test: "http://dplus-system.com:3599/"
 }
 const public_functions={
-    numberFormat(val, fixed) {
+    numberFormat(val="", fixed=0) {
         val = parseInt(val)
         fixed = parseInt(fixed)
         if (val <= 0) {
@@ -20,7 +20,7 @@ const public_functions={
             return val.toFixed(fixed).toString().replace(/(\d)(?=(\d{3})+\.)/g, '$1,')
         }
     },
-    getIndexArray(val, arr, prop) {
+    getIndexArray(val="", arr=[], prop="") {
         for (var i = 0; i < arr.length; i++) {
             if (arr[i][prop] === val) {
                 return i
@@ -43,6 +43,11 @@ const public_functions={
 
         return (hours <= 9 ? "0" : "") + hours + " ชั่วโมง " + (minutes <= 9 ? "0" : "") + minutes + " นาที"
     },
+    split_number_from_string(text=""){
+        var output=""
+        output=text.replace(/\'/g, '').split(/(\d+)/).filter(Boolean)
+        return output
+    }
 }
 module.exports = {
     proxy:proxys,

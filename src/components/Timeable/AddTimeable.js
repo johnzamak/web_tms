@@ -116,7 +116,7 @@ class Addtimeable extends Component {
         var end = (moment(this.state.EndDate).format('YYYY-MM-DD')) + ' ' + (moment(this.state.EndTime).format('HH:mm'))
         var arr = []
         //var url = proxy.main + 'calendar/get-cars/'+start+'&'+end
-        var url = proxy.test + 'calendar/get-cars/' + start + '&' + end
+        var url = proxy.main + 'calendar/get-cars/' + start + '&' + end
         console.log('----', url)
         fetch(url)
             .then(response => response.json())
@@ -157,7 +157,7 @@ class Addtimeable extends Component {
                 if (window.confirm('กรุณายืนยันการเพิ่มรอบรถ')) {
 
                 data_send.push(this.state.inData)
-                let url = proxy.test + "calendar/create-task/"
+                let url = proxy.main + "calendar/create-task/"
                 console.log("save_task", data_send)
                 fetch(url, {
                     method: "POST",
