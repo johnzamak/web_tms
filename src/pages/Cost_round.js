@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Cashvan from '../components/cost-round/Cashvan'
 import Dealer from '../components/cost-round/Dealer';
 import Yearly from '../components/cost-round/Yearly';
+import ImportShipCost from '../components/cost-round/ImportShipCost';
 
 class Cost_round extends Component {
     render() {
@@ -11,6 +12,7 @@ class Cost_round extends Component {
                 { (checkCost==="cashvan")?<Cashvan />:"" }
                 { (checkCost==="dealer")?<Dealer />:"" }
                 { (checkCost==="yearly")?<Yearly />:"" }
+                {(checkCost == "import-ship-cost") ? <ImportShipCost /> : ""}
             </div>
         );
     }
