@@ -11,8 +11,12 @@ import EventCalendar from '../Modal/EventCalendar'
 const $ = require("jquery")
 const { proxy } = require("../../service")
 
+
 var divStyle = {
-    padding: '10px'
+    padding: '10px',
+    fontSize: '16px',
+    fontWeight: '600',
+    color: "rgb()"
 };
 
 class Calendar extends Component {
@@ -43,10 +47,11 @@ class Calendar extends Component {
     callApi_GetCalendar = () => {
         var lastDate = moment().endOf('month').format('DD')
         var month = this.state.month
+        var year = moment().format('YYYY')
         console.log('2lastDate', lastDate)
         console.log('3month', month)
         var arr = []
-        var url = proxy.main + 'calendar/get-all-calendar/2019-' + month + '-01&2019-' + month + '-' + lastDate
+        var url = proxy.main + 'calendar/get-all-calendar/' + year + '-' + month + '-01&' + year + '-' + month + '-' + lastDate
         console.log(url)
         fetch(url)
             .then(response => response.json())
@@ -57,37 +62,37 @@ class Calendar extends Component {
                     console.log("4responseJson", responseJson.result)
                     responseJson.result.forEach(function (val, i) {
                         var type_messArr = val.mess_code.split("_")
-                        var color
-                        var type_mess
+                        var start_date = val.start_date.split("T")
+                        var start = start_date[1].split(":")
+                        var end_date = val.end_date.split("T")
+                        var end = end_date[1].split(":")
+                        var car_license = val.car_license.split("")
+                        var car = car_license.reverse()
 
-                        if (type_messArr[0] === 'MCV') {
-                            color = 'rgb(0, 217, 255)' //blue
-                            type_mess = 'Cashvan'
-                        } else if (type_messArr[0] === 'MDL') {
-                            color = 'rgb(255, 251, 0)' //yellow
-                            type_mess = 'Dealer'
-                        }
+                        var x = Math.floor(('0.'+car[0]+car[1]+car[2]+car[3]) * 256)
+                        var y = Math.floor(('0.'+car[1]+car[2]+car[3]+car[0]) * 256)
+                        var z = Math.floor(('0.'+car[2]+car[3]+car[0]+car[1]) * 256)
+                        var bgColor = "rgb(" + x + "," + y + "," + z + ")"
 
                         var events = {
-                            title: val.MessNO + ' ' + val.MessName,
+                            title: '- ' + end[0] + ':' + end[1] + ' ' + val.car_license + ' ' + val.MessName,
                             description: val.remark,
                             Source: val.start_point,
                             destination: val.end_point,
-                            start: val.start_date,
-                            end: val.end_date,
+                            start: start_date[0] + ' ' + start[0] + ':' + start[1],
+                            end: end_date[0] + ' ' + end[0] + ':' + end[1],
                             car_license: val.car_license,
                             car_type: val.car_type,
-                            type_mess: type_mess,
-                            color: color,
+                            type_mess: type_messArr[0] === 'MCV'?'Cashvan':'Dealer',
+                            document_no: val.document_no,
+                            color: bgColor,
                         }
-                        //console.log(events)
                         arr.push(events)
                     })
 
                     this.setState({ action: arr }, () => {
                         console.log("5checkAction", this.state.action)
                         this.showData()
-
                     })
                 }
             })
@@ -135,6 +140,8 @@ class Calendar extends Component {
             editable: true,
             eventLimit: true, // allow "more" link when too many events
             events: this.state.action,
+            eventTextColor: '#FFFFFF',
+            timeFormat: 'HH:mm',
             eventClick: function (event, element) {
                 if (event) {
                     this.hendleClick(event)
@@ -163,14 +170,14 @@ class Calendar extends Component {
                                 <bs4.Button outline color="primary" style={{ marginLeft: "20px" }} href={"/timeable/addTimeable"}>+เพิ่มรอบรถ</bs4.Button>
                             </bs4.Row>
                         </bs4.Col>
-                        <bs4.Col sm={{ size: 6 }}>
-                            <bs4.Row inline style={{float:"right"}} >
+                        {/* <bs4.Col sm={{ size: 6 }}>
+                            <bs4.Row inline style={{ float: "right" }} >
                                 <MdIcon.MdBrightness1 className="iconlg" color="rgb(0, 217, 255)" />
-                                <p style={{ marginLeft: "10px" }}>Meessenger Cashvan</p>
+                                <p style={{ marginLeft: "10px", fontSize: "17px", fontWeight: "600" }}>Meessenger Cashvan</p>
                                 <MdIcon.MdBrightness1 className="iconlg" color="rgb(255, 251, 0)" style={{ marginLeft: "20px" }} />
-                                <p style={{ marginLeft: "10px" }}>Meessenger Dealer</p>
+                                <p style={{ marginLeft: "10px", fontSize: "17px", fontWeight: "600" }}>Meessenger Dealer</p>
                             </bs4.Row>
-                        </bs4.Col>
+                        </bs4.Col> */}
                     </bs4.Row>
 
                     <bs4.Row>
