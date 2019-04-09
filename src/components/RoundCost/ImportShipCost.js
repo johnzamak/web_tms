@@ -20,15 +20,23 @@ class ImportShipCost extends Component {
             var workbook = XLSX.read(data, { type: rABS ? 'binary' : 'array' });
             const ref=workbook.Sheets.Sheet1["!ref"].split(":")
             const firstCol=public_function.split_number_from_string(ref[0])[0]
-            const firstRow=public_function.split_number_from_string(ref[0])[1]
+            const firstRow=parseInt(public_function.split_number_from_string(ref[0])[1])
             const lastCol=public_function.split_number_from_string(ref[1])[0]
-            const lastRow=public_function.split_number_from_string(ref[1])[1]
-            for(var i=firstCol.charCodeAt(0);i<=lastCol.charCodeAt(0);i++){
-                console.log("object",String.fromCharCode(i));
+            const lastRow=parseInt(public_function.split_number_from_string(ref[1])[1])
+            const sheetNames=workbook.SheetNames[0]
+            var arrData=[]
+            for(var indexCol=firstCol.charCodeAt(0);indexCol<=lastCol.charCodeAt(0);indexCol++){
+                console.log("object",String.fromCharCode(indexCol));
+                arrData.push(String.fromCharCode(indexCol))
+                for(var indexRow=(firstRow+1);indexRow<=lastRow;indexRow++){
+                    console.log("arrData",arrData)
+                    arrData[String.fromCharCode(indexCol)].push(workbook.Sheets[sheetNames][String.fromCharCode(indexCol)+indexRow].v)
+                }
             }
-            console.log("workbook",workbook.Sheets)
+            console.log("indexRow",arrData);
+            console.log("workbook",workbook)
             // console.log("check",firstLine)
-            const dataSheet = Object.values(workbook.Sheets.Sheet1)
+            const dataSheet = Object.values(workbook.Sheets[sheetNames])
             console.log("dataSheet",dataSheet);
             // public_function.split_number_from_string(workbook.Sheets.Sheet1)
         }
