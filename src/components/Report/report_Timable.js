@@ -179,7 +179,7 @@ class Report_Timeable extends Component {
                                     <td style={{ textAlign: "center" }} >{date}</td>
                                     <td style={{ textAlign: "center" }} >{val.start_point}</td>
                                     <td style={{ textAlign: "center" }} >{val.end_point}</td>
-                                    <td style={{ textAlign: "center", backgroundColor: "#FFA500" }} >{val.qty_product === 'null' ? '' : val.qty_product}</td>
+                                    <td style={{ textAlign: "right", backgroundColor: "#FFA500" }} >{val.qty_product === 'null' ? '' : val.qty_product}</td>
                                     <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >{rec_time === 'Invalid date' ? '' : rec_time}</td>
                                     <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >{exit_time === 'Invalid date' ? '' : exit_time}</td>
                                     <td style={{ textAlign: "center", backgroundColor: "#32CD32" }} >{finish_time === 'Invalid date' ? '' : finish_time}</td>
@@ -246,7 +246,7 @@ class Report_Timeable extends Component {
                                         <td style={{ textAlign: "center" }} >{date}</td>
                                         <td style={{ textAlign: "center" }} >{val.start_point}</td>
                                         <td style={{ textAlign: "center" }} >{val.end_point}</td>
-                                        <td style={{ textAlign: "center", backgroundColor: "#FFA500" }} >{val.qty_product === 'null' ? '' : val.qty_product}</td>
+                                        <td style={{ textAlign: "right", backgroundColor: "#FFA500" }} >{val.qty_product === 'null' ? '' : val.qty_product}</td>
                                         <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >{rec_time === 'Invalid date' ? '' : rec_time}</td>
                                         <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >{exit_time === 'Invalid date' ? '' : exit_time}</td>
                                         <td style={{ textAlign: "center", backgroundColor: "#32CD32" }} >{finish_time === 'Invalid date' ? '' : finish_time}</td>
@@ -296,7 +296,7 @@ class Report_Timeable extends Component {
 
                     });
 
-                    this.setState({ dataTable: arrReport, result: arrResult, file_name: filename, value: value}, () => {
+                    this.setState({ dataTable: arrReport, result: arrResult, file_name: filename, value: value }, () => {
                         console.log('options', options)
                         props.dispatch(is_loader(false))
                         this.showData(arrResult)
@@ -336,21 +336,21 @@ class Report_Timeable extends Component {
         });
 
         var table = <table class="table table-bordered" ref={el => (this.componentRef = el)} >
-            <thead style={{ whiteSpace: "nowrap" }} >
-                <td style={{ whiteSpace: "nowrap", textAlign: "center" }}>ลำดับ</td>
-                <td width="7%" style={{ whiteSpace: "nowrap", textAlign: "center" }} dataField='date' dataSort={true}>วันที่</td>
-                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >สถานที่รับสินค้า(ต้นทาง)</td>
-                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >สถานที่ส่งสินค้า(ปลายทาง)</td>
-                <td style={{ textAlign: "center" }} >จำนวนสินค้า(พาเลท)</td>
-                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >เวลาเข้ารับสินค้า่</td>
-                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >เวลาออก</td>
-                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >เวลาถึง</td>
-                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >เวลาเดินทาง(ชั่วโมง-นาที)</td>
-                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >ทะเบียนรถ</td>
-                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >ประเภทรถ</td>
-                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >ชื่อผู้ขับ</td>
-                <td width="10%" style={{ whiteSpace: "nowrap", textAlign: "center" }} >สาเหตุของปัญหา</td>
-                <td width="15%" style={{ whiteSpace: "nowrap", textAlign: "center" }} >หมายเหตุ</td>
+            <thead style={{ backgroundColor: "#17a2b8", whiteSpace: "nowrap" }} >
+                <td style={{ textAlign: "center" }}>ลำดับ</td>
+                <td style={{ width: '15%', textAlign: "center" }}>วันที่</td>
+                <td style={{ width: '20%', textAlign: "center" }} >สถานที่รับสินค้า<br />(ต้นทาง)</td>
+                <td style={{ width: '20%', textAlign: "center" }} >สถานที่ส่งสินค้า<br />(ปลายทาง)</td>
+                <td style={{ textAlign: "center", backgroundColor: "#FFA500" }} >จำนวนสินค้า<br />(พาเลท)</td>
+                <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >เวลาเข้ารับสินค้า</td>
+                <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >เวลาออก</td>
+                <td style={{ textAlign: "center", backgroundColor: "#32CD32" }} >เวลาถึง</td>
+                <td style={{ textAlign: "center", backgroundColor: "#FFFF00" }} >เวลาเดินทาง</td>
+                <td style={{ textAlign: "center" }} >ทะเบียนรถ</td>
+                <td style={{ textAlign: "center" }} >ประเภทรถ</td>
+                <td style={{ textAlign: "center" }} >ชื่อผู้ขับ</td>
+                <td style={{ textAlign: "center" }} >สาเหตุของปัญหา</td>
+                <td style={{ width: '100%', textAlign: "center" }} >หมายเหตุ</td>
             </thead>
             <tbody >
                 {this.state.dataTable}
@@ -369,7 +369,7 @@ class Report_Timeable extends Component {
             var end = localStorage.getItem('end')
             var value = localStorage.getItem('value')
             this.getReport(JSON.parse(value), start, end)
-        }else{
+        } else {
             this.getReport('', '', '')
         }
     }
@@ -395,13 +395,13 @@ class Report_Timeable extends Component {
     }
 
     compareBy(key) {
-        if(this.state.status === true){
+        if (this.state.status !== true) {
             return function (a, b) {
                 if (a[key] < b[key]) return -1;
                 if (a[key] > b[key]) return 1;
                 return 0;
             };
-        }else{
+        } else {
             return function (a, b) {
                 if (a[key] > b[key]) return -1;
                 if (a[key] < b[key]) return 1;
@@ -433,7 +433,7 @@ class Report_Timeable extends Component {
                     <td style={{ textAlign: "center" }} >{date}</td>
                     <td style={{ textAlign: "center" }} >{val.start_point}</td>
                     <td style={{ textAlign: "center" }} >{val.end_point}</td>
-                    <td style={{ textAlign: "center", backgroundColor: "#FFA500" }} >{val.qty_product === 'null' ? '' : val.qty_product}</td>
+                    <td style={{ textAlign: "right", backgroundColor: "#FFA500" }} >{val.qty_product === 'null' ? '' : val.qty_product}</td>
                     <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >{rec_time === 'Invalid date' ? '' : rec_time}</td>
                     <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >{exit_time === 'Invalid date' ? '' : exit_time}</td>
                     <td style={{ textAlign: "center", backgroundColor: "#32CD32" }} >{finish_time === 'Invalid date' ? '' : finish_time}</td>
@@ -528,20 +528,20 @@ class Report_Timeable extends Component {
                     <bs4.Row >
                         <bs4.Table striped hover bordered style={{ margin: "10px 10px 10px 10px", fontSize: "15px", fontWeight: "600" }}  >
                             <thead style={{ backgroundColor: "#17a2b8", whiteSpace: "nowrap" }} >
-                                <td width="5%" style={{ whiteSpace: "nowrap", textAlign: "center" }}>ลำดับ</td>
-                                <td width="10%" style={{ whiteSpace: "nowrap", textAlign: "center" }}>วันที่<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('start_date')}/></td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >สถานที่รับสินค้า(ต้นทาง)<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('start_point')}/></td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >สถานที่ส่งสินค้า(ปลายทาง)<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('end_point')}/></td>
-                                <td style={{ textAlign: "center", backgroundColor: "#FFA500" }} >จำนวนสินค้า(พาเลท)<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('qty_product')}/></td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center", backgroundColor: "#33CCFF" }} >เวลาเข้ารับสินค้า<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('rec_time')}/></td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center", backgroundColor: "#33CCFF" }} >เวลาออก<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('exit_time')}/></td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center", backgroundColor: "#32CD32" }} >เวลาถึง<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('finish_time')}/></td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center", backgroundColor: "#FFFF00" }} >เวลาเดินทาง(ชั่วโมง-นาที)</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >ทะเบียนรถ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('car_license')}/></td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >ประเภทรถ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('car_type')}/></td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >ชื่อผู้ขับ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('mess_code')}/></td>
-                                <td width="10%" style={{ whiteSpace: "nowrap", textAlign: "center" }} >สาเหตุของปัญหา<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('cause_id')}/></td>
-                                <td width="30%" style={{ whiteSpace: "nowrap", textAlign: "center" }} >หมายเหตุ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('remark')}/></td>
+                                <td style={{ textAlign: "center" }}>ลำดับ</td>
+                                <td style={{ width: '15%', textAlign: "center" }}>วันที่<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('start_date')} /></td>
+                                <td style={{ width: '20%', textAlign: "center" }} >สถานที่รับสินค้า<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('start_point')} /><br />(ต้นทาง)</td>
+                                <td style={{ width: '20%', textAlign: "center" }} >สถานที่ส่งสินค้า<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('end_point')} /><br />(ปลายทาง)</td>
+                                <td style={{ textAlign: "center", backgroundColor: "#FFA500" }} >จำนวนสินค้า<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('qty_product')} /><br />(พาเลท)</td>
+                                <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >เวลาเข้ารับสินค้า<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('rec_time')} /></td>
+                                <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >เวลาออก<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('exit_time')} /></td>
+                                <td style={{ textAlign: "center", backgroundColor: "#32CD32" }} >เวลาถึง<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('finish_time')} /></td>
+                                <td style={{ textAlign: "center", backgroundColor: "#FFFF00" }} >เวลาเดินทาง</td>
+                                <td style={{ textAlign: "center" }} >ทะเบียนรถ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('car_license')} /></td>
+                                <td style={{ textAlign: "center" }} >ประเภทรถ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('car_type')} /></td>
+                                <td style={{ textAlign: "center" }} >ชื่อผู้ขับ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('mess_code')} /></td>
+                                <td style={{ textAlign: "center" }} >สาเหตุของปัญหา<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('cause_id')} /></td>
+                                <td style={{ width: '100%', textAlign: "center" }} >หมายเหตุ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('remark')} /></td>
                             </thead>
                             <tbody >
                                 {this.state.dataTable}

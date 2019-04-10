@@ -121,7 +121,7 @@ class Editreport_Timeable extends Component {
                     <td style={{ textAlign: "center" }} >{val.start_point}</td>
                     <td style={{ textAlign: "center" }} >{val.end_point}</td>
                     <td style={{ textAlign: "center", backgroundColor: "#FFA500" }} ><bs4.Input type='number' name='qty_product' defaultValue={val.qty_product} onChange={(e) => this.onChangeinData(e.target.name, e.target.value, i)} /></td>
-                    <td style={{ textAlign: "center" , backgroundColor: "#33CCFF"}} >{
+                    <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >{
                         val.rec_time === null ?
                             <TimePicker
                                 onChange={(time) => this.onChangeinDataTime('rec_time', time, i)}
@@ -130,7 +130,7 @@ class Editreport_Timeable extends Component {
                                 onChange={(time) => this.onChangeinDataTime('rec_time', time, i)}
                                 defaultValue={moment(rec_time, format)} format={format} />
                     }</td>
-                    <td style={{ textAlign: "center" , backgroundColor: "#33CCFF"}} >{
+                    <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >{
                         val.exit_time === null ?
                             <TimePicker
                                 onChange={(time) => this.onChangeinDataTime('exit_time', time, i)}
@@ -139,7 +139,7 @@ class Editreport_Timeable extends Component {
                                 onChange={(time) => this.onChangeinDataTime('exit_time', time, i)}
                                 defaultValue={moment(exit_time, format)} format={format} />
                     }</td>
-                    <td style={{ textAlign: "center" , backgroundColor: "#32CD32"}} >{
+                    <td style={{ textAlign: "center", backgroundColor: "#32CD32" }} >{
                         val.finish_time === null ?
                             <TimePicker
                                 onChange={(time) => this.onChangeinDataTime('finish_time', time, i)}
@@ -213,7 +213,7 @@ class Editreport_Timeable extends Component {
     save_data = () => {
         var props = this.props
         if (window.confirm('กรุณายืนยันการแก้ไขข้อมูล')) {
-            
+
             data_send = this.state.arrData
             props.dispatch(is_loader(true))
 
@@ -292,30 +292,30 @@ class Editreport_Timeable extends Component {
                     </bs4.Row>
                     <bs4.Row>
                         <bs4.Col>
-                            <bs4.Button outline style={{fontSize: "15px", fontWeight: "600"}} disabled>EXCEL</bs4.Button>&nbsp;
-                                <bs4.Button outline style={{fontSize: "15px", fontWeight: "600"}} disabled>PDF</bs4.Button>&nbsp;
-                                <bs4.Button outline style={{fontSize: "15px", fontWeight: "600"}} disabled>PRINT</bs4.Button>&nbsp;
-                                <bs4.Button color='success' style={{fontSize: "15px", fontWeight: "600"}} onClick={this.save_data}>SAVE</bs4.Button>
+                            <bs4.Button outline style={{ fontSize: "15px", fontWeight: "600" }} disabled>EXCEL</bs4.Button>&nbsp;
+                                <bs4.Button outline style={{ fontSize: "15px", fontWeight: "600" }} disabled>PDF</bs4.Button>&nbsp;
+                                <bs4.Button outline style={{ fontSize: "15px", fontWeight: "600" }} disabled>PRINT</bs4.Button>&nbsp;
+                                <bs4.Button color='success' style={{ fontSize: "15px", fontWeight: "600" }} onClick={this.save_data}>SAVE</bs4.Button>
                         </bs4.Col>
                     </bs4.Row>
                     <bs4.Row>
 
-                        <bs4.Table striped hover bordered style={{ margin: "10px 10px 10px 10px", fontSize: "15px", fontWeight: "600"}} >
+                        <bs4.Table striped hover bordered style={{ margin: "10px 10px 10px 10px", fontSize: "15px", fontWeight: "600" }} >
                             <thead style={{ backgroundColor: "#17a2b8", whiteSpace: "nowrap" }} >
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }}>ลำดับ</td>
-                                <td width="7%" style={{ whiteSpace: "nowrap", textAlign: "center" }} dataField='date' dataSort={true}>วันที่</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >สถานที่รับสินค้า(ต้นทาง)</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >สถานที่ส่งสินค้า(ปลายทาง)</td>
-                                <td style={{ textAlign: "center" , backgroundColor: "#FFA500"}} >จำนวนสินค้า(พาเลท)</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" , backgroundColor: "#33CCFF"}} >เวลาเข้ารับสินค้า</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center", backgroundColor: "#33CCFF" }} >เวลาออก</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" , backgroundColor: "#32CD32"}} >เวลาถึง</td>
-                                {/* <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >เวลาเดินทาง(ชั่วโมง-นาที)</td> */}
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >ทะเบียนรถ</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >ประเภทรถ</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >ชื่อผู้ขับ</td>
-                                <td width="15%" style={{ whiteSpace: "nowrap", textAlign: "center" }} >สาเหตุของปัญหา <bs4.Button color='success' size='sm' onClick={this.addCause} >+</bs4.Button></td>
-                                <td width="20%" style={{ whiteSpace: "nowrap", textAlign: "center" }} >หมายเหตุ</td>
+                                <td style={{ textAlign: "center" }}>ลำดับ</td>
+                                <td style={{ width: '15%', textAlign: "center" }}>วันที่</td>
+                                <td style={{ width: '20%', textAlign: "center" }} >สถานที่รับสินค้า<br />(ต้นทาง)</td>
+                                <td style={{ width: '20%', textAlign: "center" }} >สถานที่ส่งสินค้า<br />(ปลายทาง)</td>
+                                <td style={{ textAlign: "center", backgroundColor: "#FFA500" }} >จำนวนสินค้า<br />(พาเลท)</td>
+                                <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >เวลาเข้ารับสินค้า</td>
+                                <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >เวลาออก</td>
+                                <td style={{ textAlign: "center", backgroundColor: "#32CD32" }} >เวลาถึง</td>
+                                {/* <td style={{ textAlign: "center", backgroundColor: "#FFFF00" }} >เวลาเดินทาง</td> */}
+                                <td style={{ textAlign: "center" }} >ทะเบียนรถ</td>
+                                <td style={{ textAlign: "center" }} >ประเภทรถ</td>
+                                <td style={{ textAlign: "center" }} >ชื่อผู้ขับ</td>
+                                <td style={{ textAlign: "center" }} >สาเหตุของปัญหา <bs4.Button color='success' size='sm' onClick={this.addCause} >+</bs4.Button></td>
+                                <td style={{ width: '100%', textAlign: "center" }} >หมายเหตุ</td>
                             </thead>
                             <tbody  >
                                 {this.state.dataTable}
