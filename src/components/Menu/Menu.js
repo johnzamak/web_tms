@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import * as bs4 from "reactstrap"
 import * as MdIcon from 'react-icons/lib/md'
+import { loadState } from "../../localStorage"
 
 class Menu extends Component {
     render() {
+        const { Level_User } = loadState("data_user")[0]
         return (
             <div>
                 <bs4.Navbar color="light" light expand="md">
@@ -11,7 +13,7 @@ class Menu extends Component {
                     <bs4.Nav className="ml-auto" navbar>
                         <bs4.UncontrolledDropdown nav inNavbar>
                             <bs4.DropdownToggle style={{ fontWeight: "800" }} nav caret>
-                            รอบรถบริษัท
+                                รอบรถบริษัท
                             </bs4.DropdownToggle>
                             <bs4.DropdownMenu right>
                                 <bs4.DropdownItem href="/timeable/calendar" >
@@ -22,14 +24,14 @@ class Menu extends Component {
                                 </bs4.DropdownItem>
                             </bs4.DropdownMenu>
                         </bs4.UncontrolledDropdown>
-                    
+
                         <bs4.NavItem>
                             <bs4.NavLink href="/speceialtask" style={{ fontWeight: "800" }} >สร้างงานพิเศษ</bs4.NavLink>
                         </bs4.NavItem>
- 
+
                         <bs4.UncontrolledDropdown nav inNavbar>
                             <bs4.DropdownToggle style={{ fontWeight: "800" }} nav caret>
-                            เคลียร์บิล
+                                เคลียร์บิล
                             </bs4.DropdownToggle>
                             <bs4.DropdownMenu right>
                                 <bs4.DropdownItem href="/clearbill/order" >
@@ -46,7 +48,7 @@ class Menu extends Component {
 
                         <bs4.UncontrolledDropdown nav inNavbar>
                             <bs4.DropdownToggle style={{ fontWeight: "800" }} nav caret>
-                            รายงานทั้งหมด
+                                รายงานทั้งหมด
                             </bs4.DropdownToggle>
                             <bs4.DropdownMenu right>
                                 <bs4.DropdownItem href="/report/tracking-status" >
@@ -69,7 +71,7 @@ class Menu extends Component {
 
                         <bs4.UncontrolledDropdown nav inNavbar>
                             <bs4.DropdownToggle style={{ fontWeight: "800" }} nav caret>
-                            แก้ไขงาน
+                                แก้ไขงาน
                             </bs4.DropdownToggle>
                             <bs4.DropdownMenu right>
                                 <bs4.DropdownItem href="/edit/change-messenger" >
@@ -83,7 +85,7 @@ class Menu extends Component {
 
                         <bs4.UncontrolledDropdown nav inNavbar>
                             <bs4.DropdownToggle style={{ fontWeight: "800" }} nav caret>
-                            HUB สุราษฎร์
+                                HUB สุราษฎร์
                             </bs4.DropdownToggle>
                             <bs4.DropdownMenu right>
                                 <bs4.DropdownItem href="/report/tracking-surach" >
@@ -114,6 +116,21 @@ class Menu extends Component {
                                 </bs4.DropdownItem>
                             </bs4.DropdownMenu>
                         </bs4.UncontrolledDropdown>
+
+                        {
+                            (Level_User === "adminsystem") ?
+                                <bs4.UncontrolledDropdown nav inNavbar>
+                                    <bs4.DropdownToggle style={{ fontWeight: "800" }} nav caret>
+                                        Admin-Only
+                            </bs4.DropdownToggle>
+                                    <bs4.DropdownMenu right>
+                                        <bs4.DropdownItem href="/cost-round/import-ship-cost" >
+                                            สรุปค่ารอบรายเดือน Cashvan
+                                </bs4.DropdownItem>
+                                    </bs4.DropdownMenu>
+                                </bs4.UncontrolledDropdown> : ""
+                        }
+
 
                     </bs4.Nav>
                 </bs4.Navbar>

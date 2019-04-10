@@ -95,6 +95,9 @@ class Editreport_Timeable extends Component {
     }
 
     create_table = () => {
+        var props = this.props
+        props.dispatch(is_loader(true))
+
         var arrData = this.state.arrData
         console.log('result', arrData)
 
@@ -117,8 +120,8 @@ class Editreport_Timeable extends Component {
                     <td style={{ textAlign: "center" }} >{date}</td>
                     <td style={{ textAlign: "center" }} >{val.start_point}</td>
                     <td style={{ textAlign: "center" }} >{val.end_point}</td>
-                    <td style={{ textAlign: "center" }} ><bs4.Input type='number' name='qty_product' defaultValue={val.qty_product} onChange={(e) => this.onChangeinData(e.target.name, e.target.value, i)} /></td>
-                    <td style={{ textAlign: "center" }} >{
+                    <td style={{ textAlign: "center", backgroundColor: "#FFA500" }} ><bs4.Input type='number' name='qty_product' defaultValue={val.qty_product} onChange={(e) => this.onChangeinData(e.target.name, e.target.value, i)} /></td>
+                    <td style={{ textAlign: "center" , backgroundColor: "#33CCFF"}} >{
                         val.rec_time === null ?
                             <TimePicker
                                 onChange={(time) => this.onChangeinDataTime('rec_time', time, i)}
@@ -127,7 +130,7 @@ class Editreport_Timeable extends Component {
                                 onChange={(time) => this.onChangeinDataTime('rec_time', time, i)}
                                 defaultValue={moment(rec_time, format)} format={format} />
                     }</td>
-                    <td style={{ textAlign: "center" }} >{
+                    <td style={{ textAlign: "center" , backgroundColor: "#33CCFF"}} >{
                         val.exit_time === null ?
                             <TimePicker
                                 onChange={(time) => this.onChangeinDataTime('exit_time', time, i)}
@@ -136,7 +139,7 @@ class Editreport_Timeable extends Component {
                                 onChange={(time) => this.onChangeinDataTime('exit_time', time, i)}
                                 defaultValue={moment(exit_time, format)} format={format} />
                     }</td>
-                    <td style={{ textAlign: "center" }} >{
+                    <td style={{ textAlign: "center" , backgroundColor: "#32CD32"}} >{
                         val.finish_time === null ?
                             <TimePicker
                                 onChange={(time) => this.onChangeinDataTime('finish_time', time, i)}
@@ -161,7 +164,9 @@ class Editreport_Timeable extends Component {
             )
         }, this)
 
-        this.setState({ dataTable: arr })
+        this.setState({ dataTable: arr }, () => {
+            props.dispatch(is_loader(false))
+        })
     }
 
     addCause = () => {
@@ -172,6 +177,7 @@ class Editreport_Timeable extends Component {
                 cause: _cause
             }
             data_send.push(objCause)
+            props.dispatch(is_loader(true))
             if (_cause) {
                 let url = proxy.main + "calendar/create-cause/"
                 console.log("save_task", data_send)
@@ -207,8 +213,10 @@ class Editreport_Timeable extends Component {
     save_data = () => {
         var props = this.props
         if (window.confirm('กรุณายืนยันการแก้ไขข้อมูล')) {
-
+            
             data_send = this.state.arrData
+            props.dispatch(is_loader(true))
+
             let url = proxy.main + "calendar/update-report-calendar/"
             console.log("save_task", data_send)
             fetch(url, {
@@ -250,7 +258,7 @@ class Editreport_Timeable extends Component {
                     <bs4.Row>
                         <bs4.Col xs="3" >
                             <bs4.FormGroup row>
-                                <bs4.Label style={{ fontWeight: "500", fontSize: "16px", margin: "10px 20px 0px 20px" }} >วันที่เริ่มต้น</bs4.Label>
+                                <bs4.Label style={{ fontWeight: "600", fontSize: "16px", margin: "10px 20px 0px 20px" }} >วันที่เริ่มต้น</bs4.Label>
                                 <div style={{ marginTop: "10px", }} >
                                     <DatePicker
                                         dateFormat="YYYY-MM-DD"
@@ -265,7 +273,7 @@ class Editreport_Timeable extends Component {
                         </bs4.Col>
                         <bs4.Col xs="3" >
                             <bs4.FormGroup row>
-                                <bs4.Label style={{ fontWeight: "500", fontSize: "16px", margin: "10px 20px 0px 20px" }} >วันที่สิ้นสุด</bs4.Label>
+                                <bs4.Label style={{ fontWeight: "600", fontSize: "16px", margin: "10px 20px 0px 20px" }} >วันที่สิ้นสุด</bs4.Label>
                                 <div style={{ marginTop: "10px", }} >
                                     <DatePicker
                                         dateFormat="YYYY-MM-DD"
@@ -284,24 +292,24 @@ class Editreport_Timeable extends Component {
                     </bs4.Row>
                     <bs4.Row>
                         <bs4.Col>
-                            <bs4.Button outline disabled>EXCEL</bs4.Button>&nbsp;
-                                <bs4.Button outline disabled>PDF</bs4.Button>&nbsp;
-                                <bs4.Button outline disabled>PRINT</bs4.Button>&nbsp;
-                                <bs4.Button color='success' onClick={this.save_data}>SAVE</bs4.Button>
+                            <bs4.Button outline style={{fontSize: "15px", fontWeight: "600"}} disabled>EXCEL</bs4.Button>&nbsp;
+                                <bs4.Button outline style={{fontSize: "15px", fontWeight: "600"}} disabled>PDF</bs4.Button>&nbsp;
+                                <bs4.Button outline style={{fontSize: "15px", fontWeight: "600"}} disabled>PRINT</bs4.Button>&nbsp;
+                                <bs4.Button color='success' style={{fontSize: "15px", fontWeight: "600"}} onClick={this.save_data}>SAVE</bs4.Button>
                         </bs4.Col>
                     </bs4.Row>
                     <bs4.Row>
 
-                        <bs4.Table striped hover bordered style={{ margin: "10px 10px 10px 10px" }} >
+                        <bs4.Table striped hover bordered style={{ margin: "10px 10px 10px 10px", fontSize: "15px", fontWeight: "600"}} >
                             <thead style={{ backgroundColor: "#17a2b8", whiteSpace: "nowrap" }} >
                                 <td style={{ whiteSpace: "nowrap", textAlign: "center" }}>ลำดับ</td>
                                 <td width="7%" style={{ whiteSpace: "nowrap", textAlign: "center" }} dataField='date' dataSort={true}>วันที่</td>
                                 <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >สถานที่รับสินค้า(ต้นทาง)</td>
                                 <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >สถานที่ส่งสินค้า(ปลายทาง)</td>
-                                <td style={{ textAlign: "center" }} >จำนวนสินค้า(พาเลท)</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >เวลาเข้ารับสินค้า่</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >เวลาออก</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >เวลาถึง</td>
+                                <td style={{ textAlign: "center" , backgroundColor: "#FFA500"}} >จำนวนสินค้า(พาเลท)</td>
+                                <td style={{ whiteSpace: "nowrap", textAlign: "center" , backgroundColor: "#33CCFF"}} >เวลาเข้ารับสินค้า</td>
+                                <td style={{ whiteSpace: "nowrap", textAlign: "center", backgroundColor: "#33CCFF" }} >เวลาออก</td>
+                                <td style={{ whiteSpace: "nowrap", textAlign: "center" , backgroundColor: "#32CD32"}} >เวลาถึง</td>
                                 {/* <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >เวลาเดินทาง(ชั่วโมง-นาที)</td> */}
                                 <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >ทะเบียนรถ</td>
                                 <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >ประเภทรถ</td>

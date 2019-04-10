@@ -8,8 +8,11 @@ import ReactToPrint from 'react-to-print';
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { browserHistory } from 'react-router';
+import { is_loader } from '../../actions'
+import Select from 'react-select';
 
-const { proxy } = require ('../../service')
+var options = []
+const { proxy } = require('../../service')
 const { public_function } = require('../../service')
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -77,7 +80,11 @@ class Report_Timeable extends Component {
             dataTable: '',
             dateStart: moment(),
             dateEnd: moment(),
-            file_name: ''
+            file_name: '',
+            selectedOption: null,
+            value: '',
+            resultJson: [],
+            status: true
         }
     }
 
@@ -90,13 +97,13 @@ class Report_Timeable extends Component {
         var docDefinition = {
             pageOrientation: 'landscape',
             content: [
-                { text: 'รายงานแสดงข้อมูลรอบรถ วันที่ ' + name[1] + ' ถึง ' + name[2], style: 'header', fontSize: 16, margin: [215, 2, 5, 5] },
+                { text: 'รายงานแสดงข้อมูลรอบรถ วันที่ ' + name[1] + ' ถึง ' + name[2], style: 'header', fontSize: 16 },
 
                 table(pdfData, ['ลำดับ', 'วันที่', 'สถานที่รับสินค้า', 'สถานที่ส่งสินค้า', 'จำนวนสินค้า', 'เวลาเข้ารับสินค้า', 'เวลาออก', 'เวลาถึง', 'เวลาเดินทาง', 'ทะเบียนรถ', 'ประเภทรถ', 'ชื่อผู้ขับ', 'สาเหตุของปัญหา', 'หมายเหตุ'])
             ],
             defaultStyle: {
                 font: 'THSarabunNew',
-                fontSize: 12
+                fontSize: 12,
             }
         }
         //pdfMake.createPdf(docDefinition).open()
@@ -109,7 +116,9 @@ class Report_Timeable extends Component {
         })
     }
 
-    getReport = (start, end) => {
+    getReport = (value, start, end) => {
+        var props = this.props
+        props.dispatch(is_loader(true))
         if (start === '' && end === '') {
             start = (moment(this.state.dateStart).format('YYYY-MM-DD'))
             end = (moment(this.state.dateEnd).format('YYYY-MM-DD'))
@@ -120,6 +129,8 @@ class Report_Timeable extends Component {
         var filename = 'reportTimeable_' + start + '_' + end
 
         var arrReport = []
+        var arrResult = []
+
         var url = proxy.main + 'calendar/get-report-calendar/' + start + '&' + end
         //var url = proxy.main + 'calendar/get-report-calendar/' + start + '&' + end
         console.log('----', url)
@@ -131,41 +142,164 @@ class Report_Timeable extends Component {
                 } else {
                     console.log("responseJson", responseJson.result)
                     responseJson.result.forEach(function (val, i) {
-                        var date = (moment(val.start_date).format('DD-MM-YYYY'))
+                        var data
+                        if (value.type === 'start_point') {
+                            data = val.start_point
+                        } else if (value.type === 'end_point') {
+                            data = val.end_point
+                        } else if (value.type === 'car_license') {
+                            data = val.car_license
+                        } else if (value.type === 'car_type') {
+                            data = val.car_type
+                        } else if (value.type === 'mess_code') {
+                            data = val.mess_code
+                        } else if (value.type === 'cause_name') {
+                            data = val.cause_name
+                        } else if (value.type === 'remark') {
+                            data = val.remark
+                        }
 
-                        var arr_rec_time = val.rec_time === null ? '' : val.rec_time.split('T')
-                        var rec_time = (moment(moment(arr_rec_time[1], 'HH:mm')).format('HH:mm'))
+                        if (value === '') {
+                            var date = (moment(val.start_date).format('DD-MM-YYYY'))
 
-                        var arr_exit_time = val.exit_time === null ? '' : val.exit_time.split('T')
-                        var exit_time = (moment(moment(arr_exit_time[1], 'HH:mm')).format('HH:mm'))
+                            var arr_rec_time = val.rec_time === null ? '' : val.rec_time.split('T')
+                            var rec_time = (moment(moment(arr_rec_time[1], 'HH:mm')).format('HH:mm'))
 
-                        var arr_finish_time = val.finish_time === null ? '' : val.finish_time.split('T')
-                        var finish_time = (moment(moment(arr_finish_time[1], 'HH:mm')).format('HH:mm'))
+                            var arr_exit_time = val.exit_time === null ? '' : val.exit_time.split('T')
+                            var exit_time = (moment(moment(arr_exit_time[1], 'HH:mm')).format('HH:mm'))
 
-                        var result = public_function.getDiff_Date(exit_time,finish_time)
+                            var arr_finish_time = val.finish_time === null ? '' : val.finish_time.split('T')
+                            var finish_time = (moment(moment(arr_finish_time[1], 'HH:mm')).format('HH:mm'))
 
-                        arrReport.push(
-                            <tr>
-                                <td style={{ textAlign: "center" }} >{i + 1}</td>
-                                <td style={{ textAlign: "center" }} >{date}</td>
-                                <td style={{ textAlign: "center" }} >{val.start_point}</td>
-                                <td style={{ textAlign: "center" }} >{val.end_point}</td>
-                                <td style={{ textAlign: "center" }} >{val.qty_product === 'null' ? '' : val.qty_product}</td>
-                                <td style={{ textAlign: "center" }} >{rec_time === 'Invalid date' ? '' : rec_time}</td>
-                                <td style={{ textAlign: "center" }} >{exit_time === 'Invalid date' ? '' : exit_time}</td>
-                                <td style={{ textAlign: "center" }} >{finish_time === 'Invalid date' ? '' : finish_time}</td>
-                                <td style={{ textAlign: "center" }} >{result === 'NaN ชั่วโมง NaN นาที' ? '' : result}</td>
-                                <td style={{ textAlign: "center" }} >{val.car_license}</td>
-                                <td style={{ textAlign: "center" }} >{val.car_type}</td>
-                                <td style={{ textAlign: "center" }} >{val.mess_code}</td>
-                                <td style={{ textAlign: "center" }} >{val.cause_name === null ? '' : val.cause_name}</td>
-                                <td style={{ textAlign: "center" }} >{val.remark}</td>
-                            </tr>
-                        )
+                            var result = public_function.getDiff_Date(exit_time, finish_time)
+
+                            arrReport.push(
+                                <tr>
+                                    <td style={{ textAlign: "center" }} >{i + 1}</td>
+                                    <td style={{ textAlign: "center" }} >{date}</td>
+                                    <td style={{ textAlign: "center" }} >{val.start_point}</td>
+                                    <td style={{ textAlign: "center" }} >{val.end_point}</td>
+                                    <td style={{ textAlign: "center", backgroundColor: "#FFA500" }} >{val.qty_product === 'null' ? '' : val.qty_product}</td>
+                                    <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >{rec_time === 'Invalid date' ? '' : rec_time}</td>
+                                    <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >{exit_time === 'Invalid date' ? '' : exit_time}</td>
+                                    <td style={{ textAlign: "center", backgroundColor: "#32CD32" }} >{finish_time === 'Invalid date' ? '' : finish_time}</td>
+                                    <td style={{ textAlign: "center", backgroundColor: "#FFFF00" }} >{result === 'NaN ชั่วโมง NaN นาที' ? '' : result}</td>
+                                    <td style={{ textAlign: "center" }} >{val.car_license}</td>
+                                    <td style={{ textAlign: "center" }} >{val.car_type}</td>
+                                    <td style={{ textAlign: "center" }} >{val.mess_code}</td>
+                                    <td style={{ textAlign: "center" }} >{val.cause_name === null ? '' : val.cause_name}</td>
+                                    <td style={{ textAlign: "center" }} >{val.remark}</td>
+                                </tr>
+                            )
+
+                            var temp2 = {}
+                            temp2["value"] = val.start_point
+                            temp2['label'] = val.start_point
+                            temp2['type'] = 'start_point'
+                            var temp3 = {}
+                            temp3["value"] = val.end_point
+                            temp3['label'] = val.end_point
+                            temp3['type'] = 'end_point'
+                            var temp4 = {}
+                            temp4["value"] = val.car_license
+                            temp4['label'] = val.car_license
+                            temp4['type'] = 'car_license'
+                            var temp5 = {}
+                            temp5["value"] = val.car_type
+                            temp5['label'] = val.car_type
+                            temp5['type'] = 'car_type'
+                            var temp6 = {}
+                            temp6["value"] = val.mess_code
+                            temp6['label'] = val.mess_code
+                            temp6['type'] = 'mess_code'
+                            var temp7 = {}
+                            temp7["value"] = val.cause_name === null ? '' : val.cause_name
+                            temp7['label'] = val.cause_name === null ? '' : val.cause_name
+                            temp7['type'] = 'cause_name'
+                            var temp8 = {}
+                            temp8["value"] = val.remark
+                            temp8['label'] = val.remark
+                            temp8['type'] = 'remark'
+
+                            options.push(temp2, temp3, temp4, temp5, temp6, temp7, temp8)
+
+                            arrResult.push(val)
+
+                        } else {
+                            if (value.value === data) {
+                                var date = (moment(val.start_date).format('DD-MM-YYYY'))
+
+                                var arr_rec_time = val.rec_time === null ? '' : val.rec_time.split('T')
+                                var rec_time = (moment(moment(arr_rec_time[1], 'HH:mm')).format('HH:mm'))
+
+                                var arr_exit_time = val.exit_time === null ? '' : val.exit_time.split('T')
+                                var exit_time = (moment(moment(arr_exit_time[1], 'HH:mm')).format('HH:mm'))
+
+                                var arr_finish_time = val.finish_time === null ? '' : val.finish_time.split('T')
+                                var finish_time = (moment(moment(arr_finish_time[1], 'HH:mm')).format('HH:mm'))
+
+                                var result = public_function.getDiff_Date(exit_time, finish_time)
+
+                                arrReport.push(
+                                    <tr>
+                                        <td style={{ textAlign: "center" }} >{i + 1}</td>
+                                        <td style={{ textAlign: "center" }} >{date}</td>
+                                        <td style={{ textAlign: "center" }} >{val.start_point}</td>
+                                        <td style={{ textAlign: "center" }} >{val.end_point}</td>
+                                        <td style={{ textAlign: "center", backgroundColor: "#FFA500" }} >{val.qty_product === 'null' ? '' : val.qty_product}</td>
+                                        <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >{rec_time === 'Invalid date' ? '' : rec_time}</td>
+                                        <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >{exit_time === 'Invalid date' ? '' : exit_time}</td>
+                                        <td style={{ textAlign: "center", backgroundColor: "#32CD32" }} >{finish_time === 'Invalid date' ? '' : finish_time}</td>
+                                        <td style={{ textAlign: "center", backgroundColor: "#FFFF00" }} >{result === 'NaN ชั่วโมง NaN นาที' ? '' : result}</td>
+                                        <td style={{ textAlign: "center" }} >{val.car_license}</td>
+                                        <td style={{ textAlign: "center" }} >{val.car_type}</td>
+                                        <td style={{ textAlign: "center" }} >{val.mess_code}</td>
+                                        <td style={{ textAlign: "center" }} >{val.cause_name === null ? '' : val.cause_name}</td>
+                                        <td style={{ textAlign: "center" }} >{val.remark}</td>
+                                    </tr>
+                                )
+                                var temp2 = {}
+                                temp2["value"] = val.start_point
+                                temp2['label'] = val.start_point
+                                temp2['type'] = 'start_point'
+                                var temp3 = {}
+                                temp3["value"] = val.end_point
+                                temp3['label'] = val.end_point
+                                temp3['type'] = 'end_point'
+                                var temp4 = {}
+                                temp4["value"] = val.car_license
+                                temp4['label'] = val.car_license
+                                temp4['type'] = 'car_license'
+                                var temp5 = {}
+                                temp5["value"] = val.car_type
+                                temp5['label'] = val.car_type
+                                temp5['type'] = 'car_type'
+                                var temp6 = {}
+                                temp6["value"] = val.mess_code
+                                temp6['label'] = val.mess_code
+                                temp6['type'] = 'mess_code'
+                                var temp7 = {}
+                                temp7["value"] = val.cause_name === null ? '' : val.cause_name
+                                temp7['label'] = val.cause_name === null ? '' : val.cause_name
+                                temp7['type'] = 'cause_name'
+                                var temp8 = {}
+                                temp8["value"] = val.remark
+                                temp8['label'] = val.remark
+                                temp8['type'] = 'remark'
+
+                                options.push(temp2, temp3, temp4, temp5, temp6, temp7, temp8)
+
+
+                                arrResult.push(val)
+                            }
+                        }
+
                     });
 
-                    this.setState({ dataTable: arrReport, result: responseJson.result, file_name: filename }, () => {
-                        this.showData(responseJson.result)
+                    this.setState({ dataTable: arrReport, result: arrResult, file_name: filename, value: value}, () => {
+                        console.log('options', options)
+                        props.dispatch(is_loader(false))
+                        this.showData(arrResult)
                     })
                 }
             })
@@ -180,7 +314,7 @@ class Report_Timeable extends Component {
             var exit_time = (moment(val.exit_time).format('HH:mm'))
             var finish_time = (moment(val.finish_time).format('HH:mm'))
 
-            var result = public_function.getDiff_Date(exit_time,finish_time)
+            var result = public_function.getDiff_Date(exit_time, finish_time)
 
             arrExcel_ = {
                 ลำดับ: i + 1,
@@ -233,15 +367,89 @@ class Report_Timeable extends Component {
             localStorage.setItem('reportStatus', 'not')
             var start = localStorage.getItem('start')
             var end = localStorage.getItem('end')
-
-            this.getReport(start, end)
+            var value = localStorage.getItem('value')
+            this.getReport(JSON.parse(value), start, end)
+        }else{
+            this.getReport('', '', '')
         }
     }
 
     editReport = () => {
-        console.log('report', this.state.result)
+        console.log('value', this.state.value)
         localStorage.setItem('report', JSON.stringify(this.state.result))
+        localStorage.setItem('value', JSON.stringify(this.state.value))
         browserHistory.push('/report/Editreport_Timeable')
+    }
+
+    handleChange = (selectedOption) => {
+        // this.setState({ 
+        //     selectedOption,
+        //     PJID:selectedOption.value,
+        // });
+        console.log('selectedOption.value', selectedOption.value)
+        this.getReport(selectedOption, '', '')
+    }
+
+    handleSearch = () => {
+        console.log('handleSearch')
+    }
+
+    compareBy(key) {
+        if(this.state.status === true){
+            return function (a, b) {
+                if (a[key] < b[key]) return -1;
+                if (a[key] > b[key]) return 1;
+                return 0;
+            };
+        }else{
+            return function (a, b) {
+                if (a[key] > b[key]) return -1;
+                if (a[key] < b[key]) return 1;
+                return 0;
+            };
+        }
+    }
+
+    sortBy(key) {
+        let arrayCopy = [...this.state.result]
+        var arrShowData = []
+        arrayCopy.sort(this.compareBy(key)).forEach(function (val, i) { //sort data and push arrShowData new
+            var date = (moment(val.start_date).format('DD-MM-YYYY'))
+
+            var arr_rec_time = val.rec_time === null ? '' : val.rec_time.split('T')
+            var rec_time = (moment(moment(arr_rec_time[1], 'HH:mm')).format('HH:mm'))
+
+            var arr_exit_time = val.exit_time === null ? '' : val.exit_time.split('T')
+            var exit_time = (moment(moment(arr_exit_time[1], 'HH:mm')).format('HH:mm'))
+
+            var arr_finish_time = val.finish_time === null ? '' : val.finish_time.split('T')
+            var finish_time = (moment(moment(arr_finish_time[1], 'HH:mm')).format('HH:mm'))
+
+            var result = public_function.getDiff_Date(exit_time, finish_time)
+
+            arrShowData.push(
+                <tr>
+                    <td style={{ textAlign: "center" }} >{i + 1}</td>
+                    <td style={{ textAlign: "center" }} >{date}</td>
+                    <td style={{ textAlign: "center" }} >{val.start_point}</td>
+                    <td style={{ textAlign: "center" }} >{val.end_point}</td>
+                    <td style={{ textAlign: "center", backgroundColor: "#FFA500" }} >{val.qty_product === 'null' ? '' : val.qty_product}</td>
+                    <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >{rec_time === 'Invalid date' ? '' : rec_time}</td>
+                    <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >{exit_time === 'Invalid date' ? '' : exit_time}</td>
+                    <td style={{ textAlign: "center", backgroundColor: "#32CD32" }} >{finish_time === 'Invalid date' ? '' : finish_time}</td>
+                    <td style={{ textAlign: "center", backgroundColor: "#FFFF00" }} >{result === 'NaN ชั่วโมง NaN นาที' ? '' : result}</td>
+                    <td style={{ textAlign: "center" }} >{val.car_license}</td>
+                    <td style={{ textAlign: "center" }} >{val.car_type}</td>
+                    <td style={{ textAlign: "center" }} >{val.mess_code}</td>
+                    <td style={{ textAlign: "center" }} >{val.cause_name === null ? '' : val.cause_name}</td>
+                    <td style={{ textAlign: "center" }} >{val.remark}</td>
+                </tr>
+            )
+        }, this)
+        this.setState({
+            dataTable: arrShowData,
+            status: !this.state.status
+        }, () => { });
     }
 
     render() {
@@ -252,7 +460,7 @@ class Report_Timeable extends Component {
                     <bs4.Row>
                         <bs4.Col xs="3" >
                             <bs4.FormGroup row>
-                                <bs4.Label style={{ fontWeight: "500", fontSize: "16px", margin: "10px 20px 0px 20px" }} >วันที่เริ่มต้น</bs4.Label>
+                                <bs4.Label style={{ fontWeight: "600", fontSize: "16px", margin: "10px 20px 0px 20px" }} >วันที่เริ่มต้น</bs4.Label>
                                 <div style={{ marginTop: "10px", }} >
                                     <DatePicker
                                         dateFormat="YYYY-MM-DD"
@@ -264,7 +472,7 @@ class Report_Timeable extends Component {
                         </bs4.Col>
                         <bs4.Col xs="3" >
                             <bs4.FormGroup row>
-                                <bs4.Label style={{ fontWeight: "500", fontSize: "16px", margin: "10px 20px 0px 20px" }} >วันที่สิ้นสุด</bs4.Label>
+                                <bs4.Label style={{ fontWeight: "600", fontSize: "16px", margin: "10px 20px 0px 20px" }} >วันที่สิ้นสุด</bs4.Label>
                                 <div style={{ marginTop: "10px", }} >
                                     <DatePicker
                                         dateFormat="YYYY-MM-DD"
@@ -275,12 +483,12 @@ class Report_Timeable extends Component {
                             </bs4.FormGroup>
                         </bs4.Col>
                         <bs4.Col xs="2" >
-                            <bs4.Button color="info" onClick={() => { this.getReport('', '') }} > <MdIcon.MdSearch className="iconlg" /> SEARCH</bs4.Button>
+                            <bs4.Button color="info" onClick={() => { this.getReport('', '', '') }} > <MdIcon.MdSearch className="iconlg" /> SEARCH</bs4.Button>
                         </bs4.Col>
                     </bs4.Row>
                     <bs4.Row>
                         <bs4.Col>
-                            <Workbook filename={this.state.file_name + '.xlsx'} element={<bs4.Button outline>EXCEL</bs4.Button>} >
+                            <Workbook filename={this.state.file_name + '.xlsx'} element={<bs4.Button outline style={{ fontSize: "15px", fontWeight: "600" }}>EXCEL</bs4.Button>} >
                                 <Workbook.Sheet data={this.state.arrDataExcel} name="projectReport" >
                                     <Workbook.Column label="ลำดับ" value="ลำดับ" />
                                     <Workbook.Column label="วันที่" value="วันที่" />
@@ -298,33 +506,42 @@ class Report_Timeable extends Component {
                                     <Workbook.Column label="หมายเหตุ" value="หมายเหตุ" />
                                 </Workbook.Sheet>
                             </Workbook>&nbsp;
-                                <bs4.Button outline onClick={this.printPDF}>PDF</bs4.Button>&nbsp;
+                                <bs4.Button outline style={{ fontSize: "15px", fontWeight: "600" }} onClick={this.printPDF}>PDF</bs4.Button>&nbsp;
                                 {/* <Button outline onClick={this.ReactToPrint}>PRINT</Button>&nbsp; */}
                             <ReactToPrint
-                                trigger={() => <bs4.Button outline href='#'>PRINT</bs4.Button>}
+                                trigger={() => <bs4.Button outline style={{ fontSize: "15px", fontWeight: "600" }} href='#'>PRINT</bs4.Button>}
                                 content={() => this.componentRef}
                             />
                             <div hidden>{this.state.showTable}</div>&nbsp;
-                                <bs4.Button color='warning' onClick={this.editReport} >EDIT</bs4.Button>
+                                <bs4.Button color='warning' style={{ fontSize: "15px", fontWeight: "600" }} onClick={this.editReport} >EDIT</bs4.Button>
+
+                        </bs4.Col>
+                        <bs4.Col sm='4'>
+                            <Select className="SelectAuto"
+                                value={this.selectedOption}
+                                onChange={this.handleChange}
+                                options={options}
+                                placeholder={'ค้นหา'}
+                            />
                         </bs4.Col>
                     </bs4.Row>
                     <bs4.Row >
-                        <bs4.Table striped hover bordered style={{ margin: "10px 10px 10px 10px" }}  >
+                        <bs4.Table striped hover bordered style={{ margin: "10px 10px 10px 10px", fontSize: "15px", fontWeight: "600" }}  >
                             <thead style={{ backgroundColor: "#17a2b8", whiteSpace: "nowrap" }} >
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }}>ลำดับ</td>
-                                <td width="7%" style={{ whiteSpace: "nowrap", textAlign: "center" }} dataField='date' dataSort={true}>วันที่</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >สถานที่รับสินค้า(ต้นทาง)</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >สถานที่ส่งสินค้า(ปลายทาง)</td>
-                                <td style={{ textAlign: "center" }} >จำนวนสินค้า(พาเลท)</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >เวลาเข้ารับสินค้า่</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >เวลาออก</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >เวลาถึง</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >เวลาเดินทาง(ชั่วโมง-นาที)</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >ทะเบียนรถ</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >ประเภทรถ</td>
-                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >ชื่อผู้ขับ</td>
-                                <td width="10%" style={{ whiteSpace: "nowrap", textAlign: "center" }} >สาเหตุของปัญหา</td>
-                                <td width="15%" style={{ whiteSpace: "nowrap", textAlign: "center" }} >หมายเหตุ</td>
+                                <td width="5%" style={{ whiteSpace: "nowrap", textAlign: "center" }}>ลำดับ</td>
+                                <td width="10%" style={{ whiteSpace: "nowrap", textAlign: "center" }}>วันที่<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('start_date')}/></td>
+                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >สถานที่รับสินค้า(ต้นทาง)<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('start_point')}/></td>
+                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >สถานที่ส่งสินค้า(ปลายทาง)<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('end_point')}/></td>
+                                <td style={{ textAlign: "center", backgroundColor: "#FFA500" }} >จำนวนสินค้า(พาเลท)<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('qty_product')}/></td>
+                                <td style={{ whiteSpace: "nowrap", textAlign: "center", backgroundColor: "#33CCFF" }} >เวลาเข้ารับสินค้า<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('rec_time')}/></td>
+                                <td style={{ whiteSpace: "nowrap", textAlign: "center", backgroundColor: "#33CCFF" }} >เวลาออก<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('exit_time')}/></td>
+                                <td style={{ whiteSpace: "nowrap", textAlign: "center", backgroundColor: "#32CD32" }} >เวลาถึง<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('finish_time')}/></td>
+                                <td style={{ whiteSpace: "nowrap", textAlign: "center", backgroundColor: "#FFFF00" }} >เวลาเดินทาง(ชั่วโมง-นาที)</td>
+                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >ทะเบียนรถ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('car_license')}/></td>
+                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >ประเภทรถ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('car_type')}/></td>
+                                <td style={{ whiteSpace: "nowrap", textAlign: "center" }} >ชื่อผู้ขับ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('mess_code')}/></td>
+                                <td width="10%" style={{ whiteSpace: "nowrap", textAlign: "center" }} >สาเหตุของปัญหา<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('cause_id')}/></td>
+                                <td width="30%" style={{ whiteSpace: "nowrap", textAlign: "center" }} >หมายเหตุ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('remark')}/></td>
                             </thead>
                             <tbody >
                                 {this.state.dataTable}

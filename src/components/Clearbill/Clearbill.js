@@ -34,6 +34,7 @@ class Clearbill extends Component {
     componentWillMount() {
         this.get_data_from_api(this)
         this.get_messenger(this)
+        // this._callMultiMess(this)
     }
     onClick_search = () => {
         this.get_data_from_api(this)

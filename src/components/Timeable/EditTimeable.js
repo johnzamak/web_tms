@@ -5,7 +5,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { TimePicker } from 'antd';
 import "antd/dist/antd.css";
-import Messsenger from '../../components/Modal/Messsenger';
+import Messsenger from '../Modal/Messsenger';
 import { is_loader } from '../../actions'
 
 const { proxy } = require("../../service")
@@ -29,13 +29,11 @@ let data_send = []
 let point_selecter = ['โรงงานมุกไมตรี', 'โรงงานสังขละ', 'ศูนย์กระจายสินค้า-สุราษฯ', 'ศูนย์กระจายสินค้า-พิษณุโลก', '7-11_บางบัวทอง', '7-11_ชลบุรี'
     , 'ลูกค้า ปตท.', 'ลูกค้า Se-ed', 'ลูกค้าซินโซน']
 
-class Addtimeable extends Component {
+class EditTimeable extends Component {
     constructor(props) {
         super(props)
         this.state = {
             inData: {
-                //messID:'',
-                //messName: '',
                 start_date: '',
                 end_date: '',
                 start_point: '',
@@ -43,8 +41,8 @@ class Addtimeable extends Component {
                 remark: '',
                 car_type: '',
                 car_license: '',
-                //type_mess: '',
-                mess_code: ''
+                mess_code: '',
+                document_no: ''
             },
             modal_messsenger: {
                 is_open: false,
@@ -56,7 +54,8 @@ class Addtimeable extends Component {
             EndDate: moment(),
             EndTime: new Date(),
             messID: '',
-            messName: ''
+            messName: '',
+            event: '',
         }
     }
 
@@ -142,19 +141,20 @@ class Addtimeable extends Component {
             })
     }
 
-    saveToDB = () => {
+    updateToDB = () => {
         var props = this.props
         if (this.state.inData.mess_code !== '' && this.state.inData.car_license !== ''
             && this.state.inData.start_date !== '' && this.state.inData.end_date !== ''
             && this.state.inData.start_point !== '' && this.state.inData.end_point !== '') {
-            if (window.confirm('กรุณายืนยันการเพิ่มรอบรถ')) {
+            if (window.confirm('กรุณายืนยันการแก้ไขรอบรถ')) {
+
                 props.dispatch(is_loader(true))
                 
                 data_send.push(this.state.inData)
-                let url = proxy.main + "calendar/create-task/"
+                let url = proxy.develop + "calendar/update-task/"
                 console.log("save_task", data_send)
                 fetch(url, {
-                    method: "POST",
+                    method: "PUT",
                     headers: {
                         Accept: "application/json",
                         "Content-Type": "application/json;charset=utf-8"
@@ -166,10 +166,10 @@ class Addtimeable extends Component {
                         props.dispatch(is_loader(false))
                         console.log("responseJson", responseJson)
                         if (responseJson.status === 200) {
-                            alert('เพิ่มรอบสำเร็จ')
+                            alert('แก้ไขสำเร็จ')
                             window.location.href = '/timeable/calendar'
                         } else {
-                            alert("ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่")
+                            alert("ไม่สามารถแก้ไขข้อมูลได้ กรุณาลองใหม่")
                         }
                     })
                     .catch((error) => {
@@ -200,12 +200,68 @@ class Addtimeable extends Component {
         })
     }
 
+    componentDidMount() {
+        var doc = localStorage.getItem('edit_task')
+        console.log('document_no', doc)
+        this.getData(doc)
+    }
+
+    getData=(doc)=>{
+        var props = this.props
+        props.dispatch(is_loader(true))
+        var url = proxy.develop + 'calendar/get-calendar/' + doc
+        console.log('----', url)
+        fetch(url)
+            .then(response => response.json())
+            .then((responseJson) => {
+                if (!responseJson.result) {
+                    console.log("not found")
+                } else {
+                    console.log("responseJson", responseJson.result)
+                    var result = responseJson.result[0]
+                    var arrDate_start = result.start_date.split("T")
+                    var arrDate_end = result.end_date.split("T")
+                    if (responseJson.status !== 500) {
+                        var data = this.state.inData
+                        var objinData = {
+                            start_point: result.start_point,
+                            end_point:  result.end_point,
+                            remark: result.remark,
+                            car_type: result.car_type,
+                            car_license: result.car_license,
+                            mess_code: result.IDMess,
+                            document_no: result.document_no
+                        }
+
+                        var inData = Object.assign(data, objinData)
+                        this.setState({ 
+                                inData: inData,
+                                StartDate: moment(arrDate_start[0]),
+                                StartTime: moment(arrDate_start[1],format),
+                                EndDate: moment(arrDate_end[0]),
+                                EndTime: moment(arrDate_end[1],format),
+                                messID: result.MessNO,
+                                messName: result.MessName,
+                        }, () => { 
+                            console.log('arrDate_start[1]',moment(arrDate_start[1],format)._d)
+                            //console.log('arrDate_start2',this.state.StartTime)
+                            props.dispatch(is_loader(false))
+                            this.getCar()
+                        })
+                    } else {
+                        alert('ไม่มีข้อมูล หรืออาจมีข้อผิดพลาดเกิดขึื้น')
+                    }
+                }
+            })
+    }
+    
+
     render() {
         return (
             <div>
                 <bs4.Container className="bgContainer-White" fluid>
                     <bs4.Form>
-                        <div style={{ textAlign: "left", fontSize: "25px", fontWeight: "1000" }} >กรอกข้อมูลรอบรถบริษัท</div>
+                        <div style={{ textAlign: "left", fontSize: "25px", fontWeight: "1000" }} >แก้ไขข้อมูลรอบรถบริษัท</div>
                     </bs4.Form>
                 </bs4.Container>
 
@@ -273,7 +329,7 @@ class Addtimeable extends Component {
                             <bs4.Label style={{ fontSize: "17px", fontWeight: "600" }}>เลือกรถ</bs4.Label>
                             <bs4.Col sm='6'>
                                 <bs4.Input type="select" name="Car" style={{ fontSize: "17px", fontWeight: "600" }} onChange={(e) => this.onChangeCar(e.target.name, e.target.value)}>
-                                    <option value=" ">-------</option>
+                                    <option value={[this.state.inData.car_type, this.state.inData.car_license]}>{this.state.inData.car_type} {this.state.inData.car_license}</option>
                                     {this.state.selecter}
                                 </bs4.Input>
                             </bs4.Col>
@@ -284,7 +340,7 @@ class Addtimeable extends Component {
                             <bs4.Label style={{ fontSize: "17px", fontWeight: "600" }}>ต้นทาง</bs4.Label>
                             <bs4.Col>
                                 <bs4.Input type="select" name="start_point" style={{ fontSize: "17px", fontWeight: "600" }} onChange={(e) => this.onChangeForm(e.target.name, e.target.value)} >
-                                    <option value=" ">-------</option>
+                                    <option value={this.state.inData.start_point}>{this.state.inData.start_point}</option>
                                     {
                                         point_selecter.map((el, i) => (
                                             <option value={el}>{el}</option>
@@ -295,7 +351,7 @@ class Addtimeable extends Component {
                             <bs4.Label style={{ fontSize: "17px", fontWeight: "600" }}>&nbsp;&nbsp;&nbsp;ปลายทาง&nbsp;&nbsp;&nbsp;</bs4.Label>
                             <bs4.Col>
                                 <bs4.Input type="select" name="end_point" style={{ fontSize: "17px", fontWeight: "600" }} onChange={(e) => this.onChangeForm(e.target.name, e.target.value)} >
-                                    <option value=" ">-------</option>
+                                    <option value={this.state.inData.end_point}>{this.state.inData.end_point}</option>
                                     {
                                         point_selecter.map((el, i) => (
                                             <option value={el}>{el}</option>
@@ -308,11 +364,11 @@ class Addtimeable extends Component {
                         <br />
                         <bs4.FormGroup row>
                             <bs4.Label style={{ fontSize: "17px", fontWeight: "600" }}>หมายเหตุ</bs4.Label>
-                            <bs4.Input type="textarea" name="remark" style={{ fontSize: "17px", fontWeight: "600" }} onChange={(e) => this.onChangeForm(e.target.name, e.target.value)} />
+                            <bs4.Input type="textarea" name="remark" style={{ fontSize: "17px", fontWeight: "600" }} value={this.state.inData.remark} onChange={(e) => this.onChangeForm(e.target.name, e.target.value)} />
                         </bs4.FormGroup>
 
                         <br />
-                        <bs4.Button style={{ fontSize: "17px", fontWeight: "600" }} color='success' onClick={this.saveToDB}>บันทึก</bs4.Button>
+                        <bs4.Button style={{ fontSize: "17px", fontWeight: "600" }} color='warning' onClick={this.updateToDB}>บันทึกการแก้ไข</bs4.Button>
                     </div >
                 </bs4.Container>
 
@@ -326,4 +382,4 @@ function mapStateToProps(state) {
     console.log(state)
     return state
 }
-export default connect(mapStateToProps)(Addtimeable);
+export default connect(mapStateToProps)(EditTimeable);
