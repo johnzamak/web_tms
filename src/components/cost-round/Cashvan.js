@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import * as bs4 from "reactstrap"
 import DatePicker from 'react-datepicker';
+import { connect } from 'react-redux'
+import { is_loader } from '../../actions'
 const { proxy, public_function } = require("../../service")
 const moment = require("moment")
 
@@ -17,46 +19,50 @@ class Cashvan extends Component {
         this.getData()
     }
 
-    handleChange = (e)=>{
-        console.log('value',e.target.value)
-        this.setState({ month: e.target.value})
+    handleChange = (e) => {
+        console.log('value', e.target.value)
+        this.setState({ month: e.target.value })
     }
 
     getData = () => {
+        var props = this.props
+        props.dispatch(is_loader(true))
         var month = this.state.month
 
         var arrReport = []
-        var url = 'http://localhost:8080/get_report_costmess_MCV/' + month
-        //var url = proxy.test + 'calendar/get-report-calendar/' + start + '&' + end
+        var url = proxy.develop + 'get_report_costmess_MCV/' + month
         console.log('----', url)
         fetch(url)
             .then(response => response.json())
             .then((responseJson) => {
-                console.log("responseJson", responseJson.recordset)
+                console.log("responseJson", responseJson.result)
+                if (!responseJson.result) {
+                    alert('ไม่พบข้อมูล')
+                } else {
+                    responseJson.result.forEach(function (val, i) {
+                        arrReport.push(
+                            <tr align="center">
+                                <td>{i + 1}</td>
+                                <td>{val.MessNO}</td>
+                                <td>{val.MessName}</td>
+                                <td> </td>
+                                <td> </td>
+                                <td align="right">{public_function.numberFormat(val.trip, 0)}</td>
+                                <td align="right">{public_function.numberFormat(val.shop, 0)}</td>
+                                <td align="right">{public_function.numberFormat(val.bill, 0)}</td>
+                                <td><bs4.Input /></td>
+                                <td><bs4.Input /></td>
+                                <td> </td>
+                                <td><bs4.Input /></td>
+                                <td> </td>
+                            </tr>
+                        )
+                    }, this);
 
-                responseJson.recordset.forEach(function (val, i) {
-                    arrReport.push(
-                        <tr align="center">
-                            <td>{i + 1}</td>
-                            <td>{val.MessNO}</td>
-                            <td>{val.MessName}</td>
-                            <td> </td>
-                            <td> </td>
-                            <td align="right">{public_function.numberFormat(val.trip, 0)}</td>
-                            <td align="right">{public_function.numberFormat(val.shop, 0)}</td>
-                            <td align="right">{public_function.numberFormat(val.bill, 0)}</td>
-                            <td><bs4.Input /></td>
-                            <td><bs4.Input /></td>
-                            <td> </td>
-                            <td><bs4.Input /></td>
-                            <td> </td>
-                        </tr>
-                    )
-                }, this);
-
-                this.setState({ dataTable: arrReport }, () => {
-                    //
-                })
+                    this.setState({ dataTable: arrReport }, () => {
+                        props.dispatch(is_loader(false))
+                    })
+                }
             })
     }
 
@@ -72,7 +78,7 @@ class Cashvan extends Component {
                             dateFormat="MM/YYYY"
                             showMonthYearPicker
                         /> */}
-                        <input type="month" defaultValue={this.state.month} onChange={this.handleChange}/>
+                        <input type="month" defaultValue={this.state.month} onChange={this.handleChange} />
                         <bs4.Col xs="2" >
                             <bs4.Button color="info" style={{ marginLeft: "20px" }} onClick={this.getData} >SEARCH</bs4.Button>
                         </bs4.Col>
@@ -106,4 +112,8 @@ class Cashvan extends Component {
     }
 }
 
-export default Cashvan;
+function mapStateToProps(state) {
+    console.log(state)
+    return state
+}
+export default connect(mapStateToProps)(Cashvan);

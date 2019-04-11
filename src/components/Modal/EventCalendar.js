@@ -147,7 +147,7 @@ class EventCalendar extends Component {
                             <bs4.Col xs="2" >
                                 <bs4.Button color="warning" onClick={this.onEdit_task} > <MdIcon.MdCreate className="iconlg" /> EDIT</bs4.Button>
                             </bs4.Col>
-                            <bs4.Col xs="2" >
+                            <bs4.Col xs="3" >
                                 <bs4.Button color="danger" onClick={this.onDelete_task} > <MdIcon.MdDelete className="iconlg" /> DELETE</bs4.Button>
                             </bs4.Col>
                         </bs4.Row>
