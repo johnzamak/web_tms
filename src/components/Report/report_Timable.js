@@ -52,17 +52,14 @@ function buildTableBody(data, columns) {
 function table(data, columns) {
     return {
         table: {
-            headerRows: 1,
             body: buildTableBody(data, columns),
 
         },
         layout: {
             hLineWidth: function (i, node) {
                 return 1;
-
             }
         },
-        margin: [32, 15, 0, 0]
     };
 }
 
@@ -95,10 +92,12 @@ class Report_Timeable extends Component {
         var name = this.state.file_name.split('_')
 
         var docDefinition = {
+            pageSize: 'A4',
             pageOrientation: 'landscape',
+            pageMargins: [ 20, 20, 40, 0 ],
             content: [
                 { text: 'รายงานแสดงข้อมูลรอบรถ วันที่ ' + name[1] + ' ถึง ' + name[2], style: 'header', fontSize: 16 },
-
+                { text: ' ', style: 'header', fontSize: 10 },
                 table(pdfData, ['ลำดับ', 'วันที่', 'สถานที่รับสินค้า', 'สถานที่ส่งสินค้า', 'จำนวนสินค้า', 'เวลาเข้ารับสินค้า', 'เวลาออก', 'เวลาถึง', 'เวลาเดินทาง', 'ทะเบียนรถ', 'ประเภทรถ', 'ชื่อผู้ขับ', 'สาเหตุของปัญหา', 'หมายเหตุ'])
             ],
             defaultStyle: {
@@ -299,13 +298,15 @@ class Report_Timeable extends Component {
                     this.setState({ dataTable: arrReport, result: arrResult, file_name: filename, value: value }, () => {
                         console.log('options', options)
                         props.dispatch(is_loader(false))
-                        this.showData(arrResult)
+                        this.showData()
                     })
                 }
             })
     }
 
-    showData = (result) => {
+    showData = () => {
+        var name = this.state.file_name.split('_')
+        var result = this.state.result
         arr = []
 
         result.forEach(function (val, i) {
@@ -335,27 +336,32 @@ class Report_Timeable extends Component {
             arr.push(arrExcel_)
         });
 
-        var table = <table class="table table-bordered" ref={el => (this.componentRef = el)} >
-            <thead style={{ backgroundColor: "#17a2b8", whiteSpace: "nowrap" }} >
-                <td style={{ textAlign: "center" }}>ลำดับ</td>
-                <td style={{ width: '15%', textAlign: "center" }}>วันที่</td>
-                <td style={{ width: '20%', textAlign: "center" }} >สถานที่รับสินค้า<br />(ต้นทาง)</td>
-                <td style={{ width: '20%', textAlign: "center" }} >สถานที่ส่งสินค้า<br />(ปลายทาง)</td>
-                <td style={{ textAlign: "center", backgroundColor: "#FFA500" }} >จำนวนสินค้า<br />(พาเลท)</td>
-                <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >เวลาเข้ารับสินค้า</td>
-                <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >เวลาออก</td>
-                <td style={{ textAlign: "center", backgroundColor: "#32CD32" }} >เวลาถึง</td>
-                <td style={{ textAlign: "center", backgroundColor: "#FFFF00" }} >เวลาเดินทาง</td>
+        var table =  <div style={{ padding:"20px",pageBreakAfter: "always" }} ref={el => (this.componentRef = el)}>
+        <br />
+        <div style={{ textAlign: "center", fontSize: "18px", fontWeight: "600" }} >รายงานแสดงข้อมูลรอบรถ วันที่  {name[1]} ถึง {name[2]}</div>
+        <br />
+        <bs4.Table bordered style={{ fontSize: "14px" }}>
+            <thead>
+                <td width="5%" style={{ textAlign: "center" }}>ลำดับ</td>
+                <td width="7%" style={{ textAlign: "center" }}>วันที่</td>
+                <td style={{ textAlign: "center" }} >สถานที่รับสินค้า<br />(ต้นทาง)</td>
+                <td style={{ textAlign: "center" }} >สถานที่ส่งสินค้า<br />(ปลายทาง)</td>
+                <td style={{ textAlign: "center"}} >จำนวนสินค้า<br />(พาเลท)</td>
+                <td style={{ textAlign: "center"}} >เวลาเข้ารับสินค้า</td>
+                <td style={{ textAlign: "center"}} >เวลาออก</td>
+                <td style={{ textAlign: "center"}} >เวลาถึง</td>
+                <td style={{ textAlign: "center"}} >เวลาเดินทาง</td>
                 <td style={{ textAlign: "center" }} >ทะเบียนรถ</td>
                 <td style={{ textAlign: "center" }} >ประเภทรถ</td>
-                <td style={{ textAlign: "center" }} >ชื่อผู้ขับ</td>
+                <td width="10%" style={{ textAlign: "center" }} >ชื่อผู้ขับ</td>
                 <td style={{ textAlign: "center" }} >สาเหตุของปัญหา</td>
-                <td style={{ width: '100%', textAlign: "center" }} >หมายเหตุ</td>
+                <td width="10%" style={{ textAlign: "center" }} >หมายเหตุ</td>
             </thead>
             <tbody >
                 {this.state.dataTable}
             </tbody>
-        </table>
+        </bs4.Table>
+        </div>
 
         this.setState({ showTable: table, arrDataExcel: arr })
     }
@@ -449,7 +455,7 @@ class Report_Timeable extends Component {
         this.setState({
             dataTable: arrShowData,
             status: !this.state.status
-        }, () => { });
+        }, () => { this.showData() });
     }
 
     render() {
@@ -488,7 +494,7 @@ class Report_Timeable extends Component {
                     </bs4.Row>
                     <bs4.Row>
                         <bs4.Col>
-                            <Workbook filename={this.state.file_name + '.xlsx'} element={<bs4.Button outline style={{ fontSize: "15px", fontWeight: "600" }}>EXCEL</bs4.Button>} >
+                            <Workbook filename={this.state.file_name + '.xlsx'} element={<bs4.Button color='success' outline style={{ fontSize: "15px", fontWeight: "600" }}>EXCEL</bs4.Button>} >
                                 <Workbook.Sheet data={this.state.arrDataExcel} name="projectReport" >
                                     <Workbook.Column label="ลำดับ" value="ลำดับ" />
                                     <Workbook.Column label="วันที่" value="วันที่" />
@@ -506,10 +512,10 @@ class Report_Timeable extends Component {
                                     <Workbook.Column label="หมายเหตุ" value="หมายเหตุ" />
                                 </Workbook.Sheet>
                             </Workbook>&nbsp;
-                                <bs4.Button outline style={{ fontSize: "15px", fontWeight: "600" }} onClick={this.printPDF}>PDF</bs4.Button>&nbsp;
+                                <bs4.Button color='danger' outline style={{ fontSize: "15px", fontWeight: "600" }} onClick={this.printPDF}>PDF</bs4.Button>&nbsp;
                                 {/* <Button outline onClick={this.ReactToPrint}>PRINT</Button>&nbsp; */}
                             <ReactToPrint
-                                trigger={() => <bs4.Button outline style={{ fontSize: "15px", fontWeight: "600" }} href='#'>PRINT</bs4.Button>}
+                                trigger={() => <bs4.Button color='primary' outline style={{ fontSize: "15px", fontWeight: "600" }} href='#'>PRINT</bs4.Button>}
                                 content={() => this.componentRef}
                             />
                             <div hidden>{this.state.showTable}</div>&nbsp;
@@ -530,8 +536,8 @@ class Report_Timeable extends Component {
                             <thead style={{ backgroundColor: "#17a2b8", whiteSpace: "nowrap" }} >
                                 <td style={{ textAlign: "center" }}>ลำดับ</td>
                                 <td style={{ width: '15%', textAlign: "center" }}>วันที่<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('start_date')} /></td>
-                                <td style={{ width: '20%', textAlign: "center" }} >สถานที่รับสินค้า<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('start_point')} /><br />(ต้นทาง)</td>
-                                <td style={{ width: '20%', textAlign: "center" }} >สถานที่ส่งสินค้า<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('end_point')} /><br />(ปลายทาง)</td>
+                                <td style={{ width: '15%', textAlign: "center" }} >สถานที่รับสินค้า<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('start_point')} /><br />(ต้นทาง)</td>
+                                <td style={{ width: '15%', textAlign: "center" }} >สถานที่ส่งสินค้า<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('end_point')} /><br />(ปลายทาง)</td>
                                 <td style={{ textAlign: "center", backgroundColor: "#FFA500" }} >จำนวนสินค้า<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('qty_product')} /><br />(พาเลท)</td>
                                 <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >เวลาเข้ารับสินค้า<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('rec_time')} /></td>
                                 <td style={{ textAlign: "center", backgroundColor: "#33CCFF" }} >เวลาออก<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('exit_time')} /></td>
@@ -539,9 +545,9 @@ class Report_Timeable extends Component {
                                 <td style={{ textAlign: "center", backgroundColor: "#FFFF00" }} >เวลาเดินทาง</td>
                                 <td style={{ textAlign: "center" }} >ทะเบียนรถ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('car_license')} /></td>
                                 <td style={{ textAlign: "center" }} >ประเภทรถ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('car_type')} /></td>
-                                <td style={{ textAlign: "center" }} >ชื่อผู้ขับ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('mess_code')} /></td>
+                                <td style={{ width: '15%' ,textAlign: "center" }} >ชื่อผู้ขับ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('mess_code')} /></td>
                                 <td style={{ textAlign: "center" }} >สาเหตุของปัญหา<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('cause_id')} /></td>
-                                <td style={{ width: '100%', textAlign: "center" }} >หมายเหตุ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('remark')} /></td>
+                                <td style={{ width: '20%', textAlign: "center" }} >หมายเหตุ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('remark')} /></td>
                             </thead>
                             <tbody >
                                 {this.state.dataTable}

@@ -105,6 +105,12 @@ class Menu extends Component {
                                 สรุปค่ารอบ Messengers
                             </bs4.DropdownToggle>
                             <bs4.DropdownMenu right>
+                                <bs4.DropdownItem href="/cost-round/cashvan-roundcontrol" >
+                                    สรุปรอบรายวัน Cashvan
+                                </bs4.DropdownItem>
+                                <bs4.DropdownItem href="/cost-round/dealer-roundcontrol" >
+                                    สรุปรอบรายวัน Dealer
+                                </bs4.DropdownItem>
                                 <bs4.DropdownItem href="/cost-round/cashvan" >
                                     สรุปค่ารอบรายเดือน Cashvan
                                 </bs4.DropdownItem>
@@ -117,6 +123,7 @@ class Menu extends Component {
                             </bs4.DropdownMenu>
                         </bs4.UncontrolledDropdown>
 
+<<<<<<< HEAD
                         {
                             (Level_User === "adminsystem") ?
                                 <bs4.UncontrolledDropdown nav inNavbar>
@@ -131,6 +138,18 @@ class Menu extends Component {
                                 </bs4.UncontrolledDropdown> : ""
                         }
 
+=======
+                        <bs4.UncontrolledDropdown nav inNavbar>
+                            <bs4.DropdownToggle style={{ fontWeight: "800" }} nav caret>
+                                TMS Plan
+                            </bs4.DropdownToggle>
+                            <bs4.DropdownMenu right>
+                                <bs4.DropdownItem href="/tmsplan/transport-plan" >
+                                    รายงานแผนการจัดส่ง
+                                </bs4.DropdownItem>
+                            </bs4.DropdownMenu>
+                        </bs4.UncontrolledDropdown>
+>>>>>>> 44e6414dc4e6118b8d661f54b984772871abeae6
 
                     </bs4.Nav>
                 </bs4.Navbar>

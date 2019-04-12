@@ -10,7 +10,7 @@ import Calendar from "./pages/Calendar"
 import Timeable from "./pages/Timeable"
 import Monitor from './pages/Monitor'
 import Cost_round from './pages/Cost_round'
-
+import TMSPlan from './pages/TMSPlan'
 import Form_accounting from "./components/Report/Form_accounting"
 
 const routes = [{
@@ -29,6 +29,7 @@ const routes = [{
         { path: '/timeable/:checkTimeable', component: Timeable },
         { path: '/monitor/:checkMonitor', component: Monitor },
         { path: '/cost-round/:checkCost', component: Cost_round },
+        { path: '/tmsplan/:checkTmsplan', component: TMSPlan },
         // { path: '/form_acc', component: Form_accounting },
     ]
 }]
