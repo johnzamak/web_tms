@@ -25,7 +25,7 @@ class Add_Rate extends Component {
     }
     _call_api_check_rate(self){
         self.props.dispatch(is_loader(true))
-        var url = proxy.develop + "rate/check-rate-already/"+self.state.customer_code
+        var url = proxy.main + "rate/check-rate-already/"+self.state.customer_code
         fetch(url)
             .then(response => response.json())
             .then((responseJson) => {
@@ -156,7 +156,7 @@ class Add_Rate extends Component {
             tran:self.state.arr_data_send
         }
         // console.log("data_send",data_send)
-        var url = proxy.develop + "rate/create-rate/"
+        var url = proxy.main + "rate/create-rate/"
         fetch(url, {
             method: "POST",
             headers: {

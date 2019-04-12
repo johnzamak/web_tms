@@ -72,7 +72,7 @@ class ImportShipCost extends Component {
     }
     _callAPI=()=> {
         this.props.dispatch(is_loader(true))
-        var url = proxy.develop + "import/excel-round-mess/"
+        var url = proxy.main + "import/excel-round-mess/"
         fetch(url, {
             method: "POST",
             headers: {

@@ -80,7 +80,7 @@ class EventCalendar extends Component {
 
             var data_send = []
             data_send.push(this.state.event.document_no)
-            let url = proxy.develop + "calendar/delete-task/"
+            let url = proxy.main + "calendar/delete-task/"
             console.log('url',url)
             fetch(url, {
                 method: "DELETE",

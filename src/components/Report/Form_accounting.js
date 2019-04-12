@@ -109,7 +109,7 @@ class Form_accounting extends Component {
             url = proxy.main + "report/report-formaccount/WS1&" + input_date
             break;
             default:
-            url = proxy.develop + "report/report-formaccount/BKK&" + input_date
+            url = proxy.main + "report/report-formaccount/BKK&" + input_date
             break;
         }
         // let url = proxy.main + "report/report-formaccount/" + input_date

@@ -151,7 +151,7 @@ class EditTimeable extends Component {
                 props.dispatch(is_loader(true))
                 
                 data_send.push(this.state.inData)
-                let url = proxy.develop + "calendar/update-task/"
+                let url = proxy.main + "calendar/update-task/"
                 console.log("save_task", data_send)
                 fetch(url, {
                     method: "PUT",
@@ -209,7 +209,7 @@ class EditTimeable extends Component {
     getData=(doc)=>{
         var props = this.props
         props.dispatch(is_loader(true))
-        var url = proxy.develop + 'calendar/get-calendar/' + doc
+        var url = proxy.main + 'calendar/get-calendar/' + doc
         console.log('----', url)
         fetch(url)
             .then(response => response.json())
