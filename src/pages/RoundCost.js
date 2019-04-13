@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ImportShipCost from "../components/RoundCost/ImportShipCost"
+import ClearRoundCost from "../components/RoundCost/ClearRoundCost"
 
 class RoundCost extends Component {
     render() {
@@ -7,6 +8,7 @@ class RoundCost extends Component {
         return (
             <div>
                 {(checkRoundCost == "import-ship-cost") ? <ImportShipCost /> : ""}
+                {(checkRoundCost == "clear-cost") ? <ClearRoundCost /> : ""}
             </div>
         );
     }

@@ -1,17 +1,20 @@
-const proxys={
-    main:"http://dplus-system.com:3499/",
-    develop:"http://localhost:3499/",
+// import { is_loader } from './actions'
+const { is_loader } = require('./actions')
+
+const proxys = {
+    main: "http://dplus-system.com:3499/",
+    develop: "http://localhost:3499/",
     testPJohn: "http://192.168.20.60:3499/",
     test: "http://dplus-system.com:3599/"
 }
-const public_functions={
-    numberFormat(val="", fixed=0) {
+const public_functions = {
+    numberFormat(val = "", fixed = 0) {
         val = parseInt(val)
         fixed = parseInt(fixed)
         if (val <= 0) {
             return 0
         }
-        if(isNaN(val)){
+        if (isNaN(val)) {
             return ""
         }
         if (fixed <= 0) {
@@ -20,7 +23,7 @@ const public_functions={
             return val.toFixed(fixed).toString().replace(/(\d)(?=(\d{3})+\.)/g, '$1,')
         }
     },
-    getIndexArray(val="", arr=[], prop="") {
+    getIndexArray(val = "", arr = [], prop = "") {
         for (var i = 0; i < arr.length; i++) {
             if (arr[i][prop] === val) {
                 return i
@@ -28,7 +31,7 @@ const public_functions={
         }
         return -1
     },
-    getDiff_Date(start, end){
+    getDiff_Date(start, end) {
         start = start.split(":")
         end = end.split(":")
         var startDate = new Date(0, 0, 0, start[0], start[1], 0)
@@ -43,13 +46,37 @@ const public_functions={
 
         return (hours <= 9 ? "0" : "") + hours + " ชั่วโมง " + (minutes <= 9 ? "0" : "") + minutes + " นาที"
     },
-    split_number_from_string(text=""){
-        var output=""
-        output=text.replace(/\'/g, '').split(/(\d+)/).filter(Boolean)
+    split_number_from_string(text = "") {
+        var output = ""
+        output = text.replace(/\'/g, '').split(/(\d+)/).filter(Boolean)
         return output
+    },
+    is_loading(props, stat = false) {
+        return new Promise((reslove, reject) => {
+            var { type } = props.dispatch(is_loader(stat))
+            if (type == "IS_LOAD_TRUE") {
+                reslove(true)
+            } else if (type == "IS_LOAD_FALSE") {
+                reslove(false)
+            }
+        })
+    },
+    api_get(url = "", apiName = "") {
+        return new Promise((reslove, reject) => {
+            fetch(url)
+                .then(response => response.json())
+                .then((responseJson) => {
+                    console.log(apiName, responseJson)
+                    if (responseJson.status === 200) {
+                        reslove(responseJson.result)
+                    } else {
+                        reslove(false)
+                    }
+                })
+        })
     }
 }
 module.exports = {
-    proxy:proxys,
-    public_function:public_functions
+    proxy: proxys,
+    public_function: public_functions
 }

@@ -5,18 +5,20 @@ import Yearly from '../components/cost-round/Yearly';
 import ImportShipCost from '../components/cost-round/ImportShipCost';
 import Cashvan_roundcontrol from "../components/cost-round/Cashvan_roundcontrol"
 import Dealer_roundcontrol from '../components/cost-round/Dealer_roundcontrol'
+import ClearRoundCost from "../components/cost-round/ClearRoundCost"
 
 class Cost_round extends Component {
     render() {
-        const { checkCost }=this.props.params
+        const { checkCost } = this.props.params
         return (
             <div className="bgBackGround" style={{ padding: "10px 10px 10px 10px" }} >
-                { (checkCost==="cashvan")?<Cashvan />:"" }
-                { (checkCost==="dealer")?<Dealer />:"" }
-                { (checkCost==="yearly")?<Yearly />:"" }
-                { (checkCost == "import-ship-cost") ? <ImportShipCost /> : ""}
-                { (checkCost==="cashvan-roundcontrol")?<Cashvan_roundcontrol />:"" }
-                { (checkCost==="dealer-roundcontrol")?<Dealer_roundcontrol />:"" }
+                {(checkCost === "cashvan") ? <Cashvan /> : ""}
+                {(checkCost === "dealer") ? <Dealer /> : ""}
+                {(checkCost === "yearly") ? <Yearly /> : ""}
+                {(checkCost == "import-ship-cost") ? <ImportShipCost /> : ""}
+                {(checkCost == "clear-cost") ? <ClearRoundCost /> : ""}
+                {(checkCost === "cashvan-roundcontrol") ? <Cashvan_roundcontrol /> : ""}
+                {(checkCost === "dealer-roundcontrol") ? <Dealer_roundcontrol /> : ""}
             </div>
         );
     }
