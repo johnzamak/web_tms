@@ -123,7 +123,6 @@ class Menu extends Component {
                             </bs4.DropdownMenu>
                         </bs4.UncontrolledDropdown>
 
-<<<<<<< HEAD
                         {
                             (Level_User === "adminsystem") ?
                                 <bs4.UncontrolledDropdown nav inNavbar>
@@ -138,7 +137,6 @@ class Menu extends Component {
                                 </bs4.UncontrolledDropdown> : ""
                         }
 
-=======
                         <bs4.UncontrolledDropdown nav inNavbar>
                             <bs4.DropdownToggle style={{ fontWeight: "800" }} nav caret>
                                 TMS Plan
@@ -149,7 +147,6 @@ class Menu extends Component {
                                 </bs4.DropdownItem>
                             </bs4.DropdownMenu>
                         </bs4.UncontrolledDropdown>
->>>>>>> 44e6414dc4e6118b8d661f54b984772871abeae6
 
                     </bs4.Nav>
                 </bs4.Navbar>
