@@ -310,7 +310,7 @@ class Transport_plan extends Component {
         })
     }
 
-    getData = (value) => {
+    getData = () => {
         var props = this.props
         props.dispatch(is_loader(true))
 
@@ -375,7 +375,7 @@ class Transport_plan extends Component {
                                 </tr>
                             )
                         }
-                        
+
                         var temp2 = {}
                         temp2["value"] = arrStatusSOEN[val.DPL_SO_STATUS]
                         temp2['label'] = arrStatusSOEN[val.DPL_SO_STATUS]
