@@ -83,8 +83,8 @@ class Transport_plan extends Component {
             result: '',
             status: true,
             filename: '',
-            express: false
-
+            express: false,
+            selectedOption: null,
         }
     }
 
@@ -116,7 +116,7 @@ class Transport_plan extends Component {
     }
 
     componentDidMount() {
-        this.getData()
+        this.getData('')
     }
 
     onChangeForm = (id, value) => {
@@ -184,7 +184,133 @@ class Transport_plan extends Component {
         this.setState({ showTable: table, arrDataExcel: arr })
     }
 
-    getData = () => {
+    searchData = (value) => {
+        var props = this.props
+        props.dispatch(is_loader(true))
+
+        var arrReport = []
+        var arr = []
+        var result = this.state.result
+
+        result.forEach(function (val, i) {
+            var data
+            if (value.type === 'DPL_SO_STATUS') {
+                data = arrStatusSOEN[val.DPL_SO_STATUS]
+            } else if (value.type === 'so') {
+                data = val.end_point
+            } else if (value.type === 'customer_name') {
+                data = val.customer_name
+            } else if (value.type === 'box') {
+                data = val.box
+            } else if (value.type === 'box_qty') {
+                data = val.box_qty
+            } else if (value.type === 'box_weight') {
+                data = val.box_weight
+            } else if (value.type === 'box_type') {
+                data = val.box_type
+            } else if (value.type === 'STREET') {
+                data = val.STREET
+            } else if (value.type === 'CITY') {
+                data = val.CITY
+            } else if (value.type === 'STATE_Name') {
+                data = val.STATE_Name
+            } else if (value.type === 'contact_phone') {
+                data = val.contact_phone
+            } else if (value.type === 'remark') {
+                data = val.remark
+            } else if (value.type === 'dlv_term') {
+                data = val.dlv_term
+            }
+
+            if (value.value === data) {
+                arrReport.push(
+                    <tr>
+                        <td style={{ textAlign: "center" }}>{arrStatusSOEN[val.DPL_SO_STATUS]}</td>
+                        <td style={{ textAlign: "center" }}>{val.so}</td>
+                        <td style={{ textAlign: "center" }} >{val.customer_name}</td>
+                        <td style={{ textAlign: "center" }} >{val.invoice}</td>
+                        <td style={{ textAlign: "right" }} >{val.box}/{val.box_qty}</td>
+                        <td style={{ textAlign: "right" }} >{val.box_weight}</td>
+                        <td style={{ textAlign: "right" }} >{val.box_type}</td>
+                        <td style={{ textAlign: "center" }} >{val.STREET}</td>
+                        <td style={{ textAlign: "center" }} >{val.CITY}</td>
+                        <td style={{ textAlign: "center" }} >{val.STATE_Name}</td>
+                        <td style={{ textAlign: "center" }} >{val.contact_phone}</td>
+                        <td style={{ textAlign: "center" }} >{val.remark}</td>
+                        <td style={{ textAlign: "center" }} >{val.dlv_term}</td>
+                    </tr>
+                )
+
+                arr.push(val)
+
+                var temp2 = {}
+                temp2["value"] = arrStatusSOEN[val.DPL_SO_STATUS]
+                temp2['label'] = arrStatusSOEN[val.DPL_SO_STATUS]
+                temp2['type'] = 'DPL_SO_STATUS'
+                var temp3 = {}
+                temp3["value"] = val.so
+                temp3['label'] = val.so
+                temp3['type'] = 'so'
+                var temp4 = {}
+                temp4["value"] = val.customer_name
+                temp4['label'] = val.customer_name
+                temp4['type'] = 'customer_name'
+                var temp5 = {}
+                temp5["value"] = val.invoice
+                temp5['label'] = val.invoice
+                temp5['type'] = 'invoice'
+                var temp6 = {}
+                temp6["value"] = val.box
+                temp6['label'] = val.box
+                temp6['type'] = 'box'
+                var temp7 = {}
+                temp7["value"] = val.box_qty
+                temp7['label'] = val.box_qty
+                temp7['type'] = 'box_qty'
+                var temp8 = {}
+                temp8["value"] = val.box_weight
+                temp8['label'] = val.box_weight
+                temp8['type'] = 'box_weight'
+                var temp9 = {}
+                temp9["value"] = val.box_type
+                temp9['label'] = val.box_type
+                temp9['type'] = 'box_type'
+                var temp10 = {}
+                temp10["value"] = val.STREET
+                temp10['label'] = val.STREET
+                temp10['type'] = 'STREET'
+                var temp11 = {}
+                temp11["value"] = val.CITY
+                temp11['label'] = val.CITY
+                temp11['type'] = 'CITY'
+                var temp12 = {}
+                temp12["value"] = val.STATE_Name
+                temp12['label'] = val.STATE_Name
+                temp12['type'] = 'STATE_Name'
+                var temp13 = {}
+                temp13["value"] = val.contact_phone
+                temp13['label'] = val.contact_phone
+                temp13['type'] = 'contact_phone'
+                var temp14 = {}
+                temp14["value"] = val.remark
+                temp14['label'] = val.remark
+                temp14['type'] = 'remark'
+                var temp15 = {}
+                temp15["value"] = val.dlv_term
+                temp15['label'] = val.dlv_term
+                temp15['type'] = 'dlv_term'
+
+                options.push(temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, temp11, temp12, temp13, temp14, temp15)
+            }
+        });
+
+        this.setState({ dataTable: arrReport, result: arr }, () => {
+            props.dispatch(is_loader(false))
+            this.setData_Excel()
+        })
+    }
+
+    getData = (value) => {
         var props = this.props
         props.dispatch(is_loader(true))
 
@@ -230,27 +356,85 @@ class Transport_plan extends Component {
                                     <td style={{ textAlign: "center" }} >{val.dlv_term}</td>
                                 </tr>
                             )
-                        } else {
-                            if (group === val.sales_group) {
-                                arrReport.push(
-                                    <tr>
-                                        <td style={{ textAlign: "center" }}>{arrStatusSOEN[val.DPL_SO_STATUS]}</td>
-                                        <td style={{ textAlign: "center" }}>{val.so}</td>
-                                        <td style={{ textAlign: "center" }} >{val.customer_name}</td>
-                                        <td style={{ textAlign: "center" }} >{val.invoice}</td>
-                                        <td style={{ textAlign: "right" }} >{val.box}/{val.box_qty}</td>
-                                        <td style={{ textAlign: "right" }} >{val.box_weight}</td>
-                                        <td style={{ textAlign: "right" }} >{val.box_type}</td>
-                                        <td style={{ textAlign: "center" }} >{val.STREET}</td>
-                                        <td style={{ textAlign: "center" }} >{val.CITY}</td>
-                                        <td style={{ textAlign: "center" }} >{val.STATE_Name}</td>
-                                        <td style={{ textAlign: "center" }} >{val.contact_phone}</td>
-                                        <td style={{ textAlign: "center" }} >{val.remark}</td>
-                                        <td style={{ textAlign: "center" }} >{val.dlv_term}</td>
-                                    </tr>
-                                )
-                            }
+                        } else if (group === val.sales_group) {
+                            arrReport.push(
+                                <tr>
+                                    <td style={{ textAlign: "center" }}>{arrStatusSOEN[val.DPL_SO_STATUS]}</td>
+                                    <td style={{ textAlign: "center" }}>{val.so}</td>
+                                    <td style={{ textAlign: "center" }} >{val.customer_name}</td>
+                                    <td style={{ textAlign: "center" }} >{val.invoice}</td>
+                                    <td style={{ textAlign: "right" }} >{val.box}/{val.box_qty}</td>
+                                    <td style={{ textAlign: "right" }} >{val.box_weight}</td>
+                                    <td style={{ textAlign: "right" }} >{val.box_type}</td>
+                                    <td style={{ textAlign: "center" }} >{val.STREET}</td>
+                                    <td style={{ textAlign: "center" }} >{val.CITY}</td>
+                                    <td style={{ textAlign: "center" }} >{val.STATE_Name}</td>
+                                    <td style={{ textAlign: "center" }} >{val.contact_phone}</td>
+                                    <td style={{ textAlign: "center" }} >{val.remark}</td>
+                                    <td style={{ textAlign: "center" }} >{val.dlv_term}</td>
+                                </tr>
+                            )
                         }
+                        
+                        var temp2 = {}
+                        temp2["value"] = arrStatusSOEN[val.DPL_SO_STATUS]
+                        temp2['label'] = arrStatusSOEN[val.DPL_SO_STATUS]
+                        temp2['type'] = 'DPL_SO_STATUS'
+                        var temp3 = {}
+                        temp3["value"] = val.so
+                        temp3['label'] = val.so
+                        temp3['type'] = 'so'
+                        var temp4 = {}
+                        temp4["value"] = val.customer_name
+                        temp4['label'] = val.customer_name
+                        temp4['type'] = 'customer_name'
+                        var temp5 = {}
+                        temp5["value"] = val.invoice
+                        temp5['label'] = val.invoice
+                        temp5['type'] = 'invoice'
+                        var temp6 = {}
+                        temp6["value"] = val.box
+                        temp6['label'] = val.box
+                        temp6['type'] = 'box'
+                        var temp7 = {}
+                        temp7["value"] = val.box_qty
+                        temp7['label'] = val.box_qty
+                        temp7['type'] = 'box_qty'
+                        var temp8 = {}
+                        temp8["value"] = val.box_weight
+                        temp8['label'] = val.box_weight
+                        temp8['type'] = 'box_weight'
+                        var temp9 = {}
+                        temp9["value"] = val.box_type
+                        temp9['label'] = val.box_type
+                        temp9['type'] = 'box_type'
+                        var temp10 = {}
+                        temp10["value"] = val.STREET
+                        temp10['label'] = val.STREET
+                        temp10['type'] = 'STREET'
+                        var temp11 = {}
+                        temp11["value"] = val.CITY
+                        temp11['label'] = val.CITY
+                        temp11['type'] = 'CITY'
+                        var temp12 = {}
+                        temp12["value"] = val.STATE_Name
+                        temp12['label'] = val.STATE_Name
+                        temp12['type'] = 'STATE_Name'
+                        var temp13 = {}
+                        temp13["value"] = val.contact_phone
+                        temp13['label'] = val.contact_phone
+                        temp13['type'] = 'contact_phone'
+                        var temp14 = {}
+                        temp14["value"] = val.remark
+                        temp14['label'] = val.remark
+                        temp14['type'] = 'remark'
+                        var temp15 = {}
+                        temp15["value"] = val.dlv_term
+                        temp15['label'] = val.dlv_term
+                        temp15['type'] = 'dlv_term'
+
+                        options.push(temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, temp11, temp12, temp13, temp14, temp15)
+
 
                     }, this)
                     this.setState({ dataTable: arrReport, filename: filename, result: responseJson.result }, () => {
@@ -261,6 +445,15 @@ class Transport_plan extends Component {
                     alert("มีข้อผิดพลาดเกิดขึ้น กรุณาลองใหม่")
                 }
             })
+    }
+
+    handleChange = (selectedOption) => {
+        // this.setState({ 
+        //     selectedOption,
+        //     PJID:selectedOption.value,
+        // });
+        console.log('selectedOption.value', selectedOption.value)
+        this.searchData(selectedOption)
     }
 
     compareBy(key) {
@@ -350,7 +543,7 @@ class Transport_plan extends Component {
                             </bs4.Input>
                         </bs4.Col>
                         <bs4.Col xs="2" >
-                            <bs4.Button color="info" onClick={() => { this.getData() }} > <MdIcon.MdSearch className="iconlg" /> SEARCH</bs4.Button>
+                            <bs4.Button color="info" onClick={() => { this.getData('') }} > <MdIcon.MdSearch className="iconlg" /> SEARCH</bs4.Button>
                         </bs4.Col>
                     </bs4.Row>
                     <br />
@@ -398,7 +591,7 @@ class Transport_plan extends Component {
                                 <th style={{ textAlign: "center" }}>Sale order<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('so')} /></th>
                                 <th style={{ textAlign: "center" }} >Customer Name<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('customer_name')} /></th>
                                 <th style={{ textAlign: "center" }} >เลขที่ INV<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('invoice')} /></th>
-                                <th style={{ textAlign: "center" }} >จำนวนกล่อง<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('box_qty')} /></th>
+                                <th style={{ textAlign: "center" }} >จำนวนกล่อง<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('box')} /></th>
                                 <th style={{ textAlign: "center" }} >น้ำหนักกล่อง<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('box_weight')} /></th>
                                 <th style={{ textAlign: "center" }} >ขนาดกล่อง<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('')} /></th>
                                 <th style={{ textAlign: "center" }} >ที่อยู่<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('STREET')} /></th>
