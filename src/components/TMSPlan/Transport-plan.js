@@ -11,6 +11,7 @@ import { browserHistory } from 'react-router';
 import { is_loader } from '../../actions'
 import Select from 'react-select';
 
+var arrStatusSOEN = { '0': 'Open', '1': 'Stock', '2': 'Credit', '3': 'Release' }
 var options = []
 const { proxy } = require('../../service')
 const { public_function } = require('../../service')
@@ -54,15 +55,14 @@ function table(data, columns) {
         table: {
             headerRows: 1,
             body: buildTableBody(data, columns),
-
         },
         layout: {
             hLineWidth: function (i, node) {
                 return 1;
-
-            }
+            },
         },
-        margin: [32, 15, 0, 0]
+        //margin: [0, 15, 0, 0],
+        widths: ['7.6%', '7.6%', '7.6%', '7.6%', '7.6%', '7.6%', '7.6%', '7.6%', '7.6%', '7.6%', '7.6%', '7.6%', '7.6%'],
     };
 }
 
@@ -76,65 +76,90 @@ class Transport_plan extends Component {
         this.state = {
             dateStart: moment(),
             dateEnd: moment(),
+            group: 'ALL',
             showTable: '',
             arrDataExcel: '',
-
+            dataTable: '',
+            result: '',
+            status: true,
+            filename: '',
+            express: false,
+            selectedOption: null,
         }
     }
 
     printPDF = () => {
         var pdfData = this.state.arrDataExcel
-        //console.log('pdfData',pdfData)
+        console.log('pdfData', pdfData)
 
-        //var name = this.state.file_name.split('_')
+        if (pdfData === '') {
+            alert('ไม่มีข้อมูล')
+        } else {
+            var name = this.state.filename.split('_')
 
-        var docDefinition = {
-            pageOrientation: 'landscape',
-            content: [
-                { text: 'รายงานแผนการจัดส่ง', style: 'header', fontSize: 16 },
-
-                table(pdfData, ['StatusSO', 'SaleOrder', 'CustomerName', 'เลขที่INV', 'จำนวนกล่อง', 'น้ำหนักกล่อง', 'ขนาดกล่อง',
-                    'ตำบล', 'อำเภอ', 'จังหวัด', 'เบอร์โทร', 'Remarks', 'สาเหตุของปัญหา', 'DeliveryBy'])
-            ],
-            defaultStyle: {
-                font: 'THSarabunNew',
-                fontSize: 12,
+            var docDefinition = {
+                pageSize: 'A4',
+                pageOrientation: 'landscape',
+                pageMargins: [10, 20, 40, 0],
+                content: [
+                    { text: 'รายงานแผนการจัดส่ง วันที่ ' + name[1] + ' ถึง ' + name[2], style: 'header', fontSize: 16, marginLeft: 40 },
+                    table(pdfData, ['StatusSO', 'SaleOrder', 'CustomerName', 'เลขที่INV', 'จำนวนกล่อง', 'น้ำหนักกล่อง', 'ขนาดกล่อง', 'ที่อยู่', 'อำเภอ', 'จังหวัด', 'เบอร์โทร', 'Remarks', 'DeliveryBy'])
+                ],
+                defaultStyle: {
+                    font: 'THSarabunNew',
+                    fontSize: 12,
+                }
             }
+            //pdfMake.createPdf(docDefinition).open()
+            pdfMake.createPdf(docDefinition).download(this.state.filename + '.pdf')
         }
-        //pdfMake.createPdf(docDefinition).open()
-        pdfMake.createPdf(docDefinition).download('testPDF' + '.pdf')
     }
 
     componentDidMount() {
-        this.setData_Excel()
+        this.getData('')
+    }
+
+    onChangeForm = (id, value) => {
+        this.setState({ [id]: value }, () => {
+            console.log("checkData", this.state)
+        })
+    }
+
+    onChangeExpress = () => {
+        this.setState({ express: !this.state.express }, () => {
+            console.log("checkData", this.state)
+        })
     }
 
     setData_Excel = () => {
         var arr = []
+        var result = this.state.result
+        var name = this.state.filename.split('_')
 
-        arrExcel_ = {
-            StatusSO: 'test',
-            SaleOrder: 'test',
-            CustomerName: 'test',
-            เลขที่INV: 'test',
-            จำนวนกล่อง: 'test',
-            น้ำหนักกล่อง: 'test',
-            ขนาดกล่อง: 'test',
-            ตำบล: 'test',
-            อำเภอ: 'test',
-            จังหวัด: 'test',
-            เบอร์โทร: 'test',
-            Remarks: 'test',
-            สาเหตุของปัญหา: 'test',
-            DeliveryBy: 'test',
-        }
-        arr.push(arrExcel_)
+        result.forEach(function (val, i) {
+            arrExcel_ = {
+                StatusSO: arrStatusSOEN[val.DPL_SO_STATUS],
+                SaleOrder: val.so,
+                CustomerName: val.customer_name,
+                เลขที่INV: val.invoice,
+                จำนวนกล่อง: val.box === 'null' || val.box === null ? '' : val.box + '/' + val.box_qty,
+                น้ำหนักกล่อง: val.box_weight === 'null' || val.box_weight === null ? '' : val.box_weight,
+                ขนาดกล่อง: val.box_type === 'null' || val.box_type === null ? '' : val.box_type,
+                ที่อยู่: val.STREET === 'null' || val.STREET === null ? '' : val.STREET,
+                อำเภอ: val.CITY === 'null' || val.CITY === null ? '' : val.CITY,
+                จังหวัด: val.STATE_Name === 'null' || val.STATE_Name === null ? '' : val.STATE_Name,
+                เบอร์โทร: val.contact_phone,
+                Remarks: val.remark === 'null' || val.remark === null ? '' : val.remark,
+                DeliveryBy: val.dlv_term === 'null' || val.dlv_term === null ? '' : val.dlv_term,
+            }
+            arr.push(arrExcel_)
+        });
 
-        var table = <div ref={el => (this.componentRef = el)}>
+        var table = <div style={{ padding: "20px", pageBreakAfter: "always" }} ref={el => (this.componentRef = el)}>
             <br />
-            <div style={{ textAlign: "center", fontSize: "25px", fontWeight: "800" }} >รายงานแผนการส่ง</div>
+            <div style={{ textAlign: "center", fontSize: "18px", fontWeight: "600" }} >รายงานแผนการส่ง วันที่ {name[1]} ถึง {name[2]}</div>
             <br />
-            <table class="table table-bordered" >
+            <bs4.Table bordered style={{ fontSize: "14px" }}>
                 <thead>
                     <th style={{ textAlign: "center" }}>Status SO</th>
                     <th style={{ textAlign: "center" }}>Sale order</th>
@@ -143,20 +168,336 @@ class Transport_plan extends Component {
                     <th style={{ textAlign: "center" }} >จำนวนกล่อง</th>
                     <th style={{ textAlign: "center" }} >น้ำหนักกล่อง</th>
                     <th style={{ textAlign: "center" }} >ขนาดกล่อง</th>
-                    <th style={{ textAlign: "center" }} >ตำบล</th>
+                    <th width="5%" style={{ textAlign: "center" }} >ที่อยู่</th>
                     <th style={{ textAlign: "center" }} >อำเภอ</th>
                     <th style={{ textAlign: "center" }} >จังหวัด</th>
                     <th style={{ textAlign: "center" }} >เบอร์โทร</th>
-                    <th style={{ textAlign: "center" }} >Remarks</th>
+                    <th width="5%" style={{ textAlign: "center" }} >Remarks</th>
                     <th style={{ textAlign: "center" }} >Delivery By</th>
                 </thead>
                 <tbody >
-                    {/* {this.state.dataTable} */}
+                    {this.state.dataTable}
                 </tbody>
-            </table>
+            </bs4.Table>
         </div>
 
         this.setState({ showTable: table, arrDataExcel: arr })
+    }
+
+    searchData = (value) => {
+        var props = this.props
+        props.dispatch(is_loader(true))
+
+        var arrReport = []
+        var arr = []
+        var result = this.state.result
+
+        result.forEach(function (val, i) {
+            var data
+            if (value.type === 'DPL_SO_STATUS') {
+                data = arrStatusSOEN[val.DPL_SO_STATUS]
+            } else if (value.type === 'so') {
+                data = val.end_point
+            } else if (value.type === 'customer_name') {
+                data = val.customer_name
+            } else if (value.type === 'box') {
+                data = val.box
+            } else if (value.type === 'box_qty') {
+                data = val.box_qty
+            } else if (value.type === 'box_weight') {
+                data = val.box_weight
+            } else if (value.type === 'box_type') {
+                data = val.box_type
+            } else if (value.type === 'STREET') {
+                data = val.STREET
+            } else if (value.type === 'CITY') {
+                data = val.CITY
+            } else if (value.type === 'STATE_Name') {
+                data = val.STATE_Name
+            } else if (value.type === 'contact_phone') {
+                data = val.contact_phone
+            } else if (value.type === 'remark') {
+                data = val.remark
+            } else if (value.type === 'dlv_term') {
+                data = val.dlv_term
+            }
+
+            if (value.value === data) {
+                arrReport.push(
+                    <tr>
+                        <td style={{ textAlign: "center" }}>{arrStatusSOEN[val.DPL_SO_STATUS]}</td>
+                        <td style={{ textAlign: "center" }}>{val.so}</td>
+                        <td style={{ textAlign: "center" }} >{val.customer_name}</td>
+                        <td style={{ textAlign: "center" }} >{val.invoice}</td>
+                        <td style={{ textAlign: "right" }} >{val.box}/{val.box_qty}</td>
+                        <td style={{ textAlign: "right" }} >{val.box_weight}</td>
+                        <td style={{ textAlign: "right" }} >{val.box_type}</td>
+                        <td style={{ textAlign: "center" }} >{val.STREET}</td>
+                        <td style={{ textAlign: "center" }} >{val.CITY}</td>
+                        <td style={{ textAlign: "center" }} >{val.STATE_Name}</td>
+                        <td style={{ textAlign: "center" }} >{val.contact_phone}</td>
+                        <td style={{ textAlign: "center" }} >{val.remark}</td>
+                        <td style={{ textAlign: "center" }} >{val.dlv_term}</td>
+                    </tr>
+                )
+
+                arr.push(val)
+
+                var temp2 = {}
+                temp2["value"] = arrStatusSOEN[val.DPL_SO_STATUS]
+                temp2['label'] = arrStatusSOEN[val.DPL_SO_STATUS]
+                temp2['type'] = 'DPL_SO_STATUS'
+                var temp3 = {}
+                temp3["value"] = val.so
+                temp3['label'] = val.so
+                temp3['type'] = 'so'
+                var temp4 = {}
+                temp4["value"] = val.customer_name
+                temp4['label'] = val.customer_name
+                temp4['type'] = 'customer_name'
+                var temp5 = {}
+                temp5["value"] = val.invoice
+                temp5['label'] = val.invoice
+                temp5['type'] = 'invoice'
+                var temp6 = {}
+                temp6["value"] = val.box
+                temp6['label'] = val.box
+                temp6['type'] = 'box'
+                var temp7 = {}
+                temp7["value"] = val.box_qty
+                temp7['label'] = val.box_qty
+                temp7['type'] = 'box_qty'
+                var temp8 = {}
+                temp8["value"] = val.box_weight
+                temp8['label'] = val.box_weight
+                temp8['type'] = 'box_weight'
+                var temp9 = {}
+                temp9["value"] = val.box_type
+                temp9['label'] = val.box_type
+                temp9['type'] = 'box_type'
+                var temp10 = {}
+                temp10["value"] = val.STREET
+                temp10['label'] = val.STREET
+                temp10['type'] = 'STREET'
+                var temp11 = {}
+                temp11["value"] = val.CITY
+                temp11['label'] = val.CITY
+                temp11['type'] = 'CITY'
+                var temp12 = {}
+                temp12["value"] = val.STATE_Name
+                temp12['label'] = val.STATE_Name
+                temp12['type'] = 'STATE_Name'
+                var temp13 = {}
+                temp13["value"] = val.contact_phone
+                temp13['label'] = val.contact_phone
+                temp13['type'] = 'contact_phone'
+                var temp14 = {}
+                temp14["value"] = val.remark
+                temp14['label'] = val.remark
+                temp14['type'] = 'remark'
+                var temp15 = {}
+                temp15["value"] = val.dlv_term
+                temp15['label'] = val.dlv_term
+                temp15['type'] = 'dlv_term'
+
+                options.push(temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, temp11, temp12, temp13, temp14, temp15)
+            }
+        });
+
+        this.setState({ dataTable: arrReport, result: arr }, () => {
+            props.dispatch(is_loader(false))
+            this.setData_Excel()
+        })
+    }
+
+    getData = () => {
+        var props = this.props
+        props.dispatch(is_loader(true))
+
+        var start = moment(this.state.dateStart).format('YYYY-MM-DD')
+        var end = moment(this.state.dateEnd).format('YYYY-MM-DD')
+        var group = this.state.group
+        var express = this.state.express
+        var _express
+
+        var filename = 'TMSPlan_' + start + '_' + end
+        var arrReport = []
+
+        if (express === false) {
+            _express = 0
+        } else {
+            _express = 1
+        }
+
+        var url = proxy.develop + 'TMSPlan/get_tms_plan/' + start + '&' + end + '&' + _express
+        console.log('----', url)
+
+        fetch(url)
+            .then(response => response.json())
+            .then((responseJson) => {
+                console.log("responseJsonLeft", responseJson.result)
+                if (responseJson.status === 200) {
+                    responseJson.result.forEach(function (val, i) {
+                        if (group === 'ALL') {
+                            arrReport.push(
+                                <tr>
+                                    <td style={{ textAlign: "center" }}>{arrStatusSOEN[val.DPL_SO_STATUS]}</td>
+                                    <td style={{ textAlign: "center" }}>{val.so}</td>
+                                    <td style={{ textAlign: "center" }} >{val.customer_name}</td>
+                                    <td style={{ textAlign: "center" }} >{val.invoice}</td>
+                                    <td style={{ textAlign: "right" }} >{val.box}/{val.box_qty}</td>
+                                    <td style={{ textAlign: "right" }} >{val.box_weight}</td>
+                                    <td style={{ textAlign: "right" }} >{val.box_type}</td>
+                                    <td style={{ textAlign: "center" }} >{val.STREET}</td>
+                                    <td style={{ textAlign: "center" }} >{val.CITY}</td>
+                                    <td style={{ textAlign: "center" }} >{val.STATE_Name}</td>
+                                    <td style={{ textAlign: "center" }} >{val.contact_phone}</td>
+                                    <td style={{ textAlign: "center" }} >{val.remark}</td>
+                                    <td style={{ textAlign: "center" }} >{val.dlv_term}</td>
+                                </tr>
+                            )
+                        } else if (group === val.sales_group) {
+                            arrReport.push(
+                                <tr>
+                                    <td style={{ textAlign: "center" }}>{arrStatusSOEN[val.DPL_SO_STATUS]}</td>
+                                    <td style={{ textAlign: "center" }}>{val.so}</td>
+                                    <td style={{ textAlign: "center" }} >{val.customer_name}</td>
+                                    <td style={{ textAlign: "center" }} >{val.invoice}</td>
+                                    <td style={{ textAlign: "right" }} >{val.box}/{val.box_qty}</td>
+                                    <td style={{ textAlign: "right" }} >{val.box_weight}</td>
+                                    <td style={{ textAlign: "right" }} >{val.box_type}</td>
+                                    <td style={{ textAlign: "center" }} >{val.STREET}</td>
+                                    <td style={{ textAlign: "center" }} >{val.CITY}</td>
+                                    <td style={{ textAlign: "center" }} >{val.STATE_Name}</td>
+                                    <td style={{ textAlign: "center" }} >{val.contact_phone}</td>
+                                    <td style={{ textAlign: "center" }} >{val.remark}</td>
+                                    <td style={{ textAlign: "center" }} >{val.dlv_term}</td>
+                                </tr>
+                            )
+                        }
+
+                        var temp2 = {}
+                        temp2["value"] = arrStatusSOEN[val.DPL_SO_STATUS]
+                        temp2['label'] = arrStatusSOEN[val.DPL_SO_STATUS]
+                        temp2['type'] = 'DPL_SO_STATUS'
+                        var temp3 = {}
+                        temp3["value"] = val.so
+                        temp3['label'] = val.so
+                        temp3['type'] = 'so'
+                        var temp4 = {}
+                        temp4["value"] = val.customer_name
+                        temp4['label'] = val.customer_name
+                        temp4['type'] = 'customer_name'
+                        var temp5 = {}
+                        temp5["value"] = val.invoice
+                        temp5['label'] = val.invoice
+                        temp5['type'] = 'invoice'
+                        var temp6 = {}
+                        temp6["value"] = val.box
+                        temp6['label'] = val.box
+                        temp6['type'] = 'box'
+                        var temp7 = {}
+                        temp7["value"] = val.box_qty
+                        temp7['label'] = val.box_qty
+                        temp7['type'] = 'box_qty'
+                        var temp8 = {}
+                        temp8["value"] = val.box_weight
+                        temp8['label'] = val.box_weight
+                        temp8['type'] = 'box_weight'
+                        var temp9 = {}
+                        temp9["value"] = val.box_type
+                        temp9['label'] = val.box_type
+                        temp9['type'] = 'box_type'
+                        var temp10 = {}
+                        temp10["value"] = val.STREET
+                        temp10['label'] = val.STREET
+                        temp10['type'] = 'STREET'
+                        var temp11 = {}
+                        temp11["value"] = val.CITY
+                        temp11['label'] = val.CITY
+                        temp11['type'] = 'CITY'
+                        var temp12 = {}
+                        temp12["value"] = val.STATE_Name
+                        temp12['label'] = val.STATE_Name
+                        temp12['type'] = 'STATE_Name'
+                        var temp13 = {}
+                        temp13["value"] = val.contact_phone
+                        temp13['label'] = val.contact_phone
+                        temp13['type'] = 'contact_phone'
+                        var temp14 = {}
+                        temp14["value"] = val.remark
+                        temp14['label'] = val.remark
+                        temp14['type'] = 'remark'
+                        var temp15 = {}
+                        temp15["value"] = val.dlv_term
+                        temp15['label'] = val.dlv_term
+                        temp15['type'] = 'dlv_term'
+
+                        options.push(temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, temp11, temp12, temp13, temp14, temp15)
+
+
+                    }, this)
+                    this.setState({ dataTable: arrReport, filename: filename, result: responseJson.result }, () => {
+                        props.dispatch(is_loader(false))
+                        this.setData_Excel()
+                    })
+                } else {
+                    alert("มีข้อผิดพลาดเกิดขึ้น กรุณาลองใหม่")
+                }
+            })
+    }
+
+    handleChange = (selectedOption) => {
+        // this.setState({ 
+        //     selectedOption,
+        //     PJID:selectedOption.value,
+        // });
+        console.log('selectedOption.value', selectedOption.value)
+        this.searchData(selectedOption)
+    }
+
+    compareBy(key) {
+        if (this.state.status !== true) {
+            return function (a, b) {
+                if (a[key] < b[key]) return -1;
+                if (a[key] > b[key]) return 1;
+                return 0;
+            };
+        } else {
+            return function (a, b) {
+                if (a[key] > b[key]) return -1;
+                if (a[key] < b[key]) return 1;
+                return 0;
+            };
+        }
+    }
+
+    sortBy(key) {
+        let arrayCopy = [...this.state.result]
+        var arrShowData = []
+        arrayCopy.sort(this.compareBy(key)).forEach(function (val, i) { //sort data and push arrShowData new
+            arrShowData.push(
+                <tr>
+                    <td style={{ textAlign: "center" }}>{arrStatusSOEN[val.DPL_SO_STATUS]}</td>
+                    <td style={{ textAlign: "center" }}>{val.so}</td>
+                    <td style={{ textAlign: "center" }} >{val.customer_name}</td>
+                    <td style={{ textAlign: "center" }} >{val.invoice}</td>
+                    <td style={{ textAlign: "right" }} >{val.box}/{val.box_qty}</td>
+                    <td style={{ textAlign: "right" }} >{val.box_weight}</td>
+                    <td style={{ textAlign: "right" }} >{val.box_type}</td>
+                    <td style={{ textAlign: "center" }} >{val.STREET}</td>
+                    <td style={{ textAlign: "center" }} >{val.CITY}</td>
+                    <td style={{ textAlign: "center" }} >{val.STATE_Name}</td>
+                    <td style={{ textAlign: "center" }} >{val.contact_phone}</td>
+                    <td style={{ textAlign: "center" }} >{val.remark}</td>
+                    <td style={{ textAlign: "center" }} >{val.dlv_term}</td>
+                </tr>
+            )
+        }, this)
+        this.setState({
+            dataTable: arrShowData,
+            status: !this.state.status
+        }, () => { this.setData_Excel() });
     }
 
     render() {
@@ -172,7 +513,7 @@ class Transport_plan extends Component {
                             <DatePicker
                                 dateFormat="YYYY-MM-DD"
                                 selected={this.state.dateStart}
-                                onChange={(date) => this.onChangeDateTime("dateStart", date)}
+                                onChange={(date) => this.onChangeForm("dateStart", date)}
                             />
                         </div>
                         <bs4.Label style={{ fontWeight: "600", fontSize: "16px", margin: "10px 0px 0px 20px" }} >To:</bs4.Label>
@@ -180,39 +521,35 @@ class Transport_plan extends Component {
                             <DatePicker
                                 dateFormat="YYYY-MM-DD"
                                 selected={this.state.dateEnd}
-                                onChange={(date) => this.onChangeDateTime("dateEnd", date)}
+                                onChange={(date) => this.onChangeForm("dateEnd", date)}
                             />
                         </div>
                         <bs4.Label style={{ fontWeight: "500", fontSize: "16px", margin: "10px 0px 0px 50px" }}>
-                            <bs4.Input type="checkbox" />{' '}
+                            <bs4.Input type="checkbox" name="express" onChange={() => this.onChangeExpress()} />{' '}
                             Express
                         </bs4.Label>
 
-                        <bs4.Label style={{ fontWeight: "500", fontSize: "16px", margin: "10px 10px 0px 20px" }} >SaleGroup</bs4.Label>
+                        <bs4.Label style={{ fontWeight: "500", fontSize: "16px", margin: "10px 10px 0px 20px" }} >SaleGroup:</bs4.Label>
                         <bs4.Col sm='3'>
                             <bs4.Input type="select" name="group" id="exampleSelect" onChange={(e) => this.onChangeForm(e.target.name, e.target.value)}>
                                 <option value='ALL'>ALL</option>
-                                <option value='Order DL กทม.'>Dealer-กรุงเทพฯ</option>
-                                <option value='Order DL ตจว.'>Dealer-ต่างจังหวัด</option>
-                                <option value='Order CV กทม.'>Cashvan-กรุงเทพฯ</option>
-                                <option value='Order CV ตจว.'>Cashvan-ต่างจังหวัด</option>
-                                <option value='Order Express'>Express</option>
-                                <option value='Order Trade1'>Trade1</option>
-                                <option value='Order Trade2'>Trade2</option>
-                                <option value='Online'>Online</option>
-                                <option value='Claim'>Claim</option>
-                                <option value='Other'>Other</option>
+                                <option value='Dealer - กรุงเทพฯ'>Dealer - กรุงเทพฯ</option>
+                                <option value='Dealer - ต่างจังหวัด'>Dealer - ต่างจังหวัด</option>
+                                <option value='Cashvan - กรุงเทพฯ'>Cashvan - กรุงเทพฯ</option>
+                                <option value='Cashvan - ต่างจังหวัด'>Cashvan - ต่างจังหวัด</option>
+                                <option value='Consing - ขายขาด'>Consing - ขายขาด</option>
+                                <option value='Consing - ฝากขาย'>Consing - ฝากขาย</option>
                                 {/* <option value='Claim'>Claim</option> */}
                             </bs4.Input>
                         </bs4.Col>
                         <bs4.Col xs="2" >
-                            <bs4.Button color="info" onClick={() => { this.getReport('', '', '') }} > <MdIcon.MdSearch className="iconlg" /> SEARCH</bs4.Button>
+                            <bs4.Button color="info" onClick={() => { this.getData('') }} > <MdIcon.MdSearch className="iconlg" /> SEARCH</bs4.Button>
                         </bs4.Col>
                     </bs4.Row>
                     <br />
                     <bs4.Row>
                         <bs4.Col>
-                            <Workbook filename={'testExcel' + '.xlsx'} element={<bs4.Button color='success' outline style={{ fontSize: "15px", fontWeight: "600" }}>EXCEL</bs4.Button>} >
+                            <Workbook filename={this.state.filename + '.xlsx'} element={<bs4.Button color='success' outline style={{ fontSize: "15px", fontWeight: "600" }}>EXCEL</bs4.Button>} >
                                 <Workbook.Sheet data={this.state.arrDataExcel} name="projectReport" >
                                     <Workbook.Column label="Status SO" value="StatusSO" />
                                     <Workbook.Column label="Sale order" value="SaleOrder" />
@@ -221,7 +558,7 @@ class Transport_plan extends Component {
                                     <Workbook.Column label="จำนวนกล่อง" value="จำนวนกล่อง" />
                                     <Workbook.Column label="น้ำหนักกล่อง" value="น้ำหนักกล่อง" />
                                     <Workbook.Column label="ขนาดกล่อง" value="ขนาดกล่อง" />
-                                    <Workbook.Column label="ตำบล" value="ตำบล" />
+                                    <Workbook.Column label="ที่อยู่" value="ที่อยู่" />
                                     <Workbook.Column label="อำเภอ" value="อำเภอ" />
                                     <Workbook.Column label="จังหวัด" value="จังหวัด" />
                                     <Workbook.Column label="เบอร์โทร" value="เบอร์โทร" />
@@ -250,67 +587,22 @@ class Transport_plan extends Component {
                     <bs4.Row >
                         <bs4.Table striped hover bordered style={{ margin: "10px 10px 10px 10px", fontSize: "15px", fontWeight: "600" }}  >
                             <thead style={{ backgroundColor: "#1E90FF", whiteSpace: "nowrap", color: 'white' }} >
-                                <th style={{ textAlign: "center" }}>Status SO</th>
-                                <th style={{ textAlign: "center" }}>Sale order<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('start_date')} /></th>
-                                <th style={{ textAlign: "center" }} >Customer Name<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('start_point')} /></th>
-                                <th style={{ textAlign: "center" }} >เลขที่ INV<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('end_point')} /></th>
-                                <th style={{ textAlign: "center" }} >จำนวนกล่อง<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('qty_product')} /></th>
-                                <th style={{ textAlign: "center" }} >น้ำหนักกล่อง<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('rec_time')} /></th>
-                                <th style={{ textAlign: "center" }} >ขนาดกล่อง<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('exit_time')} /></th>
-                                <th style={{ textAlign: "center" }} >ตำบล<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('finish_time')} /></th>
-                                <th style={{ textAlign: "center" }} >อำเภอ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('car_license')} /></th>
-                                <th style={{ textAlign: "center" }} >จังหวัด<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('car_license')} /></th>
-                                <th style={{ textAlign: "center" }} >เบอร์โทร<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('car_type')} /></th>
-                                <th style={{ textAlign: "center" }} >Remarks<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('mess_code')} /></th>
-                                <th style={{ textAlign: "center" }} >Delivery By<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('remark')} /></th>
+                                <th style={{ textAlign: "center" }}>Status SO<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('DPL_SO_STATUS')} /></th>
+                                <th style={{ textAlign: "center" }}>Sale order<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('so')} /></th>
+                                <th style={{ textAlign: "center" }} >Customer Name<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('customer_name')} /></th>
+                                <th style={{ textAlign: "center" }} >เลขที่ INV<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('invoice')} /></th>
+                                <th style={{ textAlign: "center" }} >จำนวนกล่อง<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('box')} /></th>
+                                <th style={{ textAlign: "center" }} >น้ำหนักกล่อง<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('box_weight')} /></th>
+                                <th style={{ textAlign: "center" }} >ขนาดกล่อง<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('')} /></th>
+                                <th style={{ textAlign: "center" }} >ที่อยู่<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('STREET')} /></th>
+                                <th style={{ textAlign: "center" }} >อำเภอ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('CITY')} /></th>
+                                <th style={{ textAlign: "center" }} >จังหวัด<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('STATE_Name')} /></th>
+                                <th style={{ textAlign: "center" }} >เบอร์โทร<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('contact_phone')} /></th>
+                                <th style={{ textAlign: "center" }} >Remarks<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('remark')} /></th>
+                                <th style={{ textAlign: "center" }} >Delivery By<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('dlv_term')} /></th>
                             </thead>
                             <tbody >
-                                {/* {this.state.dataTable} */}
-                                <tr>
-                                    <td style={{ textAlign: "center" }}>Status SO</td>
-                                    <td style={{ textAlign: "center" }}>Sale order</td>
-                                    <td style={{ textAlign: "center" }} >CustomerName</td>
-                                    <td style={{ textAlign: "center" }} >เลขที่ INV</td>
-                                    <td style={{ textAlign: "center" }} >จำนวนกล่อง</td>
-                                    <td style={{ textAlign: "center" }} >น้ำหนักกล่อง</td>
-                                    <td style={{ textAlign: "center" }} >ขนาดกล่อง</td>
-                                    <td style={{ textAlign: "center" }} >ตำบล</td>
-                                    <td style={{ textAlign: "center" }} >อำเภอ</td>
-                                    <td style={{ textAlign: "center" }} >จังหวัด</td>
-                                    <td style={{ textAlign: "center" }} >เบอร์โทร</td>
-                                    <td style={{ textAlign: "center" }} >Remarks</td>
-                                    <td style={{ textAlign: "center" }} >Delivery By</td>
-                                </tr>
-                                <tr>
-                                    <td style={{ textAlign: "center" }}>Status SO</td>
-                                    <td style={{ textAlign: "center" }}>Sale order</td>
-                                    <td style={{ textAlign: "center" }} >CustomerName</td>
-                                    <td style={{ textAlign: "center" }} >เลขที่ INV</td>
-                                    <td style={{ textAlign: "center" }} >จำนวนกล่อง</td>
-                                    <td style={{ textAlign: "center" }} >น้ำหนักกล่อง</td>
-                                    <td style={{ textAlign: "center" }} >ขนาดกล่อง</td>
-                                    <td style={{ textAlign: "center" }} >ตำบล</td>
-                                    <td style={{ textAlign: "center" }} >อำเภอ</td>
-                                    <td style={{ textAlign: "center" }} >จังหวัด</td>
-                                    <td style={{ textAlign: "center" }} >เบอร์โทร</td>
-                                    <td style={{ textAlign: "center" }} >Remarks</td>
-                                    <td style={{ textAlign: "center" }} >Delivery By</td>
-                                </tr>
-                                <tr>
-                                    <td style={{ textAlign: "center" }}>Status SO</td>
-                                    <td style={{ textAlign: "center" }}>Sale order</td>
-                                    <td style={{ textAlign: "center" }} >CustomerName</td>
-                                    <td style={{ textAlign: "center" }} >เลขที่ INV</td>
-                                    <td style={{ textAlign: "center" }} >จำนวนกล่อง</td>
-                                    <td style={{ textAlign: "center" }} >น้ำหนักกล่อง</td>
-                                    <td style={{ textAlign: "center" }} >ขนาดกล่อง</td>
-                                    <td style={{ textAlign: "center" }} >ตำบล</td>
-                                    <td style={{ textAlign: "center" }} >อำเภอ</td>
-                                    <td style={{ textAlign: "center" }} >จังหวัด</td>
-                                    <td style={{ textAlign: "center" }} >เบอร์โทร</td>
-                                    <td style={{ textAlign: "center" }} >Remarks</td>
-                                    <td style={{ textAlign: "center" }} >Delivery By</td>
-                                </tr>
+                                {this.state.dataTable}
                             </tbody>
                         </bs4.Table>
                     </bs4.Row>
