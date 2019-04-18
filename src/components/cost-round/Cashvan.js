@@ -52,7 +52,7 @@ class Cashvan extends Component {
                                 <td align="right">{public_function.numberFormat(val.bill, 0)}</td>
                                 <td><bs4.Input /></td>
                                 <td><bs4.Input /></td>
-                                <td> </td>
+                                <td align="right">{public_function.numberFormat(val.Net_cost, 0)}</td>
                                 <td><bs4.Input /></td>
                                 <td> </td>
                             </tr>

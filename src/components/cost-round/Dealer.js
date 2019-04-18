@@ -55,7 +55,7 @@ class Dealer extends Component {
                                 <td align="right">{public_function.numberFormat(val.shop, 0)}</td>
                                 <td><bs4.Input /></td>
                                 <td><bs4.Input /></td>
-                                <td> </td>
+                                <td align="right">{val.Net_cost}</td>
                                 <td><bs4.Input /></td>
                                 <td> </td>
                             </tr>
