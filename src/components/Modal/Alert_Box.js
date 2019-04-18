@@ -28,7 +28,7 @@ class Alert_Box extends Component {
         <bs4.Modal backdrop="static" isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
           <bs4.ModalHeader toggle={this.toggle}>{this.state.modalHeader}</bs4.ModalHeader>
           <bs4.ModalBody>
-            {this.state.modalBody}
+            <p style={{textAlign:"center"}} >{this.state.modalBody}</p>
           </bs4.ModalBody>
           <bs4.ModalFooter>
             <bs4.Button style={{width:"100px"}} color="danger" onClick={this.toggle}>Cancel</bs4.Button>

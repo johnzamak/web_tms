@@ -95,7 +95,7 @@ const public_functions = {
                 .then((responseJson) => {
                     console.log(apiName, responseJson)
                     if (responseJson.status === 200) {
-                        reslove(responseJson.result)
+                        reslove(responseJson)
                     } else {
                         reslove(false)
                     }

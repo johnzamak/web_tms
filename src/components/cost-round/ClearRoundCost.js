@@ -4,6 +4,7 @@ import * as MdIcon from 'react-icons/lib/md'
 import { connect } from 'react-redux'
 import DatePicker from "react-datepicker"
 import ModalConfirmBox from "../Modal/Confirm_Box"
+import ModalAlertBox from "../Modal/Alert_Box"
 
 const moment = require("moment")
 const addMonths = require('addmonths')
@@ -25,8 +26,8 @@ class ClearRoundCost extends Component {
             option_messenger: [],
             arr_data_api: [],
             checkStat: true,
-            confirmOpen: false,
-            alertOpen:false
+            is_confirm: false,
+            is_alert: false
         }
     }
     get_messenger(self) {
@@ -49,10 +50,12 @@ class ClearRoundCost extends Component {
             })
     }
     onChange_type_mess = (e) => {
+        var ship = $('#type_mess option:selected').text()
         var val = e.target.value
         var self = this
         this.setState({
-            type_mess: val
+            type_mess: val,
+            num_ship: ship
         }, () => {
             self.get_messenger(self)
         })
@@ -69,9 +72,9 @@ class ClearRoundCost extends Component {
     }
     _onClick_search = async () => {
         var messCode = this.state.mess_code, inDate = moment(this.state.input_date).format("YYYY-MM-DD")
-        var url_roundMess = proxy.develop + "round-cost/get-round-mess/" + inDate + "&" + messCode
-        var url_shipCode = proxy.develop + "round-cost/get-group-shipCode/" + inDate + "&" + messCode
-        var url_billCost = proxy.develop + "round-cost/get-group-billCost/" + inDate + "&" + messCode
+        var url_roundMess = proxy.main + "round-cost/get-round-mess/" + inDate + "&" + messCode + "&" + this.state.num_ship
+        var url_shipCode = proxy.main + "round-cost/get-group-shipCode/" + inDate + "&" + messCode + "&" + this.state.num_ship
+        var url_billCost = proxy.main + "round-cost/get-group-billCost/" + inDate + "&" + messCode + "&" + this.state.num_ship
         await public_function.is_loading(this.props, true)
         var res_roundMess = await public_function.api_get(url_roundMess, "getDataRoundMess")
         // var res_cal = await this._setDataforCal(this,res_roundMess)
@@ -81,10 +84,14 @@ class ClearRoundCost extends Component {
         // var res_cal = await this._setDataforCal(this,res_billCost)
 
         var loading_false1 = await this._setDataTableRoundMess(this, res_roundMess)
-        if (res_billCost.length > 0 && res_billCost.length > 0) {
-            var loading_false = await this._calRoundCost_Mess_Dealer(this, res_shipCode, res_billCost)
+        if (messCode.substring(0, 1) === "S") {
+            var loading_false = await this._calRoundCost_Staff(this, res_shipCode)
         } else {
-            this.setState({ show_tblCost: [] })
+            if (res_billCost.length > 0 && res_billCost.length > 0) {
+                var loading_false = await this._calRoundCost_Mess_Dealer(this, res_shipCode, res_billCost)
+            } else {
+                this.setState({ show_tblCost: [] })
+            }
         }
 
         await public_function.is_loading(this.props, loading_false)
@@ -92,7 +99,8 @@ class ClearRoundCost extends Component {
     }
     _setDataTableRoundMess(self, result) {
         return new Promise((reslove, reject) => {
-            var tBody = [], tbl = []
+            var tBody = [], tbl = [], rateCost = 0
+            var messCode = this.state.mess_code
             if (result == false) {
                 tBody.push(
                     <tr>
@@ -101,6 +109,11 @@ class ClearRoundCost extends Component {
                 )
             } else {
                 result.forEach((val, i) => {
+                    if (messCode.substring(0, 1) === "S") {
+                        rateCost = val.ship_cost2
+                    } else {
+                        rateCost = val.ship_cost
+                    }
                     tBody.push(
                         <tr>
                             <td style={{ textAlign: "center" }} > {(i + 1)} </td>
@@ -110,7 +123,7 @@ class ClearRoundCost extends Component {
                             <td style={{ textAlign: "left" }} > {val.ship_name} </td>
                             <td style={{ textAlign: "center" }} > {val.car_type} </td>
                             <td style={{ textAlign: "center" }} > {val.Trip} </td>
-                            <td style={{ textAlign: "right" }} > {val.ship_cost} </td>
+                            <td style={{ textAlign: "right" }} > {rateCost} </td>
                             {/* <td style={{ textAlign: "right" }} > {val.ship_cost} </td> */}
                         </tr>
                     )
@@ -119,14 +132,14 @@ class ClearRoundCost extends Component {
             tbl.push(
                 <bs4.Table>
                     <thead className="bg-primary" >
-                        <th>#</th>
-                        <th>วันที่</th>
-                        <th>เอกสาร INV.</th>
-                        <th>ชื่อลูกค้า</th>
-                        <th>สถานที่ส่ง</th>
-                        <th>ประเภทรถ</th>
-                        <th>ทริป</th>
-                        <th>เรทจ่าย</th>
+                        <th style={{ textAlign: "center" }} >#</th>
+                        <th style={{ textAlign: "center" }} >วันที่</th>
+                        <th style={{ textAlign: "center" }} >เอกสาร INV.</th>
+                        <th style={{ textAlign: "center" }} >ชื่อลูกค้า</th>
+                        <th style={{ textAlign: "center" }} >สถานที่ส่ง</th>
+                        <th style={{ textAlign: "center" }} >ประเภทรถ</th>
+                        <th style={{ textAlign: "center" }} >ทริป</th>
+                        <th style={{ textAlign: "center" }} >เรทจ่าย</th>
                         {/* <th>จ่ายจริง</th> */}
                     </thead>
                     <tbody>
@@ -137,6 +150,50 @@ class ClearRoundCost extends Component {
             self.setState({
                 show_table: tbl,
                 data_table: result
+            }, () => {
+                reslove(false)
+            })
+        })
+    }
+    _calRoundCost_Staff(self, arrRoundCost) {
+        return new Promise((reslove) => {
+            var checki = 0, costTable = [], roundCost = 0
+            arrRoundCost.forEach((val, i) => {
+                if (checki === 0) {
+                    roundCost = roundCost + val.ship_cost2
+                } else {
+                    roundCost = roundCost + val.staff_cost
+                }
+                if ((i + 1) < arrRoundCost.length) {
+                    if (arrRoundCost[i + 1].Trip == val.Trip) {
+                        checki++
+                    } else {
+                        checki = 0
+                    }
+                }
+            })
+            costTable.push(
+                <bs4.Table>
+                    <tr>
+                        <th>รวมค่ารอบ</th>
+                        <th style={{ textAlign: "right" }} > {public_function.numberFormat(roundCost)} </th>
+                    </tr>
+                    <tr>
+                        <th>รวมค่าร้าน</th>
+                        <th style={{ textAlign: "right" }} > {public_function.numberFormat(0)} </th>
+                    </tr>
+                    <tr>
+                        <th>สุทธิทั้งหมด</th>
+                        <th style={{ textAlign: "right" }} > {roundCost} </th>
+                    </tr>
+                </bs4.Table>
+            )
+            self.setState({
+                show_tblCost: costTable,
+                round_cost: roundCost,
+                shop_cost: 0,
+                total_cost: roundCost,
+                car_type: 99
             }, () => {
                 reslove(false)
             })
@@ -196,7 +253,13 @@ class ClearRoundCost extends Component {
                     </tr>
                 </bs4.Table>
             )
-            self.setState({ show_tblCost: costTable }, () => {
+            self.setState({
+                show_tblCost: costTable,
+                round_cost: roundCost,
+                shop_cost: shopCost,
+                total_cost: totalCost,
+                car_type: carType
+            }, () => {
                 reslove(false)
             })
         })
@@ -225,17 +288,31 @@ class ClearRoundCost extends Component {
     }
     _onClick_saveData = async () => {
         this.setState({
-            modal: true
+            is_confirm: true
         })
     }
-    _confirm = (conf) => {
+    _confirm = async (conf) => {
         if (conf) {
-            console.log("yrdyyy")
-            // var url_save = proxy.develop + "round-cost/cost-round-mess/"
-            // var dataSend = []
-            // await public_function.is_loading(this.props, true)
-            // var loading_false = await public_function.api_post(url_save, "postSaveData", dataSend)
-            // await public_function.is_loading(this.props, loading_false)
+            var dataSend = [{
+                mess_code: this.state.mess_code,
+                mess_name: this.state.mess_name,
+                clearing_date: this.state.input_date,
+                round_cost: this.state.round_cost,
+                bill_cost: this.state.shop_cost,
+                net_cost: this.state.total_cost,
+                car_type: this.state.car_type,
+            }]
+            var url_save = proxy.main + "round-cost/cost-round-mess/"
+            await public_function.is_loading(this.props, true)
+            var res_post = await public_function.api_post(url_save, "postSaveData", dataSend)
+            this.setState({ is_confirm: false })
+            if (res_post.status === 200) {
+                await public_function.is_loading(this.props, false)
+                this.setState({ is_alert: true, modal_body: "บันทึกข้อมูลเรียบร้อยแล้ว" })
+            } else {
+                await public_function.is_loading(this.props, false)
+                this.setState({ is_alert: true, modal_body: "ผิดพลาด! บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่" })
+            }
         }
     }
     render() {
@@ -252,6 +329,9 @@ class ClearRoundCost extends Component {
                                         <option value="">โปรดเลือกกลุ่มงาน</option>
                                         <option value="MDL">Dealer</option>
                                         <option value="MCV">Cashvan</option>
+                                        <option value="SDL">Staff Ship1</option>
+                                        <option value="SDL">Staff Ship2</option>
+                                        <option value="SDL">Staff Ship3</option>
                                     </bs4.Input>
                                 </div>
                             </bs4.FormGroup>
@@ -305,7 +385,8 @@ class ClearRoundCost extends Component {
                     </bs4.Row>
 
                 </bs4.Container>
-                <ModalConfirmBox confirmOpen={this.state.modal} checkStat={this._confirm} />
+                <ModalAlertBox alertOpen={this.state.is_alert} modalBody={this.state.modal_body} />
+                <ModalConfirmBox confirmOpen={this.state.is_confirm} checkStat={this._confirm} />
             </div>
         )
     }

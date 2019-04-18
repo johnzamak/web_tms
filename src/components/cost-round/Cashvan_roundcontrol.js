@@ -95,7 +95,7 @@ class Cashvan_roundcontrol extends Component {
             props.dispatch(is_loader(true))
             var countBill = 0
             var arrReport = []
-            var url = proxy.develop + 'get-daily-costmess-MCV/' + date + '&' + id
+            var url = proxy.main + 'get-daily-costmess-MCV/' + date + '&' + id
             console.log('----', url)
             fetch(url)
                 .then(response => response.json())

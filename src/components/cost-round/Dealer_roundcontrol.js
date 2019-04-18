@@ -97,7 +97,7 @@ class Dealer_roundcontrol extends Component {
             var props = this.props
             props.dispatch(is_loader(true))
             var arrReport = []
-            var url = proxy.develop + 'get-daily-costmess-MDL/' + date + '&' + id + '&' + type
+            var url = proxy.main + 'get-daily-costmess-MDL/' + date + '&' + id + '&' + type
             console.log('----', url)
             fetch(url)
                 .then(response => response.json())

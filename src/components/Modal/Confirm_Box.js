@@ -35,7 +35,7 @@ class Confirm_Box extends Component {
                 <bs4.Modal backdrop="static" isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <bs4.ModalHeader toggle={this.toggle}>{this.state.inProps.modalHeader}</bs4.ModalHeader>
                     <bs4.ModalBody>
-                        {this.state.inProps.modalBody}
+                    <p style={{textAlign:"center"}} >{this.state.inProps.modalBody}</p>
                     </bs4.ModalBody>
                     <bs4.ModalFooter>
                         <bs4.Button style={{width:"100px"}} color="success" onClick={this.onClick_ok}>OK</bs4.Button>
