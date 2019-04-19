@@ -53,7 +53,7 @@ function table(data, columns) {
     return {
         table: {
             body: buildTableBody(data, columns),
-
+            widths: ['3%', '7%', '8%', '8%', '6.5%', '8%', '6%', '6%', '9%', '6%', '6%', '9%', '8.5%', '14%'],
         },
         layout: {
             hLineWidth: function (i, node) {
@@ -94,9 +94,9 @@ class Report_Timeable extends Component {
         var docDefinition = {
             pageSize: 'A4',
             pageOrientation: 'landscape',
-            pageMargins: [ 20, 20, 40, 0 ],
+            pageMargins: [ 12, 20, 40, 0 ],
             content: [
-                { text: 'รายงานแสดงข้อมูลรอบรถ วันที่ ' + name[1] + ' ถึง ' + name[2], style: 'header', fontSize: 16 },
+                { text: 'รายงานแสดงข้อมูลรอบรถ วันที่ ' + name[1] + ' ถึง ' + name[2], style: 'header', fontSize: 16, marginLeft: 280 },
                 { text: ' ', style: 'header', fontSize: 10 },
                 table(pdfData, ['ลำดับ', 'วันที่', 'สถานที่รับสินค้า', 'สถานที่ส่งสินค้า', 'จำนวนสินค้า', 'เวลาเข้ารับสินค้า', 'เวลาออก', 'เวลาถึง', 'เวลาเดินทาง', 'ทะเบียนรถ', 'ประเภทรถ', 'ชื่อผู้ขับ', 'สาเหตุของปัญหา', 'หมายเหตุ'])
             ],
