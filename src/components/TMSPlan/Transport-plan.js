@@ -331,7 +331,7 @@ class Transport_plan extends Component {
             _express = 1
         }
 
-        var url = proxy.develop + 'TMSPlan/get_tms_plan/' + start + '&' + end + '&' + _express
+        var url = proxy.main + 'TMSPlan/get_tms_plan/' + start + '&' + end + '&' + _express
         console.log('----', url)
 
         fetch(url)
