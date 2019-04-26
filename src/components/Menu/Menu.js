@@ -6,7 +6,7 @@ import { loadState } from "../../localStorage"
 class Menu extends Component {
     render() {
         const { Level_User } = loadState("data_user")[0]
-        const { Username } = loadState("data_webno")[0]
+        const {Username} = (loadState("data_webno") != false) ? loadState("data_webno")[0] : { Username: "" }
         return (
             <div>
                 <bs4.Navbar color="light" light expand="md">
@@ -45,7 +45,7 @@ class Menu extends Component {
                                     งาน Kerry DHL
                                 </bs4.DropdownItem>
                                 {
-                                    (Username === "HR" || Username === "IT") ?
+                                    (typeof Username != "undefined" || Username != false) && (Username === "HR" || Username === "IT") ?
                                         <bs4.DropdownItem href="/cost-round/clear-cost" >
                                             เคลียร์เงินค่ารอบแมส
                                     </bs4.DropdownItem> : ""
