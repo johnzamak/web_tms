@@ -54,6 +54,7 @@ function table(data, columns) {
     return {
         table: {
             headerRows: 1,
+            widths: ['5%', '9%', '10%', '9%', '6%', '6.5%', '6%', '12%', '9%', '9%', '7.5%', '10%', '6%'],
             body: buildTableBody(data, columns),
         },
         layout: {
@@ -61,8 +62,7 @@ function table(data, columns) {
                 return 1;
             },
         },
-        //margin: [0, 15, 0, 0],
-        widths: ['7.6%', '7.6%', '7.6%', '7.6%', '7.6%', '7.6%', '7.6%', '7.6%', '7.6%', '7.6%', '7.6%', '7.6%', '7.6%'],
+
     };
 }
 
@@ -100,9 +100,11 @@ class Transport_plan extends Component {
             var docDefinition = {
                 pageSize: 'A4',
                 pageOrientation: 'landscape',
-                pageMargins: [10, 20, 40, 0],
+                pageMargins: [5, 20, 40, 0],
                 content: [
-                    { text: 'รายงานแผนการจัดส่ง วันที่ ' + name[1] + ' ถึง ' + name[2], style: 'header', fontSize: 16, marginLeft: 40 },
+                    { text: 'รายงานแผนการจัดส่ง วันที่ ' + name[1] + ' ถึง ' + name[2], style: 'header', fontSize: 16, marginLeft: 300 },
+                    { text: ' ' ,fontSize: 7},
+
                     table(pdfData, ['StatusSO', 'SaleOrder', 'CustomerName', 'เลขที่INV', 'จำนวนกล่อง', 'น้ำหนักกล่อง', 'ขนาดกล่อง', 'ที่อยู่', 'อำเภอ', 'จังหวัด', 'เบอร์โทร', 'Remarks', 'DeliveryBy'])
                 ],
                 defaultStyle: {
@@ -573,7 +575,7 @@ class Transport_plan extends Component {
                                 content={() => this.componentRef}
                             />
                             <div hidden>{this.state.showTable}</div>&nbsp;
-
+    
                         </bs4.Col>
                         <bs4.Col sm='4'>
                             <Select className="SelectAuto"
