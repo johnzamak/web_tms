@@ -5,7 +5,7 @@ import { browserHistory } from 'react-router';
 import { saveToLocalStorage } from '../localStorage';
 
 
-const { proxy } = require("../service")
+const { proxy, public_function } = require("../service")
 const md5 = require('md5');
 
 class Login extends Component {
@@ -26,12 +26,12 @@ class Login extends Component {
             [name]: val
         })
     }
-    handleKeyPress=(e)=>{
+    handleKeyPress = (e) => {
         if (e.key === "Enter") {
             this.handleOnClick()
         }
     }
-    handleOnClick = (e) => {
+    handleOnClick = async (e) => {
         let self = this
         let id = this.state.inUserName, pass = md5(this.state.inPassword)
 
@@ -42,6 +42,7 @@ class Login extends Component {
                 .then((responseJson) => {
                     console.log("responseJson", responseJson)
                     if (responseJson.status == 200) {
+                        self._callAPIWebNo(responseJson.result)
                         self.setState({
                             alertVisible: true,
                             alertMsg: "Login success! Please wait....."
@@ -68,9 +69,15 @@ class Login extends Component {
         }
 
     }
+    async _callAPIWebNo(result) {
+        var urlWebNo = proxy.main + "web-api/webno/" + result[0].ID_User + "&18007"
+        var res_api =await public_function.api_get(urlWebNo, "getWebNo")
+        console.log("res_api",res_api)
+        saveToLocalStorage("data_webno", res_api)
+    }
     render() {
         return (
-            <div><br/><br/><br/><br/>
+            <div><br /><br /><br /><br />
                 <bs4.Container>
                     <bs4.Row>
                         <bs4.Col>
