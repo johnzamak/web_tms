@@ -7,6 +7,8 @@ class Menu extends Component {
     render() {
         const { Level_User } = loadState("data_user")[0]
         const { Username } = loadState("data_webno")[0]
+
+        console.log('loggg',Level_User,Username)
         return (
             <div>
                 <bs4.Navbar color="light" light expand="md">
