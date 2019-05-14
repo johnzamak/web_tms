@@ -192,7 +192,7 @@ class ClearRoundCost extends Component {
                                                 sumOil += oilCost
                                                 sumRoundCost += roundCost
                                             } else {
-                                                roundCost = val.round_cost
+                                                roundCost = Math.round(val.round_cost)
                                                 oilCost = roundCost * 0.69
                                                 sumOil += oilCost
                                                 sumRoundCost += roundCost
@@ -206,7 +206,7 @@ class ClearRoundCost extends Component {
                                                 sumOil += oilCost
                                                 sumRoundCost += roundCost
                                             } else {
-                                                roundCost = val.round_cost
+                                                roundCost = Math.round(val.round_cost)
                                                 oilCost = 0
                                                 sumOil += oilCost
                                                 sumRoundCost += roundCost
@@ -220,7 +220,7 @@ class ClearRoundCost extends Component {
                                                 sumOil += oilCost
                                                 sumRoundCost += roundCost
                                             } else {
-                                                roundCost = val.round_cost
+                                                roundCost = Math.round(val.round_cost)
                                                 oilCost = 0
                                                 sumOil += oilCost
                                                 sumRoundCost += roundCost
@@ -235,7 +235,7 @@ class ClearRoundCost extends Component {
                                         sumOil += oilCost
                                         sumRoundCost += roundCost
                                     } else {
-                                        roundCost = val.round_cost
+                                        roundCost = Math.round(val.round_cost)
                                         oilCost = roundCost * 0.69
                                         sumOil += oilCost
                                         sumRoundCost += roundCost
@@ -418,7 +418,7 @@ class ClearRoundCost extends Component {
                         if (checki === 0) {
                             roundCost = roundCost + val.ship_cost
                         } else {
-                            roundCost = roundCost + val.round_cost
+                            roundCost = roundCost + Math.round(val.round_cost)
                         }
                         if ((i + 1) < arrRoundCost.length) {
                             if (arrRoundCost[i + 1].Trip == val.Trip) {
@@ -431,7 +431,7 @@ class ClearRoundCost extends Component {
                         if (checki === 0) {
                             roundCost = roundCost + val.ship_cost
                         } else {
-                            roundCost = roundCost + val.round_cost
+                            roundCost = roundCost + Math.round(val.round_cost)
                         }
                         if ((i + 1) < arrRoundCost.length) {
                             if (arrRoundCost[i + 1].Trip == val.Trip) {
