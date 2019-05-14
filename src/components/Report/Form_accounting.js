@@ -43,7 +43,7 @@ class Form_accounting extends Component {
             data_print0: [],
             data_print1: [],
             data_print2: [],
-            test:""
+            test: ""
         }
     }
     toggle = (tab) => {
@@ -103,14 +103,14 @@ class Form_accounting extends Component {
         let url
         var mess_code = self.state.mess_code
         var input_date = moment(self.state.input_date._d).format("YYYY-MM-DD")
-        var check_hub= (self.props.data_hub)?self.props.data_hub.location:""
-        switch(check_hub){
+        var check_hub = (self.props.data_hub) ? self.props.data_hub.location : ""
+        switch (check_hub) {
             case "surach":
-            url = proxy.main + "report/report-formaccount/WS1&" + input_date
-            break;
+                url = proxy.main + "report/report-formaccount/WS1&" + input_date
+                break;
             default:
-            url = proxy.main + "report/report-formaccount/BKK&" + input_date
-            break;
+                url = proxy.main + "report/report-formaccount/BKK&" + input_date
+                break;
         }
         // let url = proxy.main + "report/report-formaccount/" + input_date
         fetch(url)
@@ -132,7 +132,7 @@ class Form_accounting extends Component {
         let arr_data0 = [], arr_data1 = [], arr_data2 = [], arr_keep_tbl = result
         var total_invoice0 = 0, total_cash0 = 0, total_cn0 = 0
         var total_invoice1 = 0, total_cash1 = 0, total_cn1 = 0
-        var total_invoice2 = 0, total_cash2 = 0, total_cn2 = 0
+        var total_invoice2 = 0, total_cash2 = 0, total_cn2 = 0, get_actual = 0, get_tranfer = ""
         if (result[0].length <= 0) {
             arr_data0.push(
                 <tr>
@@ -142,19 +142,22 @@ class Form_accounting extends Component {
         } else {
             result[0].forEach((val, i) => {
                 // mess_name=val.mess_name
+                get_actual = (val.check_tranfer == "true") ? 0 : val.amount_actual
+                get_tranfer = (val.check_tranfer=="true")? "มี" : "ไม่มี"
                 total_invoice0 += val.amount_bill
-                total_cash0 += val.amount_actual
+                total_cash0 += get_actual
                 total_cn0 += (val.amount_bill - val.amount_actual)
                 arr_data0.push(
                     <tr>
                         <td style={{ whiteSpace: "nowrap", textAlign: "center" }} > {i + 1} </td>
                         <td style={{ whiteSpace: "nowrap", textAlign: "center" }} > {val.invoice} </td>
                         <td style={{ whiteSpace: "nowrap", textAlign: "left" }} > {val.customer_name} </td>
-                        <td style={{ whiteSpace: "nowrap", textAlign: "center" }} > {val.car_type} </td>
+                        <td style={{ whiteSpace: "nowrap", textAlign: "center" }} > {val.payment_type} </td>
+                        <td style={{ whiteSpace: "nowrap", textAlign: "center" }} > {get_tranfer} </td>
                         <td style={{ whiteSpace: "nowrap", textAlign: "right" }} > {public_function.numberFormat(val.amount_bill, 2)} </td>
-                        <td style={{ whiteSpace: "nowrap", textAlign: "right" }} > {public_function.numberFormat(val.amount_actual, 2)} </td>
+                        <td style={{ whiteSpace: "nowrap", textAlign: "right" }} > {public_function.numberFormat(get_actual, 2)} </td>
                         <td style={{ whiteSpace: "nowrap", textAlign: "right" }} > {public_function.numberFormat((val.amount_bill - val.amount_actual), 2)} </td>
-                        <td style={{ whiteSpace: "nowrap", textAlign: "left" }} > {val.comment} </td>
+                        <td style={{ textAlign: "left" }} > {val.cn_doc+val.comment} </td>
                     </tr>
                 )
             });
@@ -168,19 +171,22 @@ class Form_accounting extends Component {
         } else {
             result[1].forEach((val, i) => {
                 // mess_name=val.mess_name
+                get_actual = (val.payment_type == "TRANSFER") ? 0 : val.amount_actual
+                get_tranfer = (val.check_tranfer == "true") ? "มี" : "ไม่มี"
                 total_invoice1 += val.amount_bill
-                total_cash1 += val.amount_actual
+                total_cash1 += get_actual
                 total_cn1 += (val.amount_bill - val.amount_actual)
                 arr_data1.push(
                     <tr>
                         <td style={{ whiteSpace: "nowrap", textAlign: "center" }} > {i + 1} </td>
                         <td style={{ whiteSpace: "nowrap", textAlign: "center" }} > {val.invoice} </td>
                         <td style={{ whiteSpace: "nowrap", textAlign: "left" }} > {val.customer_name} </td>
-                        <td style={{ whiteSpace: "nowrap", textAlign: "center" }} > {val.car_type} </td>
+                        <td style={{ whiteSpace: "nowrap", textAlign: "center" }} > {val.payment_type} </td>
+                        <td style={{ whiteSpace: "nowrap", textAlign: "center" }} > {get_tranfer} </td>
                         <td style={{ whiteSpace: "nowrap", textAlign: "right" }} > {public_function.numberFormat(val.amount_bill, 2)} </td>
-                        <td style={{ whiteSpace: "nowrap", textAlign: "right" }} > {public_function.numberFormat(val.amount_actual, 2)} </td>
+                        <td style={{ whiteSpace: "nowrap", textAlign: "right" }} > {public_function.numberFormat(get_actual, 2)} </td>
                         <td style={{ whiteSpace: "nowrap", textAlign: "right" }} > {public_function.numberFormat((val.amount_bill - val.amount_actual), 2)} </td>
-                        <td style={{ whiteSpace: "nowrap", textAlign: "left" }} > {val.comment} </td>
+                        <td style={{ textAlign: "left" }} > {val.cn_doc+val.comment} </td>
                     </tr>
                 )
             });
@@ -194,19 +200,22 @@ class Form_accounting extends Component {
         } else {
             result[2].forEach((val, i) => {
                 // mess_name=val.mess_name
+                get_actual = (val.check_tranfer == "true") ? 0 : val.amount_actual
+                get_tranfer = (val.check_tranfer == "true") ? "มี" : "ไม่มี"
                 total_invoice2 += val.amount_bill
-                total_cash2 += val.amount_actual
+                total_cash2 += get_actual
                 total_cn2 += (val.amount_bill - val.amount_actual)
                 arr_data2.push(
                     <tr>
                         <td style={{ whiteSpace: "nowrap", textAlign: "center" }} > {i + 1} </td>
                         <td style={{ whiteSpace: "nowrap", textAlign: "center" }} > {val.invoice} </td>
                         <td style={{ whiteSpace: "nowrap", textAlign: "left" }} > {val.customer_name} </td>
-                        <td style={{ whiteSpace: "nowrap", textAlign: "center" }} > {val.car_type} </td>
+                        <td style={{ whiteSpace: "nowrap", textAlign: "center" }} > {val.payment_type} </td>
+                        <td style={{ whiteSpace: "nowrap", textAlign: "center" }} > {get_tranfer} </td>
                         <td style={{ whiteSpace: "nowrap", textAlign: "right" }} > {public_function.numberFormat(val.amount_bill, 2)} </td>
-                        <td style={{ whiteSpace: "nowrap", textAlign: "right" }} > {public_function.numberFormat(val.amount_actual, 2)} </td>
+                        <td style={{ whiteSpace: "nowrap", textAlign: "right" }} > {public_function.numberFormat(get_actual, 2)} </td>
                         <td style={{ whiteSpace: "nowrap", textAlign: "right" }} > {public_function.numberFormat((val.amount_bill - val.amount_actual), 2)} </td>
-                        <td style={{ whiteSpace: "nowrap", textAlign: "left" }} > {val.comment} </td>
+                        <td style={{ textAlign: "left" }} > {val.cn_doc+val.comment} </td>
                     </tr>
                 )
             });
@@ -292,197 +301,201 @@ class Form_accounting extends Component {
                                 <bs4.Button id="btnPrintSlip" className="btnLong" color="warning" onClick={this.onClick_Print} ><MdIcon.MdPrint className="iconSize" /> PRINT</bs4.Button>
                             </bs4.Col>
                         </bs4.Row>
-                        { this.props.data_hub &&
+                        {this.props.data_hub &&
                             (this.props.data_hub.location == "surach") ?
-                                <bs4.Nav tabs>
-                                    <bs4.NavItem>
-                                        <bs4.NavLink
-                                            style={{ backgroundColor: this.state.bgTab1 }}
-                                            className={classnames({ active: this.state.tabActive === '1' })}
-                                            onClick={() => { this.toggle('1'); }}>
-                                            เงินสด+เครดิต ตจว.
+                            <bs4.Nav tabs>
+                                <bs4.NavItem>
+                                    <bs4.NavLink
+                                        style={{ backgroundColor: this.state.bgTab1 }}
+                                        className={classnames({ active: this.state.tabActive === '1' })}
+                                        onClick={() => { this.toggle('1'); }}>
+                                        เงินสด+เครดิต ตจว.
                                     </bs4.NavLink>
-                                    </bs4.NavItem>
-                                </bs4.Nav>
-                                :
-                                <bs4.Nav tabs>
-                                    <bs4.NavItem>
-                                        <bs4.NavLink
-                                            style={{ backgroundColor: this.state.bgTab1 }}
-                                            className={classnames({ active: this.state.tabActive === '1' })}
-                                            onClick={() => { this.toggle('1'); }}>
-                                            เงินสด กทม.
+                                </bs4.NavItem>
+                            </bs4.Nav>
+                            :
+                            <bs4.Nav tabs>
+                                <bs4.NavItem>
+                                    <bs4.NavLink
+                                        style={{ backgroundColor: this.state.bgTab1 }}
+                                        className={classnames({ active: this.state.tabActive === '1' })}
+                                        onClick={() => { this.toggle('1'); }}>
+                                        เงินสด กทม.
                                     </bs4.NavLink>
-                                    </bs4.NavItem>
-                                    <bs4.NavItem>
-                                        <bs4.NavLink
-                                            style={{ backgroundColor: this.state.bgTab2 }}
-                                            className={classnames({ active: this.state.tabActive === '2' })}
-                                            onClick={() => { this.toggle('2'); }}>
-                                            เครดิต กทม.
+                                </bs4.NavItem>
+                                <bs4.NavItem>
+                                    <bs4.NavLink
+                                        style={{ backgroundColor: this.state.bgTab2 }}
+                                        className={classnames({ active: this.state.tabActive === '2' })}
+                                        onClick={() => { this.toggle('2'); }}>
+                                        เครดิต กทม.
                                     </bs4.NavLink>
-                                    </bs4.NavItem>
-                                    <bs4.NavItem>
-                                        <bs4.NavLink
-                                            style={{ backgroundColor: this.state.bgTab3 }}
-                                            className={classnames({ active: this.state.tabActive === '3' })}
-                                            onClick={() => { this.toggle('3'); }}>
-                                            เงินสด+เครดิต ตจว.
+                                </bs4.NavItem>
+                                <bs4.NavItem>
+                                    <bs4.NavLink
+                                        style={{ backgroundColor: this.state.bgTab3 }}
+                                        className={classnames({ active: this.state.tabActive === '3' })}
+                                        onClick={() => { this.toggle('3'); }}>
+                                        เงินสด+เครดิต ตจว.
                                     </bs4.NavLink>
-                                    </bs4.NavItem>
-                                </bs4.Nav>
+                                </bs4.NavItem>
+                            </bs4.Nav>
                         }
-                        { this.props.data_hub &&
+                        {this.props.data_hub &&
                             (this.props.data_hub.location == "surach") ?
-                                <bs4.TabContent style={{ width: "100%" }} activeTab={this.state.tabActive}>
-                                    <bs4.TabPane tabId="1">
-                                        <bs4.Row>
-                                            <bs4.Col xs="12">
-                                                <Print_ACC_03 data_print={this.state.data_print2} data_date={this.state.input_date} />
-                                            </bs4.Col>
-                                        </bs4.Row>
-                                    </bs4.TabPane>
-                                </bs4.TabContent> :
-                                <bs4.TabContent style={{ width: "100%" }} activeTab={this.state.tabActive}>
-                                    <bs4.TabPane tabId="1">
-                                        <bs4.Row>
-                                            <bs4.Col xs="12">
-                                                <Print_ACC_01 data_print={this.state.data_print0} data_date={this.state.input_date} />
-                                            </bs4.Col>
-                                        </bs4.Row>
-                                    </bs4.TabPane>
-                                    <bs4.TabPane tabId="2">
-                                        <bs4.Row>
-                                            <bs4.Col xs="12">
-                                                <Print_ACC_02 data_print={this.state.data_print1} data_date={this.state.input_date} />
-                                            </bs4.Col>
-                                        </bs4.Row>
-                                    </bs4.TabPane>
-                                    <bs4.TabPane tabId="3">
-                                        <bs4.Row>
-                                            <bs4.Col xs="12">
-                                                <Print_ACC_03 data_print={this.state.data_print2} data_date={this.state.input_date} />
-                                            </bs4.Col>
-                                        </bs4.Row>
-                                    </bs4.TabPane>
-                                </bs4.TabContent>
+                            <bs4.TabContent style={{ width: "100%" }} activeTab={this.state.tabActive}>
+                                <bs4.TabPane tabId="1">
+                                    <bs4.Row>
+                                        <bs4.Col xs="12">
+                                            <Print_ACC_03 data_print={this.state.data_print2} data_date={this.state.input_date} />
+                                        </bs4.Col>
+                                    </bs4.Row>
+                                </bs4.TabPane>
+                            </bs4.TabContent> :
+                            <bs4.TabContent style={{ width: "100%" }} activeTab={this.state.tabActive}>
+                                <bs4.TabPane tabId="1">
+                                    <bs4.Row>
+                                        <bs4.Col xs="12">
+                                            <Print_ACC_01 data_print={this.state.data_print0} data_date={this.state.input_date} />
+                                        </bs4.Col>
+                                    </bs4.Row>
+                                </bs4.TabPane>
+                                <bs4.TabPane tabId="2">
+                                    <bs4.Row>
+                                        <bs4.Col xs="12">
+                                            <Print_ACC_02 data_print={this.state.data_print1} data_date={this.state.input_date} />
+                                        </bs4.Col>
+                                    </bs4.Row>
+                                </bs4.TabPane>
+                                <bs4.TabPane tabId="3">
+                                    <bs4.Row>
+                                        <bs4.Col xs="12">
+                                            <Print_ACC_03 data_print={this.state.data_print2} data_date={this.state.input_date} />
+                                        </bs4.Col>
+                                    </bs4.Row>
+                                </bs4.TabPane>
+                            </bs4.TabContent>
                         }
 
                     </bs4.Container>
-                </div> 
-                { this.props.data_hub &&
+                </div>
+                {this.props.data_hub &&
                     (this.props.data_hub.location == "surach") ?
-                        <Print>
-                            <div style={{ pageBreakAfter: "always" }}>
-                                <div style={{ textAlign: "center", fontSize: "36px", fontWeight: "800" }} >รายงานส่งบัญชี</div>
-                                <div style={{ textAlign: "center", fontSize: "18px" }} >Dealer - ต่างจังหวัด || วันที่บิล : {this.state.show_date_bill} || ผู้ส่งเอกสาร : ......................................... </div>
-                                <bs4.Table bordered>
-                                    <thead>
-                                        <td style={{ textAlign: "center" }}>ลำดับ</td>
-                                        <td style={{ textAlign: "center" }}>เลขที่ invoice</td>
-                                        <td style={{ textAlign: "center" }}>รหัสลูกค้า</td>
-                                        <td style={{ textAlign: "center" }}>ประเภทรถ</td>
-                                        <td style={{ textAlign: "center" }}>จำนวนเงิน (invoice)</td>
-                                        <td style={{ textAlign: "center" }}>เงินสดที่เก็บได้</td>
-                                        <td style={{ textAlign: "center" }}>CN คืน</td>
-                                        <td style={{ textAlign: "center" }}>หมายเหตุ</td>
-                                    </thead>
-                                    <tbody  >
-                                        {this.state.show_table2}
-                                    </tbody>
-                                    <tfoot>
-                                        <td colSpan="4" style={{ textAlign: "right" }} > <span style={{ borderBottom: "double", fontWeight: "bold" }} >{"จำนวนเงินรวม"}</span> </td>
-                                        <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalBill2, 2)}</span> </td>
-                                        <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalActual2, 2)}</span> </td>
-                                        <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalCN2, 2)}</span> </td>
-                                        <td></td>
-                                    </tfoot>
-                                </bs4.Table>
-                            </div>
-                        </Print>
-                        :
-                        <Print>
-                            <div style={{ pageBreakAfter: "always" }}>
-                                <div style={{ textAlign: "center", fontSize: "36px", fontWeight: "800" }} >รายงานส่งบัญชี</div>
-                                <div style={{ textAlign: "center", fontSize: "18px" }} >Dealer - กรุงเทพฯ เงินสด || วันที่บิล : {this.state.show_date_bill} || ผู้ส่งเอกสาร : ......................................... </div>
-                                <bs4.Table bordered>
-                                    <thead>
-                                        <td style={{ textAlign: "center" }}>ลำดับ</td>
-                                        <td style={{ textAlign: "center" }}>เลขที่ invoice</td>
-                                        <td style={{ textAlign: "center" }}>รหัสลูกค้า</td>
-                                        <td style={{ textAlign: "center" }}>ประเภทรถ</td>
-                                        <td style={{ textAlign: "center" }}>จำนวนเงิน (invoice)</td>
-                                        <td style={{ textAlign: "center" }}>เงินสดที่เก็บได้</td>
-                                        <td style={{ textAlign: "center" }}>CN คืน</td>
-                                        <td style={{ textAlign: "center" }}>หมายเหตุ</td>
-                                    </thead>
-                                    <tbody  >
-                                        {this.state.show_table0}
-                                    </tbody>
-                                    <tfoot>
-                                        <td colSpan="4" style={{ textAlign: "right" }} > <span style={{ borderBottom: "double", fontWeight: "bold" }} >{"จำนวนเงินรวม"}</span> </td>
-                                        <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalBill0, 2)}</span> </td>
-                                        <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalActual0, 2)}</span> </td>
-                                        <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalCN0, 2)}</span> </td>
-                                        <td></td>
-                                    </tfoot>
-                                </bs4.Table>
-                            </div>
+                    <Print>
+                        <div id="print-mount" style={{ pageBreakAfter: "always" }}>
+                            <div style={{ textAlign: "center", fontSize: "36px", fontWeight: "800" }} >รายงานส่งบัญชี</div>
+                            <div style={{ textAlign: "center", fontSize: "18px" }} >Dealer - ต่างจังหวัด || วันที่บิล : {this.state.show_date_bill} || ผู้ส่งเอกสาร : ......................................... </div>
+                            <bs4.Table bordered>
+                                <thead>
+                                    <td style={{ textAlign: "center" }}>ลำดับ</td>
+                                    <td style={{ textAlign: "center" }}>เลขที่ invoice</td>
+                                    <td style={{ textAlign: "center" }}>ชื่อลูกค้า</td>
+                                    <td style={{ textAlign: "center" }}>การจ่าย</td>
+                                    <td style={{ textAlign: "center" }}>การโอน</td>
+                                    <td style={{ textAlign: "center" }}>จำนวนเงิน (invoice)</td>
+                                    <td style={{ textAlign: "center" }}>เงินสดที่เก็บได้</td>
+                                    <td style={{ textAlign: "center" }}>CN คืน</td>
+                                    <td style={{ textAlign: "center" }}>CN no. / Voucher / หมายเหตุ</td>
+                                </thead>
+                                <tbody  >
+                                    {this.state.show_table2}
+                                </tbody>
+                                <tfoot><tr>
+                                    <td colSpan="5" style={{ textAlign: "right" }} > <span style={{ borderBottom: "double", fontWeight: "bold" }} >{"จำนวนเงินรวม"}</span> </td>
+                                    <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalBill2, 2)}</span> </td>
+                                    <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalActual2, 2)}</span> </td>
+                                    <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalCN2, 2)}</span> </td>
+                                    <td></td></tr>
+                                </tfoot>
+                            </bs4.Table>
+                        </div>
+                    </Print>
+                    :
+                    <Print>
+                        <div style={{ pageBreakAfter: "always" }}>
+                            <div style={{ textAlign: "center", fontSize: "36px", fontWeight: "800" }} >รายงานส่งบัญชี</div>
+                            <div style={{ textAlign: "center", fontSize: "18px" }} >Dealer - กรุงเทพฯ เงินสด || วันที่บิล : {this.state.show_date_bill} || ผู้ส่งเอกสาร : ......................................... </div>
+                            <bs4.Table bordered>
+                                <thead>
+                                    <td style={{ textAlign: "center" }}>ลำดับ</td>
+                                    <td style={{ textAlign: "center" }}>เลขที่ invoice</td>
+                                    <td style={{ textAlign: "center" }}>ชื่อลูกค้า</td>
+                                    <td style={{ textAlign: "center" }}>การจ่าย</td>
+                                    <td style={{ textAlign: "center" }}>การโอน</td>
+                                    <td style={{ textAlign: "center" }}>จำนวนเงิน (invoice)</td>
+                                    <td style={{ textAlign: "center" }}>เงินสดที่เก็บได้</td>
+                                    <td style={{ textAlign: "center" }}>CN คืน</td>
+                                    <td style={{ textAlign: "center" }}>CN no. / Voucher / หมายเหตุ</td>
+                                </thead>
+                                <tbody  >
+                                    {this.state.show_table0}
+                                </tbody>
+                                <tfoot><tr>
+                                    <td colSpan="5" style={{ textAlign: "right" }} > <span style={{ borderBottom: "double", fontWeight: "bold" }} >{"จำนวนเงินรวม"}</span> </td>
+                                    <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalBill0, 2)}</span> </td>
+                                    <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalActual0, 2)}</span> </td>
+                                    <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalCN0, 2)}</span> </td>
+                                    <td></td></tr>
+                                </tfoot>
+                            </bs4.Table>
+                        </div>
 
-                            <div style={{ pageBreakAfter: "always" }}>
-                                <div style={{ textAlign: "center", fontSize: "36px", fontWeight: "800" }} >รายงานส่งบัญชี</div>
-                                <div style={{ textAlign: "center", fontSize: "18px" }} >Dealer - กรุงเทพฯ เครดิต || วันที่บิล : {this.state.show_date_bill} || ผู้ส่งเอกสาร : ......................................... </div>
-                                <bs4.Table bordered>
-                                    <thead>
-                                        <td style={{ textAlign: "center" }}>ลำดับ</td>
-                                        <td style={{ textAlign: "center" }}>เลขที่ invoice</td>
-                                        <td style={{ textAlign: "center" }}>รหัสลูกค้า</td>
-                                        <td style={{ textAlign: "center" }}>ประเภทรถ</td>
-                                        <td style={{ textAlign: "center" }}>จำนวนเงิน (invoice)</td>
-                                        <td style={{ textAlign: "center" }}>เงินสดที่เก็บได้</td>
-                                        <td style={{ textAlign: "center" }}>CN คืน</td>
-                                        <td style={{ textAlign: "center" }}>หมายเหตุ</td>
-                                    </thead>
-                                    <tbody  >
-                                        {this.state.show_table1}
-                                    </tbody>
-                                    <tfoot>
-                                        <td colSpan="4" style={{ textAlign: "right" }} > <span style={{ borderBottom: "double", fontWeight: "bold" }} >{"จำนวนเงินรวม"}</span> </td>
-                                        <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalBill1, 2)}</span> </td>
-                                        <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalActual1, 2)}</span> </td>
-                                        <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalCN1, 2)}</span> </td>
-                                        <td></td>
-                                    </tfoot>
-                                </bs4.Table>
-                            </div>
+                        <div style={{ pageBreakAfter: "always" }}>
+                            <div style={{ textAlign: "center", fontSize: "36px", fontWeight: "800" }} >รายงานส่งบัญชี</div>
+                            <div style={{ textAlign: "center", fontSize: "18px" }} >Dealer - กรุงเทพฯ เครดิต || วันที่บิล : {this.state.show_date_bill} || ผู้ส่งเอกสาร : ......................................... </div>
+                            <bs4.Table bordered>
+                                <thead>
+                                    <td style={{ textAlign: "center" }}>ลำดับ</td>
+                                    <td style={{ textAlign: "center" }}>เลขที่ invoice</td>
+                                    <td style={{ textAlign: "center" }}>ชื่อลูกค้า</td>
+                                    <td style={{ textAlign: "center" }}>การจ่าย</td>
+                                    <td style={{ textAlign: "center" }}>การโอน</td>
+                                    <td style={{ textAlign: "center" }}>จำนวนเงิน (invoice)</td>
+                                    <td style={{ textAlign: "center" }}>เงินสดที่เก็บได้</td>
+                                    <td style={{ textAlign: "center" }}>CN คืน</td>
+                                    <td style={{ textAlign: "center" }}>CN no. / Voucher / หมายเหตุ</td>
+                                </thead>
+                                <tbody  >
+                                    {this.state.show_table1}
+                                </tbody>
+                                <tfoot><tr>
+                                    <td colSpan="5" style={{ textAlign: "right" }} > <span style={{ borderBottom: "double", fontWeight: "bold" }} >{"จำนวนเงินรวม"}</span> </td>
+                                    <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalBill1, 2)}</span> </td>
+                                    <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalActual1, 2)}</span> </td>
+                                    <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalCN1, 2)}</span> </td>
+                                    <td></td></tr>
+                                </tfoot>
+                            </bs4.Table>
+                        </div>
 
-                            <div style={{ pageBreakAfter: "always" }}>
-                                <div style={{ textAlign: "center", fontSize: "36px", fontWeight: "800" }} >รายงานส่งบัญชี</div>
-                                <div style={{ textAlign: "center", fontSize: "18px" }} >Dealer - ต่างจังหวัด || วันที่บิล : {this.state.show_date_bill} || ผู้ส่งเอกสาร : ......................................... </div>
-                                <bs4.Table bordered>
-                                    <thead>
-                                        <td style={{ textAlign: "center" }}>ลำดับ</td>
-                                        <td style={{ textAlign: "center" }}>เลขที่ invoice</td>
-                                        <td style={{ textAlign: "center" }}>รหัสลูกค้า</td>
-                                        <td style={{ textAlign: "center" }}>ประเภทรถ</td>
-                                        <td style={{ textAlign: "center" }}>จำนวนเงิน (invoice)</td>
-                                        <td style={{ textAlign: "center" }}>เงินสดที่เก็บได้</td>
-                                        <td style={{ textAlign: "center" }}>CN คืน</td>
-                                        <td style={{ textAlign: "center" }}>หมายเหตุ</td>
-                                    </thead>
-                                    <tbody  >
-                                        {this.state.show_table2}
-                                    </tbody>
-                                    <tfoot>
-                                        <td colSpan="4" style={{ textAlign: "right" }} > <span style={{ borderBottom: "double", fontWeight: "bold" }} >{"จำนวนเงินรวม"}</span> </td>
-                                        <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalBill2, 2)}</span> </td>
-                                        <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalActual2, 2)}</span> </td>
-                                        <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalCN2, 2)}</span> </td>
-                                        <td></td>
-                                    </tfoot>
-                                </bs4.Table>
-                            </div>
-                        </Print>
+                        <div style={{ pageBreakAfter: "always" }}>
+                            <div style={{ textAlign: "center", fontSize: "36px", fontWeight: "800" }} >รายงานส่งบัญชี</div>
+                            <div style={{ textAlign: "center", fontSize: "18px" }} >Dealer - ต่างจังหวัด || วันที่บิล : {this.state.show_date_bill} || ผู้ส่งเอกสาร : ......................................... </div>
+                            <bs4.Table bordered>
+                                <thead>
+                                    <td style={{ textAlign: "center" }}>ลำดับ</td>
+                                    <td style={{ textAlign: "center" }}>เลขที่ invoice</td>
+                                    <td style={{ textAlign: "center" }}>ชื่อลูกค้า</td>
+                                    <td style={{ textAlign: "center" }}>การจ่าย</td>
+                                    <td style={{ textAlign: "center" }}>การโอน</td>
+                                    <td style={{ textAlign: "center" }}>จำนวนเงิน (invoice)</td>
+                                    <td style={{ textAlign: "center" }}>เงินสดที่เก็บได้</td>
+                                    <td style={{ textAlign: "center" }}>CN คืน</td>
+                                    <td style={{ textAlign: "center" }}>CN no. / Voucher / หมายเหตุ</td>
+                                </thead>
+                                <tbody  >
+                                    {this.state.show_table2}
+                                </tbody>
+                                <tfoot><tr>
+                                    <td colSpan="5" style={{ textAlign: "right" }} > <span style={{ borderBottom: "double", fontWeight: "bold" }} >{"จำนวนเงินรวม"}</span> </td>
+                                    <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalBill2, 2)}</span> </td>
+                                    <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalActual2, 2)}</span> </td>
+                                    <td style={{ textAlign: "right" }} ><span style={{ borderBottom: "double", fontWeight: "bold" }} >{public_function.numberFormat(this.state.show_totalCN2, 2)}</span> </td>
+                                    <td></td></tr>
+                                </tfoot>
+                            </bs4.Table>
+                        </div>
+                    </Print>
                 }
             </div>
         );
