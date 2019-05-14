@@ -50,11 +50,10 @@ class Cashvan extends Component {
                                 <td align="right">{public_function.numberFormat(val.trip, 0)}</td>
                                 <td align="right">{public_function.numberFormat(val.shop, 0)}</td>
                                 <td align="right">{public_function.numberFormat(val.bill, 0)}</td>
-                                <td><bs4.Input /></td>
-                                <td><bs4.Input /></td>
-                                <td align="right">{public_function.numberFormat(val.Net_cost, 0)}</td>
-                                <td align="right">{public_function.numberFormat(val.Oil_cost, 0)}<bs4.Input /></td>
-                                <td> </td>
+                                <td align="right">{public_function.numberFormat(val.bill_cost, 0)}</td>
+                                <td align="right">{public_function.numberFormat(val.round_cost, 0)}</td>
+                                <td align="right">{val.oil_cost}</td>
+                                <td align="right">{public_function.numberFormat(val.net_cost, 0)}</td>
                             </tr>
                         )
                     }, this);
@@ -95,7 +94,6 @@ class Cashvan extends Component {
                                 <th style={{ backgroundColor: '#FF9933' }}>จำนวนรอบวิ่ง</th>
                                 <th style={{ backgroundColor: '#FF9933' }}>จำนวนร้าน</th>
                                 <th style={{ backgroundColor: '#FF9933' }}>จำนวนบิล</th>
-                                <th>เงินเดือน</th>
                                 <th>ค่าร้านค้าส่งของ</th>
                                 <th>ค่ารอบรถวิ่งส่งของ</th>
                                 <th>ค่าน้ำมัน+ค่าเสื่อม</th>

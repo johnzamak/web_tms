@@ -35,6 +35,7 @@ class Dealer extends Component {
 
         var arrReport = []
         var url = proxy.main + 'get_report_costmess_MDL/' + month
+        //var url = proxy.develop + 'get_report_costmess_MDL/' + month
         console.log('----', url)
         fetch(url)
             .then(response => response.json())
@@ -53,11 +54,10 @@ class Dealer extends Component {
                                 <td> </td>
                                 <td align="right">{public_function.numberFormat(val.trip, 0)}</td>
                                 <td align="right">{public_function.numberFormat(val.shop, 0)}</td>
-                                <td><bs4.Input /></td>
-                                <td><bs4.Input /></td>
-                                <td align="right">{val.Net_cost}</td>
-                                <td><bs4.Input /></td>
-                                <td> </td>
+                                <td align="right">{public_function.numberFormat(val.bill_cost, 0)}</td>
+                                <td align="right">{public_function.numberFormat(val.round_cost, 0)}</td>
+                                <td align="right">{val.oil_cost}</td>
+                                <td align="right">{public_function.numberFormat(val.net_cost, 0)}</td>
                             </tr>
                         )
                     },this);
@@ -96,7 +96,6 @@ class Dealer extends Component {
                                 <th>หน่วยงาน</th>
                                 <th style={{ backgroundColor: '#8FBC8F' }}>จำนวนเที่ยว</th>
                                 <th style={{ backgroundColor: '#8FBC8F' }}>จำนวนร้าน</th>
-                                <th>เงินเดือน</th>
                                 <th>ค่าร้านค้าส่งของ</th>
                                 <th>ค่ารอบรถวิ่งส่งของ</th>
                                 <th>ค่าน้ำมัน+ค่าเสื่อม</th>
