@@ -5,6 +5,7 @@ import Clearcashbycleardate from "../components/Report/Clearcashbycleardate"
 import Form_accounting from "../components/Report/Form_accounting"
 import { connect } from 'react-redux'
 import Tracking_status_surach from '../components/Report/Tracking_status_surach';
+import Tracking_status_phitsanulok from '../components/Report/Tracking_status_phitsanulok';
 import Report_Timeable from '../components/Report/report_Timable';
 import Editreport_Timeable from '../components/Report/Editreport_Timable';
 
@@ -29,9 +30,11 @@ class Report extends Component {
                 {(checkReport == "tracking-status") ? <Tracking_status first_data={this.state.first_data} /> : ""}
                 {(checkReport == "tracking-status-claim") ? <Tracking_status_Claim first_data={this.state.first_data} /> : ""}
                 {(checkReport == "tracking-surach") ? <Tracking_status_surach first_data={this.state.first_data} /> : ""}
+                {(checkReport == "tracking-phitsanulok") ? <Tracking_status_phitsanulok first_data={this.state.first_data} /> : ""}
                 {(checkReport == "clearcashbycleardate") ? <Clearcashbycleardate /> : ""}
                 {(checkReport == "formaccounting") ? <Form_accounting /> : ""}
                 {(checkReport == "accounting-surach") ? <Form_accounting data_hub={{location:"surach"}} /> : ""}
+                {(checkReport == "accounting-phitsanulok") ? <Form_accounting data_hub={{location:"phitsanulok"}} /> : ""}
                 {(checkReport == "report_Timeable") ? <Report_Timeable /> : ""}
                 {(checkReport == "Editreport_Timeable") ? <Editreport_Timeable /> : ""}
             </div>

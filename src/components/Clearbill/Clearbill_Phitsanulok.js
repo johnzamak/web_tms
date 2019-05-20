@@ -4,7 +4,7 @@ import * as MdIcon from 'react-icons/lib/md'
 import DatePicker from "react-datepicker"
 import { connect } from 'react-redux'
 import { is_loader } from '../../actions'
-import Clearbill_CN from "../../components/Modal/Clearbill_CN"
+import Clearbill_CN from "../Modal/Clearbill_CN"
 
 const moment = require("moment")
 const addMonths = require('addmonths')
@@ -12,7 +12,7 @@ const { proxy } = require("../../service")
 const $ = require("jquery")
 var date = new Date();
 
-class Clearbill_Surach_Kerry_DHL extends Component {
+class Clearbill_Phitsanulok extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -264,7 +264,7 @@ class Clearbill_Surach_Kerry_DHL extends Component {
         return (
             <div>
                 <bs4.Container className="bgContainer-White" fluid>
-                    <div style={{ textAlign: "left", fontSize: "22px", fontWeight: "800" }} >เคลียร์บิล HUB สุราษฏร์</div>
+                    <div style={{ textAlign: "left", fontSize: "22px", fontWeight: "800" }} >เคลียร์บิล HUB พิษณุโลก</div>
                     <bs4.Row>
                         <bs4.Col xs="2" >
                             <bs4.FormGroup row>
@@ -335,4 +335,4 @@ function mapStateToProps(state) {
     console.log(state)
     return state
 }
-export default connect(mapStateToProps)(Clearbill_Surach_Kerry_DHL);
+export default connect(mapStateToProps)(Clearbill_Phitsanulok);

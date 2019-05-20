@@ -3,6 +3,7 @@ import Clearbills from "../components/Clearbill/Clearbill"
 import Clearbill_Claim from "../components/Clearbill/Clearbill_Claim"
 import Clearbill_Kerry_DHL from "../components/Clearbill/Clearbill_Kerry_DHL"
 import Clearbill_Surach_Kerry_DHL from '../components/Clearbill/Clearbill_Surach_Kerry_DHL';
+import Clearbill_Phitsanulok from '../components/Clearbill/Clearbill_Phitsanulok'
 
 class Clearbill extends Component {
     render() {
@@ -13,6 +14,7 @@ class Clearbill extends Component {
                 { (checkClearBill==="claim")?<Clearbill_Claim />:"" }
                 { (checkClearBill==="kerry_dhl")?<Clearbill_Kerry_DHL />:"" }
                 { (checkClearBill==="surach")?<Clearbill_Surach_Kerry_DHL />:"" }
+                { (checkClearBill==="phitsanulok")?<Clearbill_Phitsanulok />:"" }
             </div>
         );
     }

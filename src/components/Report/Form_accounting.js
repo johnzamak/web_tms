@@ -108,11 +108,14 @@ class Form_accounting extends Component {
             case "surach":
                 url = proxy.main + "report/report-formaccount/WS1&" + input_date
                 break;
+            case "phitsanulok":
+                url = proxy.main + "report/report-formaccount/WN1&" + input_date
+                break;
             default:
                 url = proxy.main + "report/report-formaccount/BKK&" + input_date
                 break;
         }
-        // let url = proxy.main + "report/report-formaccount/" + input_date
+        console.log('url',url)
         fetch(url)
             .then(response => response.json())
             .then((responseJson) => {
@@ -302,7 +305,7 @@ class Form_accounting extends Component {
                             </bs4.Col>
                         </bs4.Row>
                         {this.props.data_hub &&
-                            (this.props.data_hub.location == "surach") ?
+                            (this.props.data_hub.location == "surach" || "phitsanulok") ?
                             <bs4.Nav tabs>
                                 <bs4.NavItem>
                                     <bs4.NavLink
@@ -342,7 +345,7 @@ class Form_accounting extends Component {
                             </bs4.Nav>
                         }
                         {this.props.data_hub &&
-                            (this.props.data_hub.location == "surach") ?
+                            (this.props.data_hub.location == "surach" || "phitsanulok") ?
                             <bs4.TabContent style={{ width: "100%" }} activeTab={this.state.tabActive}>
                                 <bs4.TabPane tabId="1">
                                     <bs4.Row>
@@ -380,7 +383,7 @@ class Form_accounting extends Component {
                     </bs4.Container>
                 </div>
                 {this.props.data_hub &&
-                    (this.props.data_hub.location == "surach") ?
+                    (this.props.data_hub.location == "surach" || "phitsanulok") ?
                     <Print>
                         <div id="print-mount" style={{ pageBreakAfter: "always" }}>
                             <div style={{ textAlign: "center", fontSize: "36px", fontWeight: "800" }} >รายงานส่งบัญชี</div>

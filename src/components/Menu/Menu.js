@@ -125,6 +125,23 @@ class Menu extends Component {
                             </bs4.DropdownMenu>
                         </bs4.UncontrolledDropdown>
 
+                        <bs4.UncontrolledDropdown nav inNavbar>
+                            <bs4.DropdownToggle style={{ fontWeight: "800" }} nav caret>
+                                HUB พิษณุโลก
+                            </bs4.DropdownToggle>
+                            <bs4.DropdownMenu right>
+                                <bs4.DropdownItem href="/report/tracking-phitsanulok" >
+                                    รายงานติดตามสถานะ
+                                </bs4.DropdownItem>
+                                <bs4.DropdownItem href="/clearbill/phitsanulok" >
+                                    เคลียร์บิล
+                                </bs4.DropdownItem>
+                                <bs4.DropdownItem href="/report/accounting-phitsanulok" >
+                                    รายงานส่งบัญชี
+                                </bs4.DropdownItem>
+                            </bs4.DropdownMenu>
+                        </bs4.UncontrolledDropdown>
+
                         {
                             (Level_User === "adminsystem") ?
                                 <bs4.UncontrolledDropdown nav inNavbar>
