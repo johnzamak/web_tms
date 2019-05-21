@@ -61,7 +61,7 @@ class Clearbill_Phitsanulok extends Component {
     get_data_from_api(self) {
         self.props.dispatch(is_loader(true))
         var messCode = self.state.type_mess, inDate = moment(self.state.input_date).format("YYYY-MM-DD")
-        var url = proxy.main + "clearbill/get-clearbill-surach-kerry-dhl/" + messCode + "&" + inDate
+        var url = proxy.main + "clearbill/get-clearbill-phitsanulok-kerry-dhl/" + messCode + "&" + inDate
         fetch(url)
             .then(response => response.json())
             .then((responseJson) => {

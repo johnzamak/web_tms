@@ -39,7 +39,7 @@ class Tracking_status_phitsanulok extends Component {
         setTimeout(() => {
             var date_start = moment(self.state.date_start._d).format("YYYY-MM-DD")
             var date_end = moment(self.state.date_end._d).format("YYYY-MM-DD")
-            let url = proxy.main + "report/report-status-surach/" + date_start + "&" + date_end
+            let url = proxy.main + "report/report-status-phitsanulok/" + date_start + "&" + date_end
             fetch(url)
                 .then(response => response.json())
                 .then((responseJson) => {
