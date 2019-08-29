@@ -11,7 +11,9 @@ class Dealer extends Component {
         super(props);
         this.state = {
             dataTable: '',
-            month: moment().format("YYYY-MM"),
+            //month: moment().format("YYYY-MM"),
+            dateStart: moment(),
+            dateEnd: moment(),
         }
     }
 
@@ -23,19 +25,20 @@ class Dealer extends Component {
         this.getData()
     }
 
-    handleChange = (e) => {
-        console.log('value', e.target.value)
-        this.setState({ month: e.target.value })
+    handleChange = (id, date) => {
+        this.setState({ [id]: date })
     }
 
     getData = () => {
         var props = this.props
         props.dispatch(is_loader(true))
-        var month = this.state.month
+        //var month = this.state.month
+        var start = moment(this.state.dateStart).format("YYYY-MM-DD")
+        var end = moment(this.state.dateEnd).format("YYYY-MM-DD")
 
         var arrReport = []
-        var url = proxy.main + 'get_report_costmess_MDL/' + month
-        //var url = proxy.develop + 'get_report_costmess_MDL/' + month
+        //var url = proxy.main + 'get_report_costmess_MDL/'  + month
+        var url = proxy.develop + 'get_report_costmess_MDL/'  + start + '&' + end
         console.log('----', url)
         fetch(url)
             .then(response => response.json())
@@ -80,7 +83,23 @@ class Dealer extends Component {
                             onChange={this.handleChange}
                             dateFormat="YYYY-MM"
                         /> */}
-                        <input type="month" defaultValue={this.state.month} onChange={this.handleChange} />
+                        {/* <input type="month" defaultValue={this.state.month} onChange={this.handleChange} /> */}
+                        <bs4.Label style={{ fontWeight: "600", fontSize: "16px", margin: "10px 20px 0px 20px" }} >วันที่เริ่มต้น:</bs4.Label>
+                        <div style={{ marginTop: "10px", }} >
+                            <DatePicker
+                                dateFormat="YYYY-MM-DD"
+                                selected={this.state.dateStart}
+                                onChange={(date) => this.handleChange("dateStart", date)}
+                            />
+                        </div>
+                        <bs4.Label style={{ fontWeight: "600", fontSize: "16px", margin: "10px 0px 0px 20px" }} >วันที่สิ้นสุด:</bs4.Label>
+                        <div style={{ margin: "10px 0px 0px 20px" }} >
+                            <DatePicker
+                                dateFormat="YYYY-MM-DD"
+                                selected={this.state.dateEnd}
+                                onChange={(date) => this.handleChange("dateEnd", date)}
+                            />
+                        </div>
                         <bs4.Col xs="2" >
                             <bs4.Button color="info" style={{ marginLeft: "20px" }} onClick={this.getData} >SEARCH</bs4.Button>
                         </bs4.Col>

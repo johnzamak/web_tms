@@ -59,7 +59,7 @@ class Dealer_roundcontrol extends Component {
     }
 
     setTo_Print = (e) => {
-        var table = <div style={{ padding:"20px", pageBreakAfter: "always" }} ref={el => (this.componentRef = el)}>
+        var table = <div style={{ padding: "20px", pageBreakAfter: "always" }} ref={el => (this.componentRef = el)}>
             <br />
             <div style={{ textAlign: "center", fontSize: "18px", fontWeight: "800" }} >ใบคุมรอบ Mess Dealer/Trade</div>
             <div style={{ textAlign: "center", fontSize: "14px", fontWeight: "500" }} ><u>Delivery date</u> : <b>{this.state.DateReport}</b>&nbsp;&nbsp;&nbsp;<u>Messenger Name</u> : <b>{this.state.MessName}</b>&nbsp;&nbsp;&nbsp;<u>ประเภทรถ</u> : <b>{this.state.CarType}</b>&nbsp;&nbsp;&nbsp;<u>จำนวน Invoice</u> : <b>{this.state.BillAmount} บิล</b></div><br />
@@ -115,8 +115,8 @@ class Dealer_roundcontrol extends Component {
                                     <td style={{ textAlign: "center" }} >{val.CustomerName}</td>
                                     <td style={{ textAlign: "center" }} >{val.INVOICEID}</td>
                                     <td style={{ textAlign: "right" }} >{val.box_amount}</td>
-                                    <td style={{ textAlign: "right" }} ></td>
-                                    <td style={{ textAlign: "center" }} >{val.AddressShipment}</td>
+                                    <td style={{ textAlign: "right" }} >{val.box_weight}</td>
+                                    <td style={{ textAlign: "center" }} >{val.store_zone}</td>
                                     <td style={{ textAlign: "center" }} >{val.remark}</td>
                                 </tr>
                             )
@@ -165,8 +165,8 @@ class Dealer_roundcontrol extends Component {
                     <td style={{ textAlign: "center" }} >{val.CustomerName}</td>
                     <td style={{ textAlign: "center" }} >{val.INVOICEID}</td>
                     <td style={{ textAlign: "right" }} >{val.box_amount}</td>
-                    <td style={{ textAlign: "right" }} ></td>
-                    <td style={{ textAlign: "center" }} >{val.AddressShipment}</td>
+                    <td style={{ textAlign: "right" }} >{val.box_weight}</td>
+                    <td style={{ textAlign: "center" }} >{val.store_zone}</td>
                     <td style={{ textAlign: "center" }} >{val.remark}</td>
                 </tr>
             )
@@ -233,7 +233,7 @@ class Dealer_roundcontrol extends Component {
                                 <th style={{ textAlign: "center" }} >เลขที่ INV<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('INVOICEID')} /></th>
                                 <th width="5%" style={{ textAlign: "center" }} >จำนวนกล่อง<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('box_amount')} /></th>
                                 <th width="5%" style={{ textAlign: "center" }} >น้ำหนักกล่อง{/* <MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('rec_time')} />*/}</th>
-                                <th width="20%" style={{ textAlign: "center" }} >ที่อยู่<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('AddressShipment')} /></th>
+                                <th width="20%" style={{ textAlign: "center" }} >ที่อยู่<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('store_zone')} /></th>
                                 <th width="15%" style={{ textAlign: "center" }} >Remarks<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('remark')} /></th>
                             </thead>
                             <tbody >

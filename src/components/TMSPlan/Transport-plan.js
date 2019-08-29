@@ -147,12 +147,12 @@ class Transport_plan extends Component {
                 จำนวนกล่อง: val.box === 'null' || val.box === null ? '' : val.box + '/' + val.box_qty,
                 น้ำหนักกล่อง: val.box_weight === 'null' || val.box_weight === null ? '' : val.box_weight,
                 ขนาดกล่อง: val.box_type === 'null' || val.box_type === null ? '' : val.box_type,
-                ที่อยู่: val.STREET === 'null' || val.STREET === null ? '' : val.STREET,
+                ที่อยู่: val.store_zone === 'null' || val.store_zone === null ? '' : val.store_zone,
                 อำเภอ: val.CITY === 'null' || val.CITY === null ? '' : val.CITY,
                 จังหวัด: val.STATE_Name === 'null' || val.STATE_Name === null ? '' : val.STATE_Name,
                 เบอร์โทร: val.contact_phone,
                 Remarks: val.remark === 'null' || val.remark === null ? '' : val.remark,
-                DeliveryBy: val.dlv_term === 'null' || val.dlv_term === null ? '' : val.dlv_term,
+                DeliveryBy: val.MessName === 'null' || val.MessName === null ? '' : val.MessName,
             }
             arr.push(arrExcel_)
         });
@@ -210,8 +210,8 @@ class Transport_plan extends Component {
                 data = val.box_weight
             } else if (value.type === 'box_type') {
                 data = val.box_type
-            } else if (value.type === 'STREET') {
-                data = val.STREET
+            } else if (value.type === 'store_zone') {
+                data = val.store_zone
             } else if (value.type === 'CITY') {
                 data = val.CITY
             } else if (value.type === 'STATE_Name') {
@@ -220,8 +220,8 @@ class Transport_plan extends Component {
                 data = val.contact_phone
             } else if (value.type === 'remark') {
                 data = val.remark
-            } else if (value.type === 'dlv_term') {
-                data = val.dlv_term
+            } else if (value.type === 'MessName') {
+                data = val.MessName
             }
 
             if (value.value === data) {
@@ -230,16 +230,17 @@ class Transport_plan extends Component {
                         <td style={{ textAlign: "center" }}>{arrStatusSOEN[val.DPL_SO_STATUS]}</td>
                         <td style={{ textAlign: "center" }}>{val.so}</td>
                         <td style={{ textAlign: "center" }} >{val.customer_name}</td>
+                        <td style={{ textAlign: "center" }} >{val.sales_group}</td>
                         <td style={{ textAlign: "center" }} >{val.invoice}</td>
                         <td style={{ textAlign: "right" }} >{val.box}/{val.box_qty}</td>
                         <td style={{ textAlign: "right" }} >{val.box_weight}</td>
                         <td style={{ textAlign: "right" }} >{val.box_type}</td>
-                        <td style={{ textAlign: "center" }} >{val.STREET}</td>
+                        <td style={{ textAlign: "center" }} >{val.store_zone}</td>
                         <td style={{ textAlign: "center" }} >{val.CITY}</td>
                         <td style={{ textAlign: "center" }} >{val.STATE_Name}</td>
                         <td style={{ textAlign: "center" }} >{val.contact_phone}</td>
                         <td style={{ textAlign: "center" }} >{val.remark}</td>
-                        <td style={{ textAlign: "center" }} >{val.dlv_term}</td>
+                        <td style={{ textAlign: "center" }} >{val.MessName}</td>
                     </tr>
                 )
 
@@ -278,9 +279,9 @@ class Transport_plan extends Component {
                 temp9['label'] = val.box_type
                 temp9['type'] = 'box_type'
                 var temp10 = {}
-                temp10["value"] = val.STREET
-                temp10['label'] = val.STREET
-                temp10['type'] = 'STREET'
+                temp10["value"] = val.store_zone
+                temp10['label'] = val.store_zone
+                temp10['type'] = 'store_zone'
                 var temp11 = {}
                 temp11["value"] = val.CITY
                 temp11['label'] = val.CITY
@@ -298,9 +299,9 @@ class Transport_plan extends Component {
                 temp14['label'] = val.remark
                 temp14['type'] = 'remark'
                 var temp15 = {}
-                temp15["value"] = val.dlv_term
-                temp15['label'] = val.dlv_term
-                temp15['type'] = 'dlv_term'
+                temp15["value"] = val.MessName
+                temp15['label'] = val.MessName
+                temp15['type'] = 'MessName'
 
                 options.push(temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, temp11, temp12, temp13, temp14, temp15)
             }
@@ -331,7 +332,7 @@ class Transport_plan extends Component {
             _express = 1
         }
 
-        var url = proxy.main + 'TMSPlan/get_tms_plan/' + start + '&' + end + '&' + _express
+        var url = proxy.develop + 'TMSPlan/get_tms_plan/' + start + '&' + end + '&' + _express
         console.log('----', url)
 
         fetch(url)
@@ -346,16 +347,17 @@ class Transport_plan extends Component {
                                     <td style={{ textAlign: "center" }}>{arrStatusSOEN[val.DPL_SO_STATUS]}</td>
                                     <td style={{ textAlign: "center" }}>{val.so}</td>
                                     <td style={{ textAlign: "center" }} >{val.customer_name}</td>
+                                    <td style={{ textAlign: "center" }} >{val.sales_group}</td>
                                     <td style={{ textAlign: "center" }} >{val.invoice}</td>
                                     <td style={{ textAlign: "right" }} >{val.box}/{val.box_qty}</td>
                                     <td style={{ textAlign: "right" }} >{val.box_weight}</td>
                                     <td style={{ textAlign: "right" }} >{val.box_type}</td>
-                                    <td style={{ textAlign: "center" }} >{val.STREET}</td>
+                                    <td style={{ textAlign: "center" }} >{val.store_zone}</td>
                                     <td style={{ textAlign: "center" }} >{val.CITY}</td>
                                     <td style={{ textAlign: "center" }} >{val.STATE_Name}</td>
                                     <td style={{ textAlign: "center" }} >{val.contact_phone}</td>
                                     <td style={{ textAlign: "center" }} >{val.remark}</td>
-                                    <td style={{ textAlign: "center" }} >{val.dlv_term}</td>
+                                    <td style={{ textAlign: "center" }} >{val.MessName}</td>
                                 </tr>
                             )
                         } else if (group === val.sales_group) {
@@ -364,16 +366,17 @@ class Transport_plan extends Component {
                                     <td style={{ textAlign: "center" }}>{arrStatusSOEN[val.DPL_SO_STATUS]}</td>
                                     <td style={{ textAlign: "center" }}>{val.so}</td>
                                     <td style={{ textAlign: "center" }} >{val.customer_name}</td>
+                                    <td style={{ textAlign: "center" }} >{val.sales_group}</td>
                                     <td style={{ textAlign: "center" }} >{val.invoice}</td>
                                     <td style={{ textAlign: "right" }} >{val.box}/{val.box_qty}</td>
                                     <td style={{ textAlign: "right" }} >{val.box_weight}</td>
                                     <td style={{ textAlign: "right" }} >{val.box_type}</td>
-                                    <td style={{ textAlign: "center" }} >{val.STREET}</td>
+                                    <td style={{ textAlign: "center" }} >{val.store_zone}</td>
                                     <td style={{ textAlign: "center" }} >{val.CITY}</td>
                                     <td style={{ textAlign: "center" }} >{val.STATE_Name}</td>
                                     <td style={{ textAlign: "center" }} >{val.contact_phone}</td>
                                     <td style={{ textAlign: "center" }} >{val.remark}</td>
-                                    <td style={{ textAlign: "center" }} >{val.dlv_term}</td>
+                                    <td style={{ textAlign: "center" }} >{val.MessName}</td>
                                 </tr>
                             )
                         }
@@ -411,9 +414,9 @@ class Transport_plan extends Component {
                         temp9['label'] = val.box_type
                         temp9['type'] = 'box_type'
                         var temp10 = {}
-                        temp10["value"] = val.STREET
-                        temp10['label'] = val.STREET
-                        temp10['type'] = 'STREET'
+                        temp10["value"] = val.store_zone
+                        temp10['label'] = val.store_zone
+                        temp10['type'] = 'store_zone'
                         var temp11 = {}
                         temp11["value"] = val.CITY
                         temp11['label'] = val.CITY
@@ -431,9 +434,9 @@ class Transport_plan extends Component {
                         temp14['label'] = val.remark
                         temp14['type'] = 'remark'
                         var temp15 = {}
-                        temp15["value"] = val.dlv_term
-                        temp15['label'] = val.dlv_term
-                        temp15['type'] = 'dlv_term'
+                        temp15["value"] = val.MessName
+                        temp15['label'] = val.MessName
+                        temp15['type'] = 'MessName'
 
                         options.push(temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10, temp11, temp12, temp13, temp14, temp15)
 
@@ -483,16 +486,17 @@ class Transport_plan extends Component {
                     <td style={{ textAlign: "center" }}>{arrStatusSOEN[val.DPL_SO_STATUS]}</td>
                     <td style={{ textAlign: "center" }}>{val.so}</td>
                     <td style={{ textAlign: "center" }} >{val.customer_name}</td>
+                    <td style={{ textAlign: "center" }} >{val.sales_group}</td>
                     <td style={{ textAlign: "center" }} >{val.invoice}</td>
                     <td style={{ textAlign: "right" }} >{val.box}/{val.box_qty}</td>
                     <td style={{ textAlign: "right" }} >{val.box_weight}</td>
                     <td style={{ textAlign: "right" }} >{val.box_type}</td>
-                    <td style={{ textAlign: "center" }} >{val.STREET}</td>
+                    <td style={{ textAlign: "center" }} >{val.store_zone}</td>
                     <td style={{ textAlign: "center" }} >{val.CITY}</td>
                     <td style={{ textAlign: "center" }} >{val.STATE_Name}</td>
                     <td style={{ textAlign: "center" }} >{val.contact_phone}</td>
                     <td style={{ textAlign: "center" }} >{val.remark}</td>
-                    <td style={{ textAlign: "center" }} >{val.dlv_term}</td>
+                    <td style={{ textAlign: "center" }} >{val.MessName}</td>
                 </tr>
             )
         }, this)
@@ -592,16 +596,17 @@ class Transport_plan extends Component {
                                 <th style={{ textAlign: "center" }}>Status SO<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('DPL_SO_STATUS')} /></th>
                                 <th style={{ textAlign: "center" }}>Sale order<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('so')} /></th>
                                 <th style={{ textAlign: "center" }} >Customer Name<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('customer_name')} /></th>
+                                <th style={{ textAlign: "center" }} >กลุ่มลูกค้า<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('sales_group')} /></th>
                                 <th style={{ textAlign: "center" }} >เลขที่ INV<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('invoice')} /></th>
                                 <th style={{ textAlign: "center" }} >จำนวนกล่อง<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('box')} /></th>
                                 <th style={{ textAlign: "center" }} >น้ำหนักกล่อง<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('box_weight')} /></th>
                                 <th style={{ textAlign: "center" }} >ขนาดกล่อง<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('')} /></th>
-                                <th style={{ textAlign: "center" }} >ที่อยู่<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('STREET')} /></th>
+                                <th style={{ textAlign: "center" }} >ที่อยู่<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('store_zone')} /></th>
                                 <th style={{ textAlign: "center" }} >อำเภอ<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('CITY')} /></th>
                                 <th style={{ textAlign: "center" }} >จังหวัด<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('STATE_Name')} /></th>
                                 <th style={{ textAlign: "center" }} >เบอร์โทร<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('contact_phone')} /></th>
                                 <th style={{ textAlign: "center" }} >Remarks<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('remark')} /></th>
-                                <th style={{ textAlign: "center" }} >Delivery By<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('dlv_term')} /></th>
+                                <th style={{ textAlign: "center" }} >Delivery By<MdIcon.MdUnfoldMore className="iconlg" onClick={() => this.sortBy('MessName')} /></th>
                             </thead>
                             <tbody >
                                 {this.state.dataTable}
