@@ -32,7 +32,7 @@ class Cashvan extends Component {
 
         var arrReport = []
         //var url = proxy.main + 'get_report_costmess_MCV/' + month
-        var url = proxy.develop + 'get_report_costmess_MCV/'  + start + '&' + end
+        var url = proxy.main + 'get_report_costmess_MCV/'  + start + '&' + end
         console.log('----', url)
         fetch(url)
             .then(response => response.json())

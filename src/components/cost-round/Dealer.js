@@ -38,7 +38,7 @@ class Dealer extends Component {
 
         var arrReport = []
         //var url = proxy.main + 'get_report_costmess_MDL/'  + month
-        var url = proxy.develop + 'get_report_costmess_MDL/'  + start + '&' + end
+        var url = proxy.main + 'get_report_costmess_MDL/'  + start + '&' + end
         console.log('----', url)
         fetch(url)
             .then(response => response.json())

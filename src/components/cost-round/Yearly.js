@@ -33,7 +33,7 @@ class Yearly extends Component {
 
         var arrBill = [<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>]
         var arrShop = [<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>]
-        var url = proxy.develop + 'get-yearly-costmess-MCV/' + year
+        var url = proxy.main + 'get-yearly-costmess-MCV/' + year
         console.log('----', url)
         fetch(url)
             .then(response => response.json())
@@ -63,7 +63,7 @@ class Yearly extends Component {
 
         var arrBill = [<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>]
         var arrShop = [<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>,<td></td>]
-        var url = proxy.develop + 'get-yearly-costmess-MDL/' + year
+        var url = proxy.main + 'get-yearly-costmess-MDL/' + year
         console.log('----', url)
         fetch(url)
             .then(response => response.json())
